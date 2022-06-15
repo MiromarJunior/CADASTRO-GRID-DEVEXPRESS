@@ -1,10 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {useNavigate } from "react-router-dom";
-import apiProdutosService, { updateListaProd } from "../../Service/produtoService";
-import { AgGridReact } from 'ag-grid-react';
+import apiProdutosService, { dataFormatadaListar, updateListaProd } from "../../Service/produtoService";
 import { criando, formataValorString, valorBR, valorLiquido } from "../../Service/utilServiceFrontEnd";
 import { AuthContext } from "../../Autenticação/validacao";
-import { EditingState } from '@devexpress/dx-react-grid';
+import { DataTypeProvider, EditingState } from '@devexpress/dx-react-grid';
 import {
     Grid,
     Table,
@@ -15,8 +14,8 @@ import {
 
 
 
-  const getRowId = row => row.id;
-let rowImmutableStore = [];
+const getRowId = row => row.id;
+
 function ListarProdutos() {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();
@@ -27,40 +26,28 @@ function ListarProdutos() {
 
 
 
-    const ButtonDelete = p => {
-        const deleteP = () => deletarProduto(p.data.PRDT_ID);
-        return (<button onClick={deleteP}>DELETE</button>)
-    }
-    // const CorBotao = p => {
-    //     return (<div className="corFont">{p.value}</div>)
-    // }
-
-    // const InputData = p => {
-    //     return (<input value={desconto} onChange={(e) => setdesconto(e.target.value)} />)
-    // }
 
 
 
+    const deletarProdutoID = (id) => {
+        let dados = { id, token };
+        if (window.confirm("deseja excluir o item ?")) {
+            apiProdutosService.deleteProduto(dados)
+                .then((res) => {
+                    if (res.data === "erroLogin") {
+                        window.alert("Sessão expirada, Favor efetuar um novo login");
+                        logout();
+                    } else {
+                        alert(res.data);
+                        buscarProdutos();
+                    }
+                })
+                .catch((res) => {
+                    console.log(res);
+                })
+        }
 
-    // const deletarProduto = (id) => {
-    //     let dados = { id, token };
-    //     if (window.confirm("deseja excluir o item ?")) {
-    //         apiProdutosService.deleteProduto(dados)
-    //             .then((res) => {
-    //                 if (res.data === "erroLogin") {
-    //                     window.alert("Sessão expirada, Favor efetuar um novo login");
-    //                     logout();
-    //                 } else {
-    //                     alert(res.data);
-    //                     window.location.reload();
-    //                 }
-    //             })
-    //             .catch((res) => {
-    //                 console.log(res);
-    //             })
-    //     }
-
-    // };
+    };
 
     const deletarProduto = ()=>{
         const dadosSelecionados = gridRef.current.api.getSelectedNodes();
@@ -94,90 +81,57 @@ function ListarProdutos() {
   const CorFundo =()=>{
       return  {backgroundColor : '#DCDCDC', margin : "1px"};
   }
+  let valor = 0;
     const [columns] = useState([
 
-       { name: 'PRDT_ID', title: "ID", editingEnabled: false },
-        { name: 'PRDT_DESCRICAO', title: "DESCRIÇÃO",
-        checkboxSelection: true,
-        headerCheckboxSelection: true, },
+       { name: 'PRDT_ID', title: "ID"},
+        { name: 'PRDT_DESCRICAO', title: "DESCRIÇÃO"},
 
-        { name: 'PRDT_CODIGO', title: "CÓDIGO" },
-        
-        {
-            name: 'PRDT_VALOR', headerName: "VALOR", pinned: " right",
-            getCellValue: row =>valorBR(row.PRDT_VALOR)
-              
-         
-        },
-        { name: 'PRDT_DT_VALIDADE', headerName: "DATA VALIDADE" },
-        {
-            name: 'PRDT_PERC_DESCONTO', headerName: " % DESCONTO",
-          valueGetter : p =>{
-              if(p.data.PRDT_PERC_DESCONTO === null ||p.data.PRDT_PERC_DESCONTO  === undefined || !p.data.PRDT_ID){
-                  return 0 +"%"
-              }else if( typeof(p.data.PRDT_PERC_DESCONTO)=== "string"){
-                  return formataValorString(p.data.PRDT_PERC_DESCONTO)
-              }
-              
-              else {
-
-                  return p.data.PRDT_PERC_DESCONTO + "%"
-              }
-
-          }
-          
-            
-            
-        },
-        {
-            name: 'PRDT_VALOR_LIQUIDO', headerName: " VALOR LIQUIDO",editable : false, cellStyle : CorFundo,
-            
-            valueGetter: p => {
-                if(!p.data.PRDT_ID){
-                    return 0
-                }else if( typeof(p.data.PRDT_PERC_DESCONTO)=== "string"){
-                        return  valorBR(valorLiquido(p.data.PRDT_VALOR,formataValorString(p.data.PRDT_PERC_DESCONTO)));
-                    }else{
-                        return  valorBR(valorLiquido(p.data.PRDT_VALOR,p.data.PRDT_PERC_DESCONTO));
-
-                    }              
-            
-               
-            }
-           
+        { name: 'PRDT_CODIGO', title: "CÓDIGO" },       
+        {name: 'PRDT_VALOR', title: "VALOR"},
+        { name: 'PRDT_DT_VALIDADE', title: "DATA VALIDADE"}, 
+        { name: 'PRDT_PERC_DESCONTO', title: " % DESCONTO"
+         },
+         { name: 'PRDT_VALOR_LIQUIDO', title: " VALOR LIQUIDO",
+        getCellValue: row => (              
+            isNaN(row.PRDT_PERC_DESCONTO) ? row.PRDT_VALOR - (row.PRDT_VALOR * (formataValorString(row.PRDT_PERC_DESCONTO)/100)) 
+            : row.PRDT_VALOR - (row.PRDT_VALOR * (row.PRDT_PERC_DESCONTO/100))  
+        )           
       },
-
-     
-
       
-        { name: 'EXCLUIR', headerName: "EXCLUIR", cellRenderer: ButtonDelete, editable: false },
 
     ]);
+
+   const [editingStateColumns] = useState([
+    {columnName : "PRDT_ID",editingEnabled: false},
+    {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
+    {columnName : "PRDT_VALOR",align: 'center'},
+
+   ])
    
-    //const getRowId = useCallback((params) => params.data.id, []);
+   const PriceFormatter = ({value})=>(
+    valorBR(value)
+   )
 
-    const adicionar = (() => {       
-        const novoCampo  = criando(rowImmutableStore.length);       
-        rowImmutableStore = [novoCampo,...rowImmutableStore];     
-      return  setRows(rowImmutableStore);   
+   const PriceProvider = props =>(
+    <DataTypeProvider
+        formatterComponent={PriceFormatter}
+        {...props}
+    
+    />
+   )
+ 
 
-    });
+  
+   const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
-    // const defaultColDef = useMemo(() => ({
-    //     sortable: true,
-    //     editable: true,
-    //     resizable: true,
-    //     filter: true,
-    //     filterParams : {
-    //         buttons : ["apply", "clear","cancel","reset"]
 
-    //     },
-    //     rowSelection: "multiple",
-       
-       
 
-       
-    // }), []);
+
+
+
+
+
 
 
 
@@ -196,9 +150,8 @@ function ListarProdutos() {
                     window.alert("Sessão expirada, Favor efetuar um novo login");
                  return   logout();
                 } else {                   
-                    (res.data).forEach((item, index) => (item.id = index));
-                    rowImmutableStore = (res.data);
-                  return  setRows(rowImmutableStore);
+                    (res.data).forEach((item, index) => (item.id = index));                 
+                  return  setRows(res.data);
 
                 }
 
@@ -231,8 +184,7 @@ function ListarProdutos() {
 
     const commitChanges = ({ added, changed, deleted }) => {
         let changedRows;
-        if (added) {
-         
+        if (added) {           
           const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
           changedRows = [
             ...rows,
@@ -241,23 +193,20 @@ function ListarProdutos() {
               ...row,
             })),
           ];
+          setRows(changedRows);
         }
         if (changed) {
           changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+          setRows(changedRows);
         }
         if (deleted) {
-            // rows.map((l)=>{
-               
-            //     console.log(l.PRDT_ID)
-            // })
+            
          const deletedSet = new Set(deleted);
-          changedRows = rows.filter(row => !deletedSet.has(row.id)  );
-         // !deletedSet.has(row.id)
-         
-        }
-        setRows(changedRows);
+          changedRows = rows.filter(row => deletedSet.has(row.id)  );         
+         deletarProdutoID(changedRows.map(l=>l.PRDT_ID));         
+        }       
       };
-    
+
     
     
 
@@ -268,12 +217,7 @@ function ListarProdutos() {
 
             <div className="centralizar">
                 <button onClick={() => navigate("/home")}  > HOME</button>
-             <button type='button' onClick={deletarProduto}>EXCLUIR SELECIONADOS</button> 
-
-                <button onClick={(e) => adicionar(e)}  > NOVO PRODUTO </button>
-
-                {/* <button onClick={()=>navigate("/cadastrarProdutos/0")}  > CADASTRAR NOVO PRODUTO</button> */}
-
+             <button type='button' onClick={deletarProduto}>EXCLUIR SELECIONADOS</button>  
                 <button onClick={(e) => updateProdutos(e)}  > SALVAR ALTERAÇÕES</button>
                 <button onClick={(e) => logout(e)}  > SAIR</button>
             </div>
@@ -287,45 +231,25 @@ function ListarProdutos() {
       >
         <EditingState
           onCommitChanges={commitChanges}
+          columnExtensions={editingStateColumns}
         />
-        <Table />
+        <PriceProvider
+        for={priceColumns}
+        
+        />
+        
+        <Table  />
         <TableHeaderRow />
         <TableEditRow />
         <TableEditColumn
           showAddCommand
           showEditCommand
           showDeleteCommand
+          
         />
+        
       </Grid>
     </div>
-
-
-
-
-
-
-
-
-            {/* <div id="myGrid" className="ag-theme-alpine" style={{ width: "100%", height: 400}}>
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    getRowId={getRowId}
-                    onCellEditRequest={true}
-                    animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-                    rowSelection='multiple' // Options - allows click selection of rows
-                    // onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-                    pagination={true}
-                    enableRangeSelection={true}
-                    paginationPageSize={5}
-                    editType={'fullRow'}
-                   
-
-                />
-
-            </div> */}
 
 
         </div>

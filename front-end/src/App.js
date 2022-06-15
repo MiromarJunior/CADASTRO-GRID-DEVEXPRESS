@@ -4,7 +4,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always nee
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; // Optional theme CSS
 import '@devexpress/dx-react-grid-bootstrap4/dist/dx-react-grid-bootstrap4.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'devextreme/dist/css/dx.light.css';
+
 
 
 import AppRotas from './AppRotas';

@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { AuthContext, AuthProvider } from "./Autenticação/validacao";
 import HomePage from "./Pages/Home";
-import LoginPage from "./Pages/Login";
+import LoginPage from "./Login/Login";
 import CadastrarProdutos from "./Pages/Produtos/CadastrarProdutos";
 import ListarProdutos from "./Pages/Produtos/ListarProdutos";
+import CadastroUniEmp from "./Pages/UnidadeEmpresarial/CadastrarUniEmp";
 import CadastroUsuario from "./Pages/Usuario/CadastroUsuario";
 
 
@@ -30,6 +31,8 @@ const AppRotas = () => {
         <AuthProvider>
             <Routes>
                 <Route exact path="/" element={<LoginPage/>} />
+                
+                <Route exact path="/cadastroUnidadeEmpresarial" element={ <CadastroUniEmp /> } />
                 <Route exact path="/cadastroUsuario" element={ <CadastroUsuario /> } />
                 <Route exact path="/home" element={<Private><HomePage /></Private> } />
                 <Route exact path="/listarProdutos" element={<Private><ListarProdutos /></Private> } />
