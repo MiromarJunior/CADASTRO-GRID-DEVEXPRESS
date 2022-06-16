@@ -6,7 +6,7 @@ Prejeto Cadastro Utilizando AG GRID
 <h3>configDB.js</h3>
 Método para conectar com banco de dados Oracle
 
-componentes utilizados
-express
-jsonwebtoken
-oracledb
+componentes utilizados<br/>
+express<br/>
+jsonwebtoken<br/>
+oracledb<br/>
