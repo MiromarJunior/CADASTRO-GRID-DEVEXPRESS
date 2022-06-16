@@ -1,0 +1,11 @@
+#FRONT END
+REACT_APP_API_URL=http://localhost:5000/
+
+#BACK END
+DB_USER=curso
+DB_PASSWORD=curso
+DB_CONSTRING=avvante
+SECRET=avvante
+
+URL_FRONT_END=http://localhost:3000
+

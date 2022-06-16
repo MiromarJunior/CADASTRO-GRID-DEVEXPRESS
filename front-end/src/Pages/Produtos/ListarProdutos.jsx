@@ -88,7 +88,14 @@ function ListarProdutos() {
         { name: 'PRDT_DESCRICAO', title: "DESCRIÇÃO"},
 
         { name: 'PRDT_CODIGO', title: "CÓDIGO" },       
-        {name: 'PRDT_VALOR', title: "VALOR"},
+        {name: 'PRDT_VALOR', title: "VALOR",
+        getCellValue: row => (              
+            isNaN(row.PRDT_VALOR) ? formataValorString(row.PRDT_VALOR) : row.PRDT_VALOR
+            
+        )
+    
+    
+            },
         { name: 'PRDT_DT_VALIDADE', title: "DATA VALIDADE"}, 
         { name: 'PRDT_PERC_DESCONTO', title: " % DESCONTO"
          },

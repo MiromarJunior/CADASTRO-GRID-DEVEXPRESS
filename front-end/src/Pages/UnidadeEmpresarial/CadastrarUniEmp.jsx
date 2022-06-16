@@ -255,12 +255,12 @@ const CadastroUniEmp = () => {
             <div  className="form-inline" id="">
             <div className="form-group col-md-3 margemRight" >
                     <Form.Label  >CNPJ OU CPF</Form.Label>
-                    <Form.Control className="  form__input1 maxSize-14" maxLength={18} type="cnpj" onChange={(e) => setCnpj(e.target.value)} value={cnpjEmpresa.length === 11? cpf.format(cnpjEmpresa) : cnpj.format(cnpjEmpresa)} style={{ maxWidth: "100%" }} placeholder="Cnpj" />
+                    <Form.Control className="  form__input1 maxSize-14" maxLength={18} type="cnpj" onChange={(e) => setCnpj(e.target.value)} value={cnpjEmpresa.length === 11? cpf.format(cnpjEmpresa) : cnpj.format(cnpjEmpresa)} style={{ maxWidth: "100%" }} placeholder="" />
 
                 </div>
                 <div className="form-group col-md-2 margemRight" >
                     <Form.Label  >Codigo Legado</Form.Label>
-                    <Form.Control className="  form__input1 maxSize-14" maxLength={18} type="cnpj" placeholder="Codigo Legado" />
+                    <Form.Control className="  form__input1 maxSize-14" maxLength={18} type="cnpj" placeholder="" />
 
                 </div>
                 
