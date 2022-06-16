@@ -1,3 +1,23 @@
+/*
+componentes utilizados
+#express
+#jsonwebtoken
+#oracledb
+#bcrypt
+
+/cadastrarUsuario recebe dados do fornt-end para cadastrar um novo usuário, 
+mas antes verifica se o nome e cpf já estão cadastrados no banco.
+
+/loginUsuario recebe o usuario e senha e faz a comparação para validar o login 
+e responde com os dados de autenticação
+ exclui os produtos recebidos pelo nr ID
+
+
+
+*/
+
+
+
 const router = require("express").Router();
 const express = require("express");
 const oracledb = require("oracledb");
@@ -10,41 +30,41 @@ const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 
 
-router.get("/listar", async(req, res)=> {
-    let connection = await oracledb.getConnection(dbConfig);
-    let result;
+// router.get("/listar", async(req, res)=> {
+//     let connection = await oracledb.getConnection(dbConfig);
+//     let result;
 
-  try {
+//   try {
 
-    result = await connection.execute ( 
+//     result = await connection.execute ( 
 
-        ` SELECT  * FROM USUARIO  `,
-        [],
-        { outFormat  :  oracledb.OUT_FORMAT_OBJECT} 
-         );
-         res.send(result.rows).status(200);
+//         ` SELECT  * FROM USUARIO  `,
+//         [],
+//         { outFormat  :  oracledb.OUT_FORMAT_OBJECT} 
+//          );
+//          res.send(result.rows).status(200);
         
     
       
-  } catch (error) {
-      console.error(error);
-      res.send("erro de conexao").status(500);
+//   } catch (error) {
+//       console.error(error);
+//       res.send("erro de conexao").status(500);
       
-  }finally {
-      if(connection){
-          try {
-              await connection.close();
-              console.log("conexão fechada");
-          } catch (error) {
-            console.error(error);              
-          }
-      }
-  }
+//   }finally {
+//       if(connection){
+//           try {
+//               await connection.close();
+//               console.log("conexão fechada");
+//           } catch (error) {
+//             console.error(error);              
+//           }
+//       }
+//   }
 
 
 
 
-});
+// });
 
 
 router.post("/cadastrarUsuario", async(req, res)=> {
@@ -55,7 +75,7 @@ router.post("/cadastrarUsuario", async(req, res)=> {
   let erroAcesso = "";
   const senhaC = bcrypt.hashSync(senha,saltRounds);
   let data_brasileira = dataNasc.split('-').reverse().join('/');
-  console.log(data_brasileira);
+ 
 
 
 try {

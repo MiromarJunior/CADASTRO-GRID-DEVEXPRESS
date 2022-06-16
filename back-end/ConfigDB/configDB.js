@@ -1,3 +1,14 @@
+/*
+Método para conectar com banco de dados Oracle
+
+componentes utilizados
+#express
+#jsonwebtoken
+#oracledb
+
+
+*/
+
 require("dotenv").config();
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
