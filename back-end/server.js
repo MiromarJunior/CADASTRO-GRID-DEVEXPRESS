@@ -20,6 +20,9 @@ app.listen(port, ()=>{
   let produtoRotas = require("./ProdutoController/produtoController");
   app.use("/",produtoRotas) ;
 
+  let seguradoraRotas = require("./SeguradoraController/seguradoraController");
+  app.use("/",seguradoraRotas) ;
+
 
 
   console.log("Servidor online na porta  : ", port);

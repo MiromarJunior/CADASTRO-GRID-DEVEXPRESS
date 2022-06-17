@@ -7,8 +7,9 @@ import { AuthContext, AuthProvider } from "./Autenticação/validacao";
 import HomePage from "./Pages/Home";
 import LoginPage from "./Login/Login";
 import ListarProdutos from "./Pages/Produtos/ListarProdutos";
-import CadastroUniEmp from "./Pages/UnidadeEmpresarial/CadastrarUniEmp";
+import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
 import CadastroUsuario from "./Pages/Usuario/CadastroUsuario";
+
 
 
 const { BrowserRouter, Routes, Route, Navigate, } = require("react-router-dom");
@@ -34,7 +35,8 @@ const AppRotas = () => {
         <AuthProvider>
             <Routes>
                 <Route exact path="/" element={<LoginPage/>} />                
-                <Route exact path="/cadastroUnidadeEmpresarial" element={ <CadastroUniEmp /> } />
+              
+                <Route exact path="/cadastroSeguradora" element={ <CadastroSeguradora /> } />
                 <Route exact path="/cadastroUsuario" element={ <CadastroUsuario /> } />
                 <Route exact path="/home" element={<Private><HomePage /></Private> } />
                 <Route exact path="/listarProdutos" element={<Private><ListarProdutos /></Private> } />

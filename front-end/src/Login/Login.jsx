@@ -53,8 +53,6 @@ function LoginPage(){
 					</div>
 					<div className="row">
 						<form control="" className="form-group">
-
-
 							<div className="col" >    
                             <label id="label_Login"><b>Usuário</b> </label>                         
 								<input onChange={(e)=> setUsuario(e.target.value)} type="text" name="username" id="username" className="form__input" placeholder="Usuário"/>
@@ -65,32 +63,7 @@ function LoginPage(){
                             <label style={{marginRight : "30px"}}><b>Senha</b> </label>  
 								<input onChange={(e)=> setSenha(e.target.value)} type="password" name="password" id="password" className="form__input" placeholder="Senha"/>
 							</div>
-                            <div className="col">
-                            <label style={{marginRight : "35px"}}><b>CNPJ</b> </label>  
-								<input onChange={(e)=> setSenha(e.target.value)} type="text" name="" id="" className="form__input" placeholder="CNPJ"/>
-							</div>
-                            <div className="col">
-                            <label id="label_Login" ><b>Grupo</b> </label> 
-								<select className="form__input"  >
-                                    <option>Matriz</option>
-                                    <option>Regional</option>
-                                    <option>Fonecedor</option>
-                                    <option>Bate-Pronto</option>
-                                    <option>Central</option>
-
-                                </select>
-							</div>
-                            <div className="col">
-                            <label style={{marginLeft : "-20px", marginRight : "20px"}}><b>Categoria</b> </label> 
-								<select className="form__input"  >
-                                    <option>Admin Sistemas</option>
-                                    <option>Admin</option>
-                                    <option>Gestor</option>
-                                    <option>Operacional</option>
-                                   
-
-                                </select>
-							</div>
+                          
                             
 							
 							<div className="row">
@@ -98,9 +71,7 @@ function LoginPage(){
 							</div>
 						</form>
 					</div>
-					<div className="row">
-						<p>Ainda não tem cadastro ?</p> <button className="btnL" style={{width : "50%", marginLeft : "27%"}} onClick={(e)=>navigate("/cadastroUsuario")}>Cadastrar novo Usuário</button>
-					</div>
+					
 					
 				</div>
 			</div>
@@ -132,6 +103,45 @@ export default LoginPage;
 
 
 /**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * <div className="row" style={{fontSize : 11}}  >
+						<p>Ainda não tem cadastro ? <button style={{maxWidth : "150px"}} className="btnL" onClick={(e)=>navigate("/cadastroUsuario")}>Cadastrar novo Usuário</button>
+						</p></div>
+
+  <div className="col">
+                            <label style={{marginRight : "35px"}}><b>CNPJ</b> </label>  
+								<input onChange={(e)=> setSenha(e.target.value)} type="text" name="" id="" className="form__input" placeholder="CNPJ"/>
+							</div>
+                            <div className="col">
+                            <label id="label_Login" ><b>Grupo</b> </label> 
+								<select className="form__input"  >
+                                    <option>Matriz</option>
+                                    <option>Regional</option>
+                                    <option>Fonecedor</option>
+                                    <option>Bate-Pronto</option>
+                                    <option>Central</option>
+
+                                </select>
+							</div>
+                            <div className="col">
+                            <label style={{marginLeft : "-20px", marginRight : "20px"}}><b>Categoria</b> </label> 
+								<select className="form__input"  >
+                                    <option>Admin Sistemas</option>
+                                    <option>Admin</option>
+                                    <option>Gestor</option>
+                                    <option>Operacional</option>
+                                   
+
+                                </select>
+							</div>
+
+
+
+
  <h1> Pagina de Login</h1>
             <div className="centralizarInput">
                 <form>

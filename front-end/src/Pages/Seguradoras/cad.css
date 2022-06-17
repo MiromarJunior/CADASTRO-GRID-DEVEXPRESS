@@ -57,6 +57,10 @@ body {font-family: Arial, Helvetica, sans-serif;}
 .margemRight{
     margin-right: 20px;
 }
+#titulo{ 
+  float:  right;
+  
+}
 
 
 
