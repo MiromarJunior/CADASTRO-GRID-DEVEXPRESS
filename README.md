@@ -29,8 +29,8 @@ com novos produtos, e também alterações dos produtos já existentes.
 Componentes utilizados<br/>
 react-router-dom<br/>
 axios<br/>
-cpf-cnpj-validator
-telefone
+cpf-cnpj-validator <br/>
+telefone <br/>
 react-bootstrap
 
 <h3>validacao.js</h3>
