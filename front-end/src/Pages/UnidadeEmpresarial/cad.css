@@ -27,10 +27,19 @@ body {font-family: Arial, Helvetica, sans-serif;}
   color: white;
   cursor: pointer;
 }
+#buttonAlert {
+  background-color: rgb(243, 70, 70);  
+}
+#buttonAlert:hover {
+  background-color: rgb(252, 4, 4);  
+}
 
 .form-inline button:hover {
   background-color: royalblue;
 }
+
+
+
 
 @media (max-width: 800px) {
   .form-inline input {

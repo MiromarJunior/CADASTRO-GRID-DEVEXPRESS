@@ -1,3 +1,9 @@
+/*
+Métodos padrões para utilizar em todo front-end
+
+*/
+
+
 
  const dataBRa = (data)=>{
     return(
@@ -37,7 +43,6 @@ export const  formataValorString = (valor)=>{
     }
     return valor;
   }
-
 
 export const criando=(n)=>{
     let v = n+1

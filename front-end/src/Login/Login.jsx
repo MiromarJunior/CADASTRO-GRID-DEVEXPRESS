@@ -101,7 +101,7 @@ function LoginPage(){
 					<div className="row">
 						<p>Ainda não tem cadastro ?</p> <button className="btnL" style={{width : "50%", marginLeft : "27%"}} onClick={(e)=>navigate("/cadastroUsuario")}>Cadastrar novo Usuário</button>
 					</div>
-					<button className="btnL" style={{width : "50%", marginLeft : "27%"}} onClick={(e)=>navigate("/cadastroUnidadeEmpresarial")}>Cadastrar Unidade</button>
+					
 				</div>
 			</div>
 		</div>

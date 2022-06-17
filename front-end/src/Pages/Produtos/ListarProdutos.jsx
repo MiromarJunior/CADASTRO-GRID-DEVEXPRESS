@@ -1,3 +1,7 @@
+/**
+ * Utilizando o sistema de GRID, listamos, editamos e cadastramos novos produtos.
+ */
+
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {useNavigate } from "react-router-dom";
 import apiProdutosService, { dataFormatadaListar, updateListaProd } from "../../Service/produtoService";
@@ -23,11 +27,6 @@ function ListarProdutos() {
     const { logout } = useContext(AuthContext);
     //const [desconto, setdesconto] = useState([]);
     const gridRef = useRef();
-
-
-
-
-
 
     const deletarProdutoID = (id) => {
         let dados = { id, token };
@@ -132,16 +131,6 @@ function ListarProdutos() {
   
    const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
-
-
-
-
-
-
-
-
-
-
     useEffect(() => {
         buscarProdutos();
     }, []);
@@ -224,7 +213,8 @@ function ListarProdutos() {
 
             <div className="centralizar">
                 <button onClick={() => navigate("/home")}  > HOME</button>
-             <button type='button' onClick={deletarProduto}>EXCLUIR SELECIONADOS</button>  
+                <button onClick={(e)=>navigate("/cadastroUnidadeEmpresarial")}>CADASTRAR UNIDADE EMPRESARIAL</button>
+             {/* <button type='button' onClick={deletarProduto}>EXCLUIR SELECIONADOS</button>   */}
                 <button onClick={(e) => updateProdutos(e)}  > SALVAR ALTERAÇÕES</button>
                 <button onClick={(e) => logout(e)}  > SAIR</button>
             </div>

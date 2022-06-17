@@ -1,3 +1,9 @@
+/*
+Pagina para enviar dados para back-end e receber de volta criando uma sessão para acesso entre as páginas
+
+*/
+
+
 import { useNavigate } from "react-router-dom";
 import { api, loginUsuario } from "../Service/usuarioService";
 const { createContext, useState, useEffect } = require("react");
@@ -70,7 +76,6 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-const valor = "teste novo"
   return (
     <AuthContext.Provider
       value={{ authenticated: !!Usuario, Usuario, loading, login, logout,nomeUser}}

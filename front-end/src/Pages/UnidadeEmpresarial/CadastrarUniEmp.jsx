@@ -1,3 +1,9 @@
+/**
+ * Pagina em construção para cadastrar uma nova unidade empresarial
+ */
+
+
+
 import { useContext, useEffect, useState } from "react";
 import { Button, Form, FormLabel, FormSelect } from "react-bootstrap";
 // import apiUniEmpServ from "../../Services/UnidadeEmpresarialService"
@@ -8,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./cad.css";
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { AuthContext } from "../../Autenticação/validacao";
+
 
 
 const { format } = require('telefone');
@@ -390,9 +397,10 @@ const CadastroUniEmp = () => {
 
                 <div className="form-group col-md-6">
                     <Button className="margemRight"> CADASTRAR </Button>
-                    <Button className=" btn__alert  "  onClick={() => navigate("/listarUniEmp/" + codigo)} > CANCELAR  </Button><br />
+                    <Button  id="buttonAlert"onClick={() => navigate("/home")} > CANCELAR  </Button><br />
 
                 </div>
+               
 
                 <div className="form-group col-md-4"></div>
                 <div className="form-group col-md-4"></div>
@@ -417,15 +425,16 @@ const CadastroUniEmp = () => {
 
 
 
-
+            
 
 
             </div>
+           
 
      
         </div>
 
-
+        
 
 
     </div>
