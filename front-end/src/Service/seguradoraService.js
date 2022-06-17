@@ -11,13 +11,17 @@ const baseURL = process.env.REACT_APP_API_URL;
 const saveSeguradora = data=>{
     return axios.post(`${baseURL}cadastrarSeguradora`,data);
 } 
-// const saveContatoSeguradora = data=>{
-//     return axios.post(`${baseURL}cadastrarContatoSeguradora`,data);
-// } 
+const saveContatoSeguradora = data=>{
+    return axios.post(`${baseURL}cadastrarContatoSeguradora`,data);
+} 
+
+const getSeguradora = data=>{
+    return axios.post(`${baseURL}listarSeguradora`,data);
+} 
 
 
 
 
 
 
-module.exports = {saveSeguradora};
+module.exports = {getSeguradora,saveSeguradora,saveContatoSeguradora};

@@ -9,6 +9,7 @@ import LoginPage from "./Login/Login";
 import ListarProdutos from "./Pages/Produtos/ListarProdutos";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
 import CadastroUsuario from "./Pages/Usuario/CadastroUsuario";
+import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
 
 
 
@@ -34,8 +35,9 @@ const AppRotas = () => {
         <BrowserRouter>
         <AuthProvider>
             <Routes>
-                <Route exact path="/" element={<LoginPage/>} />                
-              
+                <Route exact path="/" element={<LoginPage/>} />    
+                            
+                <Route exact path="/listarSeguradora" element={ <ListarSeguradora /> } />
                 <Route exact path="/cadastroSeguradora" element={ <CadastroSeguradora /> } />
                 <Route exact path="/cadastroUsuario" element={ <CadastroUsuario /> } />
                 <Route exact path="/home" element={<Private><HomePage /></Private> } />

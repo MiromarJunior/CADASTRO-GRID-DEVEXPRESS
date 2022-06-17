@@ -213,6 +213,8 @@ function ListarProdutos() {
 
             <div className="centralizar">
                 <button onClick={() => navigate("/home")}  > HOME</button>
+                
+                <button onClick={(e)=>navigate("/listarSeguradora")}>LISTAR SEGURADORAS</button>
                 <button onClick={(e)=>navigate("/cadastroSeguradora")}>CADASTRAR UNIDADE EMPRESARIAL</button>
              {/* <button type='button' onClick={deletarProduto}>EXCLUIR SELECIONADOS</button>   */}
                 <button onClick={(e) => updateProdutos(e)}  > SALVAR ALTERAÇÕES</button>

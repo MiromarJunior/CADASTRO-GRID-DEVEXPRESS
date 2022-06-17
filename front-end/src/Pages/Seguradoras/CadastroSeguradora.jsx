@@ -151,6 +151,7 @@ const CadastroSeguradora = () => {
             })),
           ];
           setRows(changedRows);
+          salvarOContato(changedRows);
         }
         if (changed) {
           changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
@@ -266,9 +267,9 @@ const CadastroSeguradora = () => {
 
         };
 
-        // const dadosContato = {contatos : rows}
+        const dadosContato = {contatos : rows}
                    
-                console.log(dados);
+            
             
                     saveSeguradora(dados)
                         .then((res) => {
@@ -294,43 +295,45 @@ const CadastroSeguradora = () => {
 
                         }).catch((erro)=>{
                             console.log(erro, "erro ao tentar cadastrar")
-                        })
-
-
-             
+                        })            
                 
-                // try {
-                //     saveContatoSeguradora(dadosContato)
-                //     .then((res) => {
-                //         if (res.data === "erroLogin") {
-                //             alert("Sessão expirada, Favor efetuar um novo login !!");
-                //             //logout();
-                //             window.location.reload();
-                //         }
-                //         else if (res.data === "semAcesso") {
-                //             alert("Usuário sem permissão !!!");                                
-
-                //         } else if (res.data === "campoNulo") {
-                //             alert("Preencha todos os Campos obrigatorios!!!");
-                //         }
-                //         else if (res.data === "sucesso") {
-                //             alert("Contato Cadastrado  com Sucesso!!!");     
-                //         }
-
-                //         else {
-                //             alert("Erro ao cadastrar");                              
-
-                //         }
-
-                //     })
+         
                     
-                // } catch (error) {
-                //     console.log(error,
-                //         "Erro ao salvar Contato");
-                    
-                // }
-
             } 
+
+    const salvarOContato = (rows)=>{
+        const dadosContato = {contatos : rows, token}
+        saveContatoSeguradora(dadosContato)
+                    .then((res) => {
+                        if (res.data === "erroLogin") {
+                            alert("Sessão expirada, Favor efetuar um novo login !!");
+                            //logout();
+                            window.location.reload();
+                        }
+                        else if (res.data === "semAcesso") {
+                            alert("Usuário sem permissão !!!");                                
+
+                        } else if (res.data === "campoNulo") {
+                            alert("Preencha todos os Campos obrigatorios!!!");
+                        }
+                        else if (res.data === "sucesso") {
+                            alert("Contato Cadastrado  com Sucesso!!!");     
+                        }
+
+                        else {
+                            alert("Erro ao cadastrar");                              
+
+                        }
+
+                    })
+                    
+                 .catch((error)=> {
+                    console.log(error,
+                        "Erro ao salvar Contato");
+                    
+                })
+
+    }
 
  
 
@@ -491,6 +494,11 @@ const CadastroSeguradora = () => {
                     <Form.Label   >LOGRADOURO</Form.Label>
                     <Form.Control className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro}  placeholder="" />
                 </div>
+                <div className="form-group col-md-1 margemRight">
+                    <Form.Label   >NR</Form.Label>
+                    <Form.Control className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
+                </div>
+
 
 
                 <div className="form-group col-md-4 margemRight">
@@ -500,11 +508,7 @@ const CadastroSeguradora = () => {
 
                 
                 
-                <div className="form-group col-md-1 margemRight">
-                    <Form.Label   >NR</Form.Label>
-                    <Form.Control className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
-                </div>
-
+               
 
 
 
@@ -568,13 +572,15 @@ const CadastroSeguradora = () => {
                     <Form.Control value={soapRetNotas} onChange={(e)=>setSoapRetNotas(e.target.value)} className="form__input1" type="text"  placeholder="" />
                 </div>
 
+              
+               
+                <hr style={{width : "100%"}}/>               
 
 
-                <hr style={{width : "100%"}}/>
-                <div className="form-group col-md-7">
+                <div className="form-group col-md-7"  style={{display : "none"}}>
                 <h3 id="titulo" >Cadastrar Contato</h3>
                 </div>
-                <div className="form-group col-md-12" style={{maxHeight : "10%"}}>
+                <div className="form-group col-md-12" style={{maxHeight : "10%" , display : "none"}}   > 
                 <div className="card" >
       <Grid
         rows={rows}
@@ -622,9 +628,11 @@ const CadastroSeguradora = () => {
         /> 
         
       </Grid>
-    </div>
+ 
+    
 
 
+                </div>
                 </div>
 
 

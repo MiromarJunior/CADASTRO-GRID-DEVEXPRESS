@@ -12,7 +12,7 @@ app.use(express.json());
 
 
 router.post("/cadastrarSeguradora", async(req, res)=> {
-  let {codLegado, cnpjSeguradora  , tipoPessoa,optSimples,statusSeg,
+  const {codLegado, cnpjSeguradora  , tipoPessoa,optSimples,statusSeg,
     razaoSocial, nomeFantasia, ie, im,
     logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
     nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
@@ -27,10 +27,9 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
 
 
 } =req.body;
-let mm = "12657826000530";
-let pe = "juridica";
 
-console.log(req.body)
+
+
     let connection = await oracledb.getConnection(dbConfig);
     let result;
 
@@ -79,7 +78,7 @@ console.log(req.body)
             
             )
           `,
-          [cnpjSeguradora,codLegado, pe,
+          [cnpjSeguradora,codLegado, tipoPessoa,
             nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
             cep, nomeCidade,estadoUF,nrLogradouro, complemento,bairro,
             smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
@@ -113,4 +112,129 @@ console.log(req.body)
 
 
 });
+
+router.post("/cadastrarContatoSeguradora", async(req, res)=> {
+    const {
+        
+        
+        
+       
+      token
+  
+    //   nomeContatoSeg, funcaoContatoSeg, departContatoSeg,
+    //   emailContato, urlContato, dddContatoCel, nrContatoCel ,operadoraContato, dddContatoCom,
+    //   nrContatoCom, ramalContato, 
+  
+  
+  
+  } =req.body;
+  console.log(req.body);
+  
+  
+  
+      let connection = await oracledb.getConnection(dbConfig);
+      let result;
+  
+    try {
+  
+      jwt.verify(token, SECRET, async (err, decoded) => {
+        if (err) {
+            console.log(err, "err");
+            erroAcesso = "erroLogin";
+            res.send("erroLogin").end();
+  
+        } else{  
+          result = await connection.execute ( 
+            ` 
+              
+            
+            `,
+            [ ],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+              autoCommit :  true
+          } 
+             );
+           
+             res.send("sucesso").status(200).end();           
+        }
+    })      
+        
+    } catch (error) {
+        console.error(error);
+        res.send("erro de conexao").status(500);
+        
+    }finally {
+        if(connection){
+            try {
+                await connection.close();
+              
+            } catch (error) {
+              console.error(error);              
+            }
+        }
+    }
+  
+  
+  
+  
+  });
+
+
+  router.post("/listarSeguradora", async(req, res)=> {
+    const {token  
+  } =req.body;
+  
+  
+  
+      let connection = await oracledb.getConnection(dbConfig);
+      let result;
+  
+    try {
+  
+      jwt.verify(token, SECRET, async (err, decoded) => {
+        if (err) {
+            console.log(err, "err");
+            erroAcesso = "erroLogin";
+            res.send("erroLogin").end();
+  
+        } else{  
+          result = await connection.execute ( 
+            ` 
+              SELECT * FROM SEGURADORA
+              
+              
+              
+            `,
+            [ ],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+           
+          } 
+             );
+           
+             res.send(result.rows).status(200).end();           
+        }
+    })      
+        
+    } catch (error) {
+        console.error(error);
+        res.send("erro de conexao").status(500);
+        
+    }finally {
+        if(connection){
+            try {
+                await connection.close();
+              
+            } catch (error) {
+              console.error(error);              
+            }
+        }
+    }
+  
+  
+  
+  
+  });
+
+
+
 module.exports  = router;
