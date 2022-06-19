@@ -27,13 +27,14 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
 
 
 } =req.body;
-
+let insertSql;
+let selectSql;
 
 
     let connection = await oracledb.getConnection(dbConfig);
-    let result;
+   
 
-  try {
+
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
@@ -42,7 +43,8 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
           res.send("erroLogin").end();
 
       } else{  
-        result = await connection.execute ( 
+
+        insertSql = (
           ` INSERT INTO SEGURADORA(ID_SEGURADORA,
             SGRA_CNPJ,
             SGRA_ID_LEGADO,
@@ -71,28 +73,59 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
             SGRA_RETORNO_NOTAS,
             SGRA_RUA)
             VALUES(SQ_SEG.NEXTVAL, : CNPJ, :CODLEG, :TIPOP, :NOMEFAN, :RAZAOSOC, :OPTSIM,
-                :STATUSSEG, :IE, :IM, :CEP, :NOMECID, :UF, :NR, :COMPLE, :BAIRRO, :SMTPSIS,
+                :STATUSSEG, :IE, :IM, :CEP, :NOMECID, '12', :NR, :COMPLE, :BAIRRO, :SMTPSIS,
                 :PORTASIST, :EMAILSIS, :SENHAEMAILSIS, :REMETE, :NOMEREME, :SMTPAUTH,
                 :SMTPSECURE, :SOAPSOL, :SOAPNOT, :LOGR
             
             
             )
-          `,
-          [cnpjSeguradora,codLegado, tipoPessoa,
-            nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-            cep, nomeCidade,estadoUF,nrLogradouro, complemento,bairro,
-            smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
-            smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
-            logradouro  ],
-          { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-            autoCommit :  true
-        } 
-           );
-         
-           res.send("sucesso").status(200).end();           
+          `
+        )
+
+        selectSql =(
+          `SELECT SEG.ID_SEGURADORA FROM SEGURADORA SEG
+          WHERE SEG.SGRA_CNPJ = :CNPJsEG         
+        `
+        )
+
+
+
+
+
+
+
+
+
+
+       
+
+              
+                   
       }
-  })      
+  })  
+  
+  try {  
+
+  await connection.execute ( 
+    insertSql
+    ,
+    [cnpjSeguradora,codLegado, tipoPessoa,
+      nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
+      cep, nomeCidade, nrLogradouro, complemento,bairro,
+      smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
+      smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
+      logradouro  ],
+    { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+      autoCommit :  true
+  });
+
+  let result =  await connection.execute( selectSql
+    ,
+     [cnpjSeguradora ],
+     { outFormat  :  oracledb.OUT_FORMAT_OBJECT
       
+   });  
+   res.send(result.rows).status(200).end();        
   } catch (error) {
       console.error(error);
       res.send("erro de conexao").status(500);
@@ -115,10 +148,6 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
 
 router.post("/cadastrarContatoSeguradora", async(req, res)=> {
     const {
-        
-        
-        
-       
       token
   
     //   nomeContatoSeg, funcaoContatoSeg, departContatoSeg,
@@ -128,7 +157,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   
   } =req.body;
-  console.log(req.body);
+
   
   
   

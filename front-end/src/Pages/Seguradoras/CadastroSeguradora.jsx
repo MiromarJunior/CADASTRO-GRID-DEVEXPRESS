@@ -2,10 +2,8 @@
  * Pagina em construção para cadastrar uma nova unidade empresarial
  */
 
-
-
 import { useContext, useEffect, useRef, useState } from "react";
-import { Button, Form, FormLabel, FormSelect } from "react-bootstrap";
+import { Button, Form, FormLabel, FormSelect, Modal } from "react-bootstrap";
 // import apiUniEmpServ from "../../Services/UnidadeEmpresarialService"
 // import apiEmpresaService from "../../Services/GrupoEmpresarialService"
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,6 +27,7 @@ import { saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraS
 
 const { format } = require('telefone');
 const getRowId = row => row.ID_USUARIO;
+let idSeg;
 
 const CadastroSeguradora = () => {
     const [cnpjSeguradora, setCnpjSeguradora] = useState("");
@@ -69,6 +68,7 @@ const CadastroSeguradora = () => {
     const [dddContatoCom, setDddContatoCom] = useState("");
     const [nrContatoCom, setNrContatoCom] = useState("");
     const [ramalContato, setRamalContato] = useState("");
+   
     
     
 
@@ -151,7 +151,7 @@ const CadastroSeguradora = () => {
             })),
           ];
           setRows(changedRows);
-          salvarOContato(changedRows);
+          salvarContato(changedRows);
         }
         if (changed) {
           changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
@@ -267,10 +267,7 @@ const CadastroSeguradora = () => {
 
         };
 
-        const dadosContato = {contatos : rows}
-                   
-            
-            
+                       
                     saveSeguradora(dados)
                         .then((res) => {
                             if (res.data === "erroLogin") {
@@ -284,12 +281,18 @@ const CadastroSeguradora = () => {
                             } else if (res.data === "campoNulo") {
                                 alert("Preencha todos os Campos obrigatorios!!!");
                             }
-                            else if (res.data === "sucesso") {
-                                alert("Seguradora Cadastrada  com Sucesso!!!");     
-                            }
-
                             else {
-                                alert("Erro ao cadastrar");                              
+                                      (res.data).forEach((l)=>{ idSeg = l.ID_SEGURADORA});
+                                      
+                                        alert("Seguradora Cadastrada  com Sucesso!!!");
+                                        if(window.confirm("Deseja cadastrar um novo contato")){
+                                            setShow(true);
+                                        }
+
+                                       
+                                                
+                                  
+                                                         
 
                             }
 
@@ -301,7 +304,9 @@ const CadastroSeguradora = () => {
                     
             } 
 
-    const salvarOContato = (rows)=>{
+            console.log(idSeg, "ID");
+
+    const salvarContato = (rows)=>{
         const dadosContato = {contatos : rows, token}
         saveContatoSeguradora(dadosContato)
                     .then((res) => {
@@ -318,6 +323,7 @@ const CadastroSeguradora = () => {
                         }
                         else if (res.data === "sucesso") {
                             alert("Contato Cadastrado  com Sucesso!!!");     
+                            
                         }
 
                         else {
@@ -325,9 +331,7 @@ const CadastroSeguradora = () => {
 
                         }
 
-                    })
-                    
-                 .catch((error)=> {
+                    }).catch((error)=> {
                     console.log(error,
                         "Erro ao salvar Contato");
                     
@@ -336,10 +340,6 @@ const CadastroSeguradora = () => {
     }
 
  
-
-
-            
-        
 
 
     const buscaCepOnline = (e) => {
@@ -371,10 +371,17 @@ const CadastroSeguradora = () => {
         }
     }
 
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+
 
     return (
 
         <div>
+            <button  onClick={handleShow}  >modal</button>
 
         <div className="container-fluid"  style={{marginBottom : "10px", marginTop : "10px"}}>
           
@@ -574,13 +581,22 @@ const CadastroSeguradora = () => {
 
               
                
-                <hr style={{width : "100%"}}/>               
+                <hr style={{width : "100%"}}/>   
 
+                <div className="form-group col-md-12"    > 
+                <Modal show={show} onHide={handleClose}  size="xl"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
 
-                <div className="form-group col-md-7"  style={{display : "none"}}>
+            
+        {/* <div className="form-group col-md-7"  >
                 <h3 id="titulo" >Cadastrar Contato</h3>
-                </div>
-                <div className="form-group col-md-12" style={{maxHeight : "10%" , display : "none"}}   > 
+                </div> */}
+                
                 <div className="card" >
       <Grid
         rows={rows}
@@ -623,17 +639,50 @@ const CadastroSeguradora = () => {
         <TableEditColumn
           showAddCommand
           showEditCommand
+          showDeleteCommand
           
           
         /> 
         
       </Grid>
+
+      </div>
+              
+
+
+
+
+          </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
     
 
 
-                </div>
-                </div>
+                
 
 
 
