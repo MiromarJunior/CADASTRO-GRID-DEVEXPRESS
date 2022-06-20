@@ -55,7 +55,7 @@ const ListarSeguradora =()=> {
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL"},
          { name: 'SGRA_CIDADE', title: "CIDADE" },
          {name : "ALTERACAO", title :"ALTERAÇÃO",                
-         getCellValue: row => (row.ID_SEGURADORA)  
+         getCellValue: row => (row.ID_SEGURADORA)  ,
            
     },      
 
@@ -71,7 +71,12 @@ const ListarSeguradora =()=> {
 
 
 
+   const [columnsC] = useState([ 
+    { name: 'SGCO_NOME', title: "NOME"},
+     { name: 'SGCO_FUNCAO', title: "FUNÇÃO"},
+      { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO" }        
 
+ ]);
    
 //    const PriceFormatter = ({value})=>(
 //     valorBR(value)
@@ -131,12 +136,7 @@ const ListarSeguradora =()=> {
    
  
       const EditSeguradoras = ({value})=>(
-
-
         <div>
-            <Button variant="info" className="margemRight"onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)}>EDIT</Button> 
-           <Button variant="danger" className="margemRight" onClick={(e)=>deletarSeguradora(value)}>EXCLUIR</Button>
-            <Button variant="primary" onClick={(e)=>buscarContatos(value)}>CONTATOS</Button>
           
 
         </div>       
@@ -167,7 +167,8 @@ const ListarSeguradora =()=> {
 
             <div className="card">
       <Grid
-        rows={rows}        
+        rows={rows}
+        
         columns={columns}
         getRowId={getRowId}
       >

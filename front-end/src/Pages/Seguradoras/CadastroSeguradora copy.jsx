@@ -73,7 +73,6 @@ const CadastroSeguradora = () => {
     const token = localStorage.getItem("token");   
     const navigate = useNavigate();
     const emailV = /\S+@\S+\.\S+/;
- 
 
 
 
@@ -155,8 +154,6 @@ const CadastroSeguradora = () => {
         if (changed) {
           changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
           setRows(changedRows);
-          salvarContato(changedRows);
-          console.log(changedRows)
         }
         if (deleted) {
             
@@ -172,7 +169,6 @@ const CadastroSeguradora = () => {
     useEffect(() => {
  
         buscarSeguradoras();
-        buscarContatos();
        
         
 
@@ -182,15 +178,12 @@ const buscarContatos =(idSeguradora)=>{
     const dados = {token, idSeg : (idSeg > 0  ? idSeg : idSeguradora)}
         getContatoSeguradora(dados)
         .then((res)=>{
-            (res.data).forEach((item, index) => (item.id = index)); 
-            
             setRows(res.data);
-          
+            console.log("const",res.data);
           
         })
 
 }
-
 
 const buscarSeguradoras =()=>{
     if(idSeg> 0){ 
@@ -304,6 +297,7 @@ const buscarSeguradoras =()=>{
 
 
 
+
     const salvarSeguradora = (newRecord,idSeg) => {
         buscarContatos(idSeg);
     
@@ -345,7 +339,6 @@ const buscarSeguradoras =()=>{
                             
                             else {
                                 if(idSeg > 0  ){ 
-                                  
                                     idSeguradora = idSeg;  
                                     if(newRecord === "Sim"){                                        
                                         setShow(true);
@@ -358,8 +351,7 @@ const buscarSeguradoras =()=>{
                                     
                                                                         
                                   
-                                }else{      
-                                                                                     
+                                }else{                                                           
                                     (res.data).forEach((l)=>{ idSeguradora = l.ID_SEGURADORA});  
                                         if(newRecord === "Sim"){                                         
                                             setShow(true);    
@@ -786,7 +778,7 @@ const buscarSeguradoras =()=>{
                
               
                 <div className="form-group col-md-10">
-                <Button  className="margemRight" id="buttonInfo" onClick={()=>salvarSeguradora("Sim",idSeg)} > CONTATOS </Button>
+                <Button className="margemRight" id="buttonInfo" onClick={()=>salvarSeguradora("Sim",idSeg)} > CONTATOS </Button>
                     <Button className="margemRight" onClick={()=>salvarSeguradora("Nao")} > CADASTRAR </Button>
                     <Button  id="buttonAlert"onClick={() => navigate("/listarSeguradora")} > CANCELAR  </Button><br />
 
