@@ -1,18 +1,22 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {useNavigate } from "react-router-dom";
-import apiProdutosService, { dataFormatadaListar, updateListaProd } from "../../Service/produtoService";
-import { criando, formataValorString, valorBR, valorLiquido } from "../../Service/utilServiceFrontEnd";
 import { AuthContext } from "../../Autenticação/validacao";
-import { DataTypeProvider, EditingState } from '@devexpress/dx-react-grid';
+import { DataTypeProvider, EditingState,SortingState,
+    IntegratedSorting,
+    IntegratedFiltering,
+    FilteringState, } from '@devexpress/dx-react-grid';
 import {
     Grid,
     Table,
     TableHeaderRow,
     TableEditRow,
-    TableEditColumn,
+    TableFilterRow,
+    
   } from '@devexpress/dx-react-grid-bootstrap4';
-import { deleteSeguradora, deleteSeguradoraID, getContatoSeguradora, getSeguradora } from "../../Service/seguradoraService";
+import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
 import { Button } from "react-bootstrap";
+
+
 
 
 
@@ -23,9 +27,38 @@ const ListarSeguradora =()=> {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout } = useContext(AuthContext);
-    const gridRef = useRef();
+   
 
-    useEffect(() => {
+    
+
+    const listarSeguradoras = async ()=> {      
+        let dados = { token };
+        getSeguradora(dados)
+            .then((res) => {
+                if (res.data === "erroLogin") {
+                    alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                    alert("Usuário sem permissão !!!");
+
+                } else if (res.data === "campoNulo") {
+                    alert("Preencha todos os Campos obrigatorios!!!");
+                }
+                else if (res.data === "erroSalvar") {
+                    alert("Erro a tentar salvar ou alterar!!!");
+                }
+                else {                 
+                    (res.data).forEach((item, index) => (item.id = index));                 
+                  return  setRows(res.data);
+                }
+            })
+            .catch((res) => {
+              return  console.log(res);
+            })
+    };
+    useEffect( () => {        
         listarSeguradoras();
         
     }, []);
@@ -79,10 +112,6 @@ const ListarSeguradora =()=> {
 
    ])
 
-
-
-
-
    
 //    const PriceFormatter = ({value})=>(
 //     valorBR(value)
@@ -100,41 +129,7 @@ const ListarSeguradora =()=> {
   
 //    const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
-   
-
-
-
-   
-
-
-
-    const listarSeguradoras = ()=> {      
-        let dados = { token };
-        getSeguradora(dados)
-            .then((res) => {
-                if (res.data === "erroLogin") {
-                    alert("Sessão expirada, Favor efetuar um novo login !!");
-                    logout();
-                    window.location.reload();
-                }
-                else if (res.data === "semAcesso") {
-                    alert("Usuário sem permissão !!!");
-
-                } else if (res.data === "campoNulo") {
-                    alert("Preencha todos os Campos obrigatorios!!!");
-                }
-                else if (res.data === "erroSalvar") {
-                    alert("Erro a tentar salvar ou alterar!!!");
-                }
-                else {                 
-                    (res.data).forEach((item, index) => (item.id = index));                 
-                  return  setRows(res.data);
-                }
-            })
-            .catch((res) => {
-              return  console.log(res);
-            })
-    };
+     
  
       const EditSeguradoras = ({value})=>(
         <div>
@@ -149,7 +144,11 @@ const ListarSeguradora =()=> {
             {...props}        
         />
        )
-    const [editSeg] = useState(["ALTERACAO"]);
+    const [editSeg] = useState(["ALTERACAO"]);       
+
+    const [integratedSortingColumnExtensions] = useState([
+        { columnName: 'SGRA_CNPJ' },
+      ]);
   
     
 
@@ -171,8 +170,17 @@ const ListarSeguradora =()=> {
         columns={columns}
         getRowId={getRowId}
       >
+        <FilteringState defaultFilters={[]} />
+        <IntegratedFiltering />
+        
+         <SortingState 
+       //  defaultSorting={[{ columnName: 'ALTERACAO', direction: 'asc' }]}
+         />
+         <IntegratedSorting
+           columnExtensions={integratedSortingColumnExtensions}
+        />
         <EditingState
-        //   onCommitChanges={commitChanges}
+        
           columnExtensions={editingStateColumns}
         />
         <EditSeguradorasProv
@@ -181,14 +189,10 @@ const ListarSeguradora =()=> {
         />
         
         <Table  />
-        <TableHeaderRow />
+        <TableHeaderRow  showSortingControls />
         <TableEditRow />
-        {/* <TableEditColumn
-          showAddCommand
-          showEditCommand
-          showDeleteCommand
-          
-        /> */}
+        <TableFilterRow />
+       
         
       </Grid>
     </div>

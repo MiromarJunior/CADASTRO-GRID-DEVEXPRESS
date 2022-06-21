@@ -2,17 +2,17 @@
  * Pagina em construção para cadastrar uma nova unidade empresarial
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
-import { Button, Form, FormLabel, FormSelect, Modal } from "react-bootstrap";
+import { useContext, useEffect,useState } from "react";
+import { Button, Form } from "react-bootstrap";
 // import apiUniEmpServ from "../../Services/UnidadeEmpresarialService"
 // import apiEmpresaService from "../../Services/GrupoEmpresarialService"
 import { useNavigate, useParams } from "react-router-dom";
 // import apiEnderecoService from "../../Services/EnderecoService";
 // import apiUsuarioService from "../../Services/usuarioService";
 import "./cad.css";
-import { cnpj, cpf } from 'cpf-cnpj-validator';
+import { cnpj } from 'cpf-cnpj-validator';
 import { AuthContext } from "../../Autenticação/validacao";
-import { DataTypeProvider, EditingState, IntegratedPaging, PagingState } from '@devexpress/dx-react-grid';
+import { EditingState, IntegratedPaging, PagingState } from '@devexpress/dx-react-grid';
 import {
     Grid,
     Table,
@@ -22,6 +22,7 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-bootstrap4';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
+import { apenasNr } from "../../Service/utilServiceFrontEnd";
 
 
 
@@ -59,147 +60,27 @@ const CadastroSeguradora = () => {
     const [smtpSistSecure, setSmtpSistSecure] = useState("");
     const [soapRetSol, setSoapRetSol] = useState("");
     const [soapRetNotas, setSoapRetNotas] = useState("");
-    const [nomeContatoSeg, setNomeContatoSeg] = useState("");
-    const [funcaoContatoSeg, setFuncaoContatoSeg] = useState("");
-    const [departContatoSeg, setDepartContatoSeg] = useState("");
-    const [emailContato, setEmailContato] = useState("");
-    const [urlContato, setUrlContato] = useState("");
-    const [dddContatoCel, setDddContatocel] = useState("");
-    const [nrContatoCel, setNrContatoCel] = useState("");
-    const [operadoraContato, setOperadoraContato] = useState("");
-    const [dddContatoCom, setDddContatoCom] = useState("");
-    const [nrContatoCom, setNrContatoCom] = useState("");
-    const [ramalContato, setRamalContato] = useState("");
     const { idSeg } = useParams();
     const token = localStorage.getItem("token");
-    const navigate = useNavigate();
-    const emailV = /\S+@\S+\.\S+/;
+    const navigate = useNavigate(); 
     const [idSegN, setIdSegN] = useState(idSeg);
     const [displayCont, setDisplayCont] = useState(idSegN === "0" ? "none" : "");
     const [rows, setRows] = useState([]);
-    useEffect(() => {
+    const emailV = /\S+@\S+\.\S+/;
+
+
+
+    useEffect(() => { 
+         
+
+
+
         buscarSeguradoras();
         buscarContatos(idSegN);
+
     }, [idSeg]);
 
-
-    // const SelectInputDep = ({value})=>(       
-    //     <FormSelect>      
-    //              <option>{value[0]}</option>
-    //              <option>{value[1]}</option>            
-    //     </FormSelect>
-    // )
-    // const SelectInpuDepProv = (props)=>(
-    //     <DataTypeProvider
-    //     formatterComponent={SelectInputDep}
-    //     {...props}
-
-    //     />
-    // )
-    // const SelectInputFunc = ({value})=>(       
-    //     <FormSelect>      
-    //              <option>{"PEÇAS"}</option>
-    //              <option>{"SERVIÇOS"}</option>                            
-    //     </FormSelect>
-    // )
-    // const SelectInpuFuncProv = (props)=>(
-    //     <DataTypeProvider
-    //     formatterComponent={SelectInputFunc}
-    //     {...props}
-
-    //     />
-    // )
-
-
-
-
-
-
-    //const gridRef = useRef();
-    const [columns] = useState([
-        { name: 'SGCO_NOME', title: "Nome Contato" },
-        { name: 'SGCO_FUNCAO', title: "FUNÇÃO" },
-        { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO" },
-        { name: 'SGCO_EMAIL', title: "EMAIL" },
-        { name: 'SGCO_URL', title: "URL" },
-        { name: 'SGCO_CELULAR_DDD', title: " DDD" },
-        { name: 'SGCO_CELULAR_NUMERO', title: " NR CELULAR" },
-        { name: 'SGCO_CELULAR_OPERADORA', title: " OPERADORA" },
-        { name: 'SGCO_FONE_COMERCIAL_DDD', title: " DDD" },
-        { name: 'SGCO_FONE_COMERCIAL_NUMERO', title: " NR COMERCIAL" },
-        { name: 'SGCO_FONE_COMERCIAL_RAMAL', title: " RAMAL" },
-
-    ]);
-    //  const [selectDep]= useState(["SGCO_DEPARTAMENTO"]);
-    //  const [selectFunc]= useState(["SGCO_FUNCAO"]);
-
-
-
-    const commitChanges = ({ added, changed, deleted }) => {
-        let changedRows;
-        if (added) {
-            const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
-            changedRows = [
-                ...rows,
-                ...added.map((row, index) => ({
-                    id: startingAddedId + index,
-                    ...row,
-                })),
-            ];
-            buscarContatos();
-            setRows(changedRows);
-            salvarContato(changedRows);
-        }
-        if (changed) {
-            changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-            setRows(changedRows);
-            salvarContato(changedRows);
-            console.log(changedRows)
-        }
-        if (deleted) {
-
-            const deletedSet = new Set(deleted);
-
-            // changedRows = rows.filter(row => !deletedSet.has(row.id));
-
-            changedRows = rows.filter(row => deletedSet.has(row.id));
-            deletarContato(changedRows.map(l => l.ID_SEGURADORA_CONTATO));
-            setRows(changedRows);
-        }
-    };
-
-    
-
-    const buscarContatos = (idSegN) => {
-        const dados = { token, idSeg: idSegN }
-        getContatoSeguradora(dados)
-            .then((res) => {
-                if (res.data === "erroLogin") {
-                    alert("Sessão expirada, Favor efetuar um novo login !!");
-                    logout();
-                    window.location.reload();
-                }
-                else if (res.data === "semAcesso") {
-                    alert("Usuário sem permissão !!!");
-
-                } else if (res.data === "campoNulo") {
-                    alert("Preencha todos os Campos obrigatorios!!!");
-                }
-                else if (res.data === "erroSalvar") {
-                    alert("Erro a tentar salvar ou alterar!!!");
-                } else {
-                    (res.data).forEach((item, index) => (item.id = index));
-                    setRows(res.data);
-
-                }
-
-            }).catch = (res) => {
-                console.error(res);
-                window.alert("Erro ao listar contatos");
-            }
-    }
-
-    const buscarSeguradoras = () => {
+    const buscarSeguradoras =  () => {
         if (idSeg > 0) {
             let dados = { token, idSeg };
             getSeguradora(dados)
@@ -217,8 +98,8 @@ const CadastroSeguradora = () => {
                     }
                     else if (res.data === "erroSalvar") {
                         alert("Erro a tentar salvar ou alterar!!!");
-                    } else {
-
+                    } else {                      
+                      
                         res.data.forEach((l) => {
                             setBairro(l.SGRA_BAIRRO);
                             setCep(l.SGRA_CEP);
@@ -255,17 +136,73 @@ const CadastroSeguradora = () => {
                 })
         }
     }
+        
+
+
+    
+
+    const buscarContatos = (idSegN) => {
+        const dados = { token, idSeg: idSegN }
+        getContatoSeguradora(dados)
+            .then((res) => {
+                if (res.data === "erroLogin") {
+                    alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                    alert("Usuário sem permissão !!!");
+
+                } else if (res.data === "campoNulo") {
+                    alert("Preencha todos os Campos obrigatorios!!!");
+                }
+                else if (res.data === "erroSalvar") {
+                    alert("Erro a tentar salvar ou alterar!!!");
+                } else {
+                    (res.data).forEach((item, index) => (item.id = index));
+                    setRows(res.data);
+
+                }
+
+            }).catch = (res) => {
+                console.error(res);
+                window.alert("Erro ao listar contatos");
+            }
+    }
+
+   
+   
 
     const salvarSeguradora = () => {
-
+        let validaCnpj = false, validaEmailSis = false;
         const dados = {
-            codLegado, cnpjSeguradora, tipoPessoa, optSimples, statusSeg,
-            razaoSocial, nomeFantasia, ie, im,
-            logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
+            codLegado : apenasNr(codLegado), cnpjSeguradora : apenasNr(cnpjSeguradora), 
+            tipoPessoa, optSimples, statusSeg,
+            razaoSocial, nomeFantasia, ie : apenasNr(ie), im : apenasNr(im),
+            logradouro, complemento, bairro, estadoUF, nrLogradouro, cep : apenasNr(cep),
             nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
             remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
             soapRetSol, soapRetNotas, token, idSeg : idSegN
         };
+        if(cnpj.isValid(apenasNr(cnpjSeguradora))){
+            validaCnpj = true
+        }else{window.alert("CNPJ inválido");       
+        document.getElementById('txtCnpj').style.borderColor = "red";     
+        }
+        if(emailV.test(emailSist)){
+            validaEmailSis = true
+        }else{window.alert("Email Sistema inválido");       
+        document.getElementById("txtEmailU").style.borderColor = "red";     
+        }
+
+
+
+
+
+
+
+
+        if(validaCnpj && validaEmailSis){
         saveSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -297,6 +234,7 @@ const CadastroSeguradora = () => {
                 window.alert("Erro ao tentar cadastrar");
                 console.log(erro, "erro ao tentar cadastrar");
             })
+        }
     }
 
     const salvarContato = (rows) => {
@@ -368,6 +306,7 @@ const CadastroSeguradora = () => {
         var cepSONr = cep.replace(/\D/g, '');
         if (cepSONr !== "") {
             var validacep = /^[0-9]{8}$/;
+            console.log(apenasNr(cep));
             if (validacep.test(cepSONr)) {
 
                 fetch(`https://viacep.com.br/ws/${cepSONr}/json/`)
@@ -402,6 +341,107 @@ const CadastroSeguradora = () => {
         }
     }
 
+
+
+// abaixo GRID
+
+    // const SelectInputDep = ({value})=>(       
+    //     <FormSelect>      
+    //              <option>{value[0]}</option>
+    //              <option>{value[1]}</option>            
+    //     </FormSelect>
+    // )
+    // const SelectInpuDepProv = (props)=>(
+    //     <DataTypeProvider
+    //     formatterComponent={SelectInputDep}
+    //     {...props}
+
+    //     />
+    // )
+    // const SelectInputFunc = ({value})=>(       
+    //     <FormSelect>      
+    //              <option>{"PEÇAS"}</option>
+    //              <option>{"SERVIÇOS"}</option>                            
+    //     </FormSelect>
+    // )
+    // const SelectInpuFuncProv = (props)=>(
+    //     <DataTypeProvider
+    //     formatterComponent={SelectInputFunc}
+    //     {...props}
+
+    //     />
+    // )
+
+
+
+
+
+
+    //const gridRef = useRef();
+    const [columns] = useState([
+        { name: 'SGCO_NOME', title: "Nome Contato" },
+        { name: 'SGCO_FUNCAO', title: "FUNÇÃO" },
+        { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO" },
+        { name: 'SGCO_EMAIL', title: "EMAIL" },
+        { name: 'SGCO_URL', title: "URL" },
+        { name: 'SGCO_CELULAR_DDD', title: " DDD" },
+        { name: 'SGCO_CELULAR_NUMERO', title: " NR CELULAR" },
+        { name: 'SGCO_CELULAR_OPERADORA', title: " OPERADORA" },
+        { name: 'SGCO_FONE_COMERCIAL_DDD', title: " DDD" },
+        { name: 'SGCO_FONE_COMERCIAL_NUMERO', title: " NR COMERCIAL" },
+        { name: 'SGCO_FONE_COMERCIAL_RAMAL', title: " RAMAL" },
+
+    ]);
+    //  const [selectDep]= useState(["SGCO_DEPARTAMENTO"]);
+    //  const [selectFunc]= useState(["SGCO_FUNCAO"]);
+
+    const commitChanges = ({ added, changed, deleted }) => {
+        let changedRows;
+        if (added) {
+            const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
+            changedRows = [
+                ...rows,
+                ...added.map((row, index) => ({
+                    id: startingAddedId + index,
+                    ...row,
+                })),
+            ];
+            buscarContatos();
+            setRows(changedRows);
+            salvarContato(changedRows);
+        }
+        if (changed) {
+            changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+            setRows(changedRows);
+            salvarContato(changedRows);
+            console.log(changedRows)
+        }
+        if (deleted) {
+
+            const deletedSet = new Set(deleted);
+
+            // changedRows = rows.filter(row => !deletedSet.has(row.id));
+
+            changedRows = rows.filter(row => deletedSet.has(row.id));
+            deletarContato(changedRows.map(l => l.ID_SEGURADORA_CONTATO));
+            setRows(changedRows);
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
 
         <div>
@@ -417,7 +457,7 @@ const CadastroSeguradora = () => {
                     <div className="form-group col-md-12"></div>
                     <div className="form-group col-md-6 margemRight">
                         <Form.Label   >RAZÃO SOCIAL</Form.Label>
-                        <Form.Control className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
+                        <Form.Control required={true}  className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
                     </div>
 
 
@@ -429,13 +469,13 @@ const CadastroSeguradora = () => {
 
 
                     <div className="form-group col-md-2 margemRight" >
-                        <Form.Label  >CNPJ OU CPF</Form.Label>
-                        <Form.Control className="  form__input1 " maxLength={18} type="cnpj" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpjSeguradora.length === 11 ? cpf.format(cnpjSeguradora) : cnpj.format(cnpjSeguradora)} placeholder="" />
+                        <Form.Label  >CNPJ</Form.Label>
+                        <Form.Control id="txtCnpj" className="  form__input1 " maxLength={18} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
 
                     </div>
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >CODIGO LEGADO</Form.Label>
-                        <Form.Control className="  form__input1 " value={codLegado} onChange={(e) => setCodLegado(e.target.value)} type="text" placeholder="" />
+                        <Form.Control className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)}  placeholder="" />
 
                     </div>
 
@@ -565,15 +605,15 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >PORTA</Form.Label>
-                        <Form.Control value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Usuário(E-MAIL)</Form.Label>
-                        <Form.Control value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-3" style={{ width: "270px" }}>
                         <Form.Label   >Senha(E-MAIL)</Form.Label>
-                        <Form.Control value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
+                        <Form.Control  value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Remetente</Form.Label>

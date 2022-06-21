@@ -3,6 +3,8 @@ Métodos padrões para utilizar em todo front-end
 
 */
 
+import { cnpj, cpf } from "cpf-cnpj-validator"
+
 
 
  const dataBRa = (data)=>{
@@ -59,3 +61,12 @@ export const criando=(n)=>{
   return res;
 
 }
+
+
+export const apenasNr = (nr)=>{
+    let nr1 = nr.replace(/[^0-9]/g,'');
+    return nr1;
+}
+
+
+
