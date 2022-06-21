@@ -23,32 +23,43 @@ const ListarSeguradora =()=> {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout } = useContext(AuthContext);
-    //const [desconto, setdesconto] = useState([]);
     const gridRef = useRef();
 
-    const deletarSeguradora = (idSeg) => {
+    useEffect(() => {
+        listarSeguradoras();
         
-        let dados = { idSeg, token };
-      
+    }, []);
+
+    const deletarSeguradora = (idSeg) => {        
+        let dados = { idSeg, token };      
         if (window.confirm("deseja excluir o item ?")) {
             deleteSeguradoraID(dados)
                 .then((res) => {
                     if (res.data === "erroLogin") {
-                        window.alert("Sessão expirada, Favor efetuar um novo login");
+                        alert("Sessão expirada, Favor efetuar um novo login !!");
                         logout();
-                    } else {
-                        alert(res.data);
+                        window.location.reload();
+                    }
+                    else if (res.data === "semAcesso") {
+                        alert("Usuário sem permissão !!!");
+    
+                    } else if (res.data === "campoNulo") {
+                        alert("Preencha todos os Campos obrigatorios!!!");
+                    }
+                    else if (res.data === "erroSalvar") {
+                        alert("Erro a tentar salvar ou alterar!!!");
+                    }    
+                    else {                       
                         listarSeguradoras();
                     }
                 })
                 .catch((res) => {
-                    console.log(res);
+                    console.error(res);
+                    window.alert("Erro ao tentar exluir seguradora");
                 })
         }
 
     };
-
- 
  
     const [columns] = useState([ 
        { name: 'SGRA_CNPJ', title: "CNPJ"},
@@ -62,9 +73,9 @@ const ListarSeguradora =()=> {
     ]);
 
    const [editingStateColumns] = useState([
-    {columnName : "SGRA_CNPJ",editingEnabled: false},
-    {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
-    {columnName : "PRDT_VALOR",align: 'center'},
+    // {columnName : "SGRA_CNPJ",editingEnabled: false},
+    // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
+    // {columnName : "PRDT_VALOR",align: 'center'},
 
    ])
 
@@ -89,34 +100,33 @@ const ListarSeguradora =()=> {
   
 //    const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
-    useEffect(() => {
-        listarSeguradoras();
-        
-    }, []);
+   
 
 
 
-    const buscarContatos =(idSeg)=>{
-        const dados = {token,idSeg}       
-            getContatoSeguradora(dados)
-            .then((res)=>{
-                    
-              
-            });
-    
-    }
+   
 
 
 
-    const listarSeguradoras = ()=> {
-        //  setdataN(new Date());
+    const listarSeguradoras = ()=> {      
         let dados = { token };
         getSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
-                    window.alert("Sessão expirada, Favor efetuar um novo login");
-                 return   logout();
-                } else {                   
+                    alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                    alert("Usuário sem permissão !!!");
+
+                } else if (res.data === "campoNulo") {
+                    alert("Preencha todos os Campos obrigatorios!!!");
+                }
+                else if (res.data === "erroSalvar") {
+                    alert("Erro a tentar salvar ou alterar!!!");
+                }
+                else {                 
                     (res.data).forEach((item, index) => (item.id = index));                 
                   return  setRows(res.data);
                 }
@@ -125,20 +135,11 @@ const ListarSeguradora =()=> {
               return  console.log(res);
             })
     };
-
- 
-
-   
  
       const EditSeguradoras = ({value})=>(
-
-
         <div>
             <Button variant="info" className="margemRight"onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)}>EDIT</Button> 
-           <Button variant="danger" className="margemRight" onClick={(e)=>deletarSeguradora(value)}>EXCLUIR</Button>
-            <Button variant="primary" onClick={(e)=>buscarContatos(value)}>CONTATOS</Button>
-          
-
+           <Button variant="danger" className="margemRight" onClick={(e)=>deletarSeguradora(value)}>EXCLUIR</Button> 
         </div>       
        
        )    
@@ -148,7 +149,6 @@ const ListarSeguradora =()=> {
             {...props}        
         />
        )
-
     const [editSeg] = useState(["ALTERACAO"]);
   
     
@@ -158,10 +158,10 @@ const ListarSeguradora =()=> {
 
             <h1>Listar Produtos</h1>
 
-            <div className="centralizar">
-                <button onClick={() => navigate("/home")}  > HOME</button>
-                <button onClick={(e)=>navigate("/cadastroSeguradora/0")}>CADASTRAR UNIDADE EMPRESARIAL</button>           
-                <button onClick={(e) => logout(e)}  > SAIR</button>
+            <div style={{marginBottom : "10px"}} >
+                {/* <button onClick={() => navigate("/home")}  > HOME</button> */}
+                <button className="btn btn-outline-primary margemRight" onClick={(e)=>navigate("/cadastroSeguradora/0")}>CADASTRAR UNIDADE EMPRESARIAL</button>           
+                <button className="btn btn-outline-danger margemRight" onClick={(e) => logout(e)}  > SAIR</button>
             </div>
 
 

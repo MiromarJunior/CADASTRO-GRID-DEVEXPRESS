@@ -24,12 +24,11 @@ const deleteSeguradoraID = data=>{
     return axios.post(`${baseURL}excluirSeguradora`,data);
 }
 
-
-
-
-
 const getContatoSeguradora = data=>{
     return axios.post(`${baseURL}listarContatoSeguradora`,data);
+}
+const deleteContatoSegID = data=>{
+    return axios.post(`${baseURL}excluirContatoSeguradora`,data);
 }
 
 
@@ -38,4 +37,4 @@ const getContatoSeguradora = data=>{
 
 
 
-module.exports = {deleteSeguradoraID,getContatoSeguradora,getSeguradora,saveSeguradora,saveContatoSeguradora};
+module.exports = {deleteContatoSegID,deleteSeguradoraID,getContatoSeguradora,getSeguradora,saveSeguradora,saveContatoSeguradora};

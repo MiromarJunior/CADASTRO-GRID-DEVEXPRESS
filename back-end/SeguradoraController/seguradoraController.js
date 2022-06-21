@@ -31,7 +31,7 @@ let updateSql;
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.log(err, "err");
+          console.error(err, "err");
           erroAcesso = "erroLogin";
           res.send("erroLogin").end();
 
@@ -192,7 +192,7 @@ router.post("/listarSeguradora", async(req, res)=> {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.log(err, "err");
+          console.error(err, "err");
           erroAcesso = "erroLogin";
           res.send("erroLogin").end();
 
@@ -245,7 +245,7 @@ let deleteSql1 = "";
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.log(err, "err");
+          console.error(err, "err");
           erroAcesso = "erroLogin";
           res.send("erroLogin").end();
 
@@ -328,7 +328,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   } =req.body;
 
-  console.log(req.body);
+
   
       let connection = await oracledb.getConnection(dbConfig);
       let result;  
@@ -336,7 +336,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
       jwt.verify(token, SECRET, async (err, decoded) => {
         if (err) {
-            console.log(err, "err");
+            console.error(err, "err");
             erroAcesso = "erroLogin";
             res.send("erroLogin").end();
   
@@ -427,10 +427,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   
   
-  });
-
-
-  
+  }); 
 
   router.post("/listarContatoSeguradora", async(req, res)=> {
     const {token,idSeg  
@@ -444,7 +441,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
       jwt.verify(token, SECRET, async (err, decoded) => {
         if (err) {
-            console.log(err, "err");
+            console.error(err, "err");
             erroAcesso = "erroLogin";
             res.send("erroLogin").end();
   
@@ -486,6 +483,65 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   
   });
+  router.post("/excluirContatoSeguradora", async(req, res)=> {
+    const {token,  idCont
+  } =req.body;
+  
+  
+      let connection = await oracledb.getConnection(dbConfig);
+  
+  
+  let deleteSql = "";
+
+  
+      jwt.verify(token, SECRET, async (err, decoded) => {
+        if (err) {
+            console.error(err, "err");
+            erroAcesso = "erroLogin";
+            res.send("erroLogin").end();
+  
+        } else{  
+  
+          deleteSql =(
+            ` 
+            DELETE FROM SEGURADORA_CONTATO 
+            WHERE  ID_SEGURADORA_CONTATO = ${idCont}
+             
+            `  
+          )
+                        
+        }
+    })  
+    try {
+    await connection.execute( deleteSql
+      ,
+       [],
+       { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+         autoCommit : true
+      
+     });
+    
+     res.send("sucesso").status(200).end();  
+    } catch (error) {
+        console.error(error);
+        res.send("erro de conexao").status(500);
+        
+    }finally {
+        if(connection){
+            try {
+                await connection.close();
+              
+            } catch (error) {
+              console.error(error);              
+            }
+        }
+    }
+  
+  
+  
+  
+  });
+  
 
 
 
