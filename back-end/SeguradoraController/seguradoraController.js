@@ -18,14 +18,7 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
     logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
     nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
     remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth ,smtpSistSecure,
-    soapRetSol, soapRetNotas,idSeg,
-    token
-
-
-
-
-
-} =req.body;
+    soapRetSol, soapRetNotas,idSeg, token} =req.body;
 let insertSql;
 let selectSql;
 let updateSql;
@@ -130,7 +123,7 @@ let updateSql;
       await connection.execute (     
         updateSql
         ,
-        [ ],
+        [],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
           autoCommit :  true
       });
@@ -247,7 +240,8 @@ router.post("/excluirSeguradora", async(req, res)=> {
     let connection = await oracledb.getConnection(dbConfig);
 
 
-  try {
+let deleteSql = "";
+let deleteSql1 = "";
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
@@ -256,22 +250,52 @@ router.post("/excluirSeguradora", async(req, res)=> {
           res.send("erroLogin").end();
 
       } else{  
-      await connection.execute ( 
+
+        deleteSql =(
           ` 
           DELETE FROM SEGURADORA 
-          WHERE  ID_SEGURADORA = ${idSeg}            
-          `,
-          [ ],
-          { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-            autoCommit : true
+          WHERE  ID_SEGURADORA = ${idSeg}
+           
+          `
+
+        )
+
+        deleteSql1 = (
+          ` 
+          DELETE FROM SEGURADORA_CONTATO SE
+WHERE SE.ID_SEGURADORA =  ${idSeg}
+           
+          `
+
+        )
+
+
+
+
+
+
+     
+        
          
-        } 
-           );
-         
-           res.send("sucesso").status(200).end();           
+                    
       }
-  })      
-      
+  })  
+  try {
+  await connection.execute( deleteSql
+    ,
+     [],
+     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+       autoCommit : true
+    
+   });
+   await connection.execute( deleteSql1
+    ,
+     [],
+     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+       autoCommit : true
+    
+   });
+   res.send("sucesso").status(200).end();  
   } catch (error) {
       console.error(error);
       res.send("erro de conexao").status(500);

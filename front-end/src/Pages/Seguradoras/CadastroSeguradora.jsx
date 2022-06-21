@@ -173,8 +173,6 @@ const CadastroSeguradora = () => {
  
         buscarSeguradoras();
         buscarContatos();
-       
-        
 
     }, [idSeg]);
 
@@ -182,13 +180,9 @@ const buscarContatos =(idSeguradora)=>{
     const dados = {token, idSeg : (idSeg > 0  ? idSeg : idSeguradora)}
         getContatoSeguradora(dados)
         .then((res)=>{
-            (res.data).forEach((item, index) => (item.id = index)); 
-            
-            setRows(res.data);
-          
-          
+            (res.data).forEach((item, index) => (item.id = index));             
+            setRows(res.data);                    
         })
-
 }
 
 
@@ -230,89 +224,9 @@ const buscarSeguradoras =()=>{
 }
 }
 
-    // const buscaUsuario = () => {
-    //     const dados = { token, nomeUser : nomeUser() }
-    //     apiUsuarioService.getAcessoMenu(dados)
-    //         .then((res) => {
-    //             if (res.data === "erroLogin") {
-    //                 alert("Sessão expirada, Favor efetuar um novo login !!");
-    //                 logout();
-    //                 window.location.reload();
-    //             } else {
-    //                 res.data.forEach((l) => {                      
 
-    //                         if (process.env.REACT_APP_CADUNI === l.ACES_DESCRICAO) {
-    //                             setDisplayCadastro("");
-    //                             setAcessoCAD(true);
-    //                         }
-    //                         if (process.env.REACT_APP_GERAL === l.ACES_DESCRICAO) {
-    //                             setDisplayCadastro("");
-    //                             setAcessoCAD(true);
-    //                             setAcessoTotalSistema(true);
-    //                         }
-                        
-    //                 })
-    //             }
-
-    //         }).catch((res) => {
-    //             alert(res.data)
-    //         })
-
-
-    // }
-
-    // const buscaGrupoEmp = () => {
-    //     const cod = { codigo, token ,acessoTotalSistema}
-    //     apiEmpresaService.getGrupoEmpID(cod)
-    //         .then((res) => {
-    //             if (res.data === "erroLogin") {
-    //                 alert("Sessão expirada, Favor efetuar o login");
-    //                 logout();
-    //                 window.location.reload();
-    //             } else {
-    //                 setGrupoEmp(res.data);
-    //             }
-
-
-    //         }).catch((res) => {
-    //             alert(res.data);
-    //         })
-    // }
-
-
-
-    // const buscaEstadoUF = () => {
-    //     const dados = { token,acessoTotalSistema }
-    //     apiEnderecoService.getEstadosUF(dados)
-    //         .then((res) => {
-    //             if (res.data === "erroLogin") {
-    //                 alert("Sessão expirada, Favor efetuar o login");
-    //                 logout();
-    //                 window.location.reload();
-    //             }
-    //             else {
-
-    //                 setListaUF(res.data);
-
-    //             }
-
-    //         }).catch((res) => {
-    //             alert(res.data);
-    //         })
-
-    // }
-
-
-
-    const salvarSeguradora = (newRecord,idSeg) => {
-        buscarContatos(idSeg);
-    
-        // var cnpj01, cep01, ie01, im01;
-        // if (cnpjSeguradora) { cnpj01 = cnpjEmpresa.replace(/\D/g, '') } else { cnpj01 = cnpjSeguradora };
-        // if (cep) { cep01 = cep.replace(/\D/g, '') } else { cep01 = cep };
-        // if (ie) { ie01 = ie.replace(/\D/g, '') } else { ie01 = ie };
-        // if (im) { im01 = im.replace(/\D/g, '') } else { im01 = im };
-        
+    const salvarSeguradora = (newRecord) => {
+        buscarContatos(idSeg);           
         const dados = {            
             codLegado, cnpjSeguradora, tipoPessoa,optSimples,statusSeg,
             razaoSocial, nomeFantasia, ie, im,
@@ -323,7 +237,7 @@ const buscarSeguradoras =()=>{
 
 
         };
-
+console.log(dados);
                        
                     saveSeguradora(dados)
                         .then((res) => {
@@ -786,7 +700,7 @@ const buscarSeguradoras =()=>{
                
               
                 <div className="form-group col-md-10">
-                <Button  className="margemRight" id="buttonInfo" onClick={()=>salvarSeguradora("Sim",idSeg)} > CONTATOS </Button>
+                <Button disabled={!(idSeg > 0)} className="margemRight" id="buttonInfo" onClick={()=>salvarSeguradora("Sim",idSeg)} > CONTATOS </Button>
                     <Button className="margemRight" onClick={()=>salvarSeguradora("Nao")} > CADASTRAR </Button>
                     <Button  id="buttonAlert"onClick={() => navigate("/listarSeguradora")} > CANCELAR  </Button><br />
 
