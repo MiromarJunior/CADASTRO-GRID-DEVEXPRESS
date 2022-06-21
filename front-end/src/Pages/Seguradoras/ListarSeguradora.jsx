@@ -18,8 +18,6 @@ import { Button } from "react-bootstrap";
 
 
 
-
-
 const getRowId = row => row.id;
 
 const ListarSeguradora =()=> {
@@ -31,9 +29,14 @@ const ListarSeguradora =()=> {
 
     
 
+   
+    useEffect(() => {        
+        listarSeguradoras();        
+    }, []);
+
     const listarSeguradoras = async ()=> {      
         let dados = { token };
-        getSeguradora(dados)
+      await  getSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
                     alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -58,10 +61,6 @@ const ListarSeguradora =()=> {
               return  console.log(res);
             })
     };
-    useEffect( () => {        
-        listarSeguradoras();
-        
-    }, []);
 
     const deletarSeguradora = (idSeg) => {        
         let dados = { idSeg, token };      
@@ -159,8 +158,8 @@ const ListarSeguradora =()=> {
 
             <div style={{marginBottom : "10px"}} >
                 {/* <button onClick={() => navigate("/home")}  > HOME</button> */}
-                <button className="btn btn-outline-primary margemRight" onClick={(e)=>navigate("/cadastroSeguradora/0")}>CADASTRAR UNIDADE EMPRESARIAL</button>           
-                <button className="btn btn-outline-danger margemRight" onClick={(e) => logout(e)}  > SAIR</button>
+                {/* <button className="btn btn-outline-primary margemRight" onClick={(e)=>navigate("/cadastroSeguradora/0")}>CADASTRAR UNIDADE EMPRESARIAL</button>           
+                <button className="btn btn-outline-danger margemRight" onClick={(e) => logout(e)}  > SAIR</button> */}
             </div>
 
 

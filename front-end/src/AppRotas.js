@@ -33,14 +33,20 @@ const AppRotas = () => {
     return (
 
         <BrowserRouter>
+       
         <AuthProvider>
+        <HomePage />
+   
+      
+       
+      
             <Routes>
                 <Route exact path="/" element={<LoginPage/>} />    
                             
                 <Route exact path="/listarSeguradora" element={ <ListarSeguradora /> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={ <CadastroSeguradora /> } />
                 <Route exact path="/cadastroUsuario" element={ <CadastroUsuario /> } />
-                <Route exact path="/home" element={<Private><HomePage /></Private> } />
+              
                 <Route exact path="/listarProdutos" element={<Private><ListarProdutos /></Private> } />
               
             </Routes>
