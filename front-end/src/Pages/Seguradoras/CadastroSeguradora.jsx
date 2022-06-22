@@ -22,12 +22,13 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-bootstrap4';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
-import { apenasNr } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL,  validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT,  } from "../../Service/utilServiceFrontEnd";
+import { getUnidadeFederativa } from "../../Service/enderecoService";
 
 
 
 const { format } = require('telefone');
-
+const emailV = /\S+@\S+\.\S+/;
 
 
 
@@ -49,7 +50,7 @@ const CadastroSeguradora = () => {
     const [nrLogradouro, setNrLogradouro] = useState("");
     const [cep, setCep] = useState("");
     const [nomeCidade, setNomeCidade] = useState("");
-    const [listaUF, setListaUF] = useState([]);
+    
     const [smtpSist, setSmtpSist] = useState("");
     const [portaSist, setPortaSist] = useState("");
     const [emailSist, setEmailSist] = useState("");
@@ -66,19 +67,37 @@ const CadastroSeguradora = () => {
     const [idSegN, setIdSegN] = useState(idSeg);
     const [displayCont, setDisplayCont] = useState(idSegN === "0" ? "none" : "");
     const [rows, setRows] = useState([]);
-    const emailV = /\S+@\S+\.\S+/;
+    const [listaUF,setListaUF] = useState([]);
 
 
 
-    useEffect(() => { 
-         
-
-
-
+    useEffect(() => {   
         buscarSeguradoras();
-        buscarContatos(idSegN);
+        buscarContatos(idSegN);    
+        buscaUnidadeFederativa();
+        
 
     }, [idSeg]);
+
+    const buscaUnidadeFederativa = ()=>{
+        const dados = {token};
+        getUnidadeFederativa(dados)
+        .then((res)=>{
+            if (res.data === "erroLogin") {
+                alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+            }
+            else{
+                setListaUF(res.data);
+            }
+
+        }).catch((res)=>{
+            console.error(res);
+            window.alert("Erro ao listar Estados")
+        })
+    }
+  
 
     const buscarSeguradoras =  () => {
         if (idSeg > 0) {
@@ -114,7 +133,7 @@ const CadastroSeguradora = () => {
                             setIE(l.SGRA_INSCRICAO_ESTADUAL);
                             setIM(l.SGRA_INSCRICAO_MUNICIPAL);
                             setNomeCidade(l.SGRA_CIDADE);
-                            setEstadoUF(l.ID_UNIDADE_FEDERATIVA);
+                            setEstadoUF(l.UNFE_SIGLA);
                             setLogradouro(l.SGRA_RUA);
                             setNrLogradouro(l.SGRA_NUMERO);
                             setSmtpSist(l.SGRA_SMTP);
@@ -129,6 +148,7 @@ const CadastroSeguradora = () => {
                             setSoapRetNotas(l.SGRA_RETORNO_NOTAS);
 
                         })
+                        
                     }
                 }).catch((res) => {
                     console.error(res);
@@ -136,11 +156,7 @@ const CadastroSeguradora = () => {
                 })
         }
     }
-        
-
-
     
-
     const buscarContatos = (idSegN) => {
         const dados = { token, idSeg: idSegN }
         getContatoSeguradora(dados)
@@ -169,12 +185,9 @@ const CadastroSeguradora = () => {
                 window.alert("Erro ao listar contatos");
             }
     }
-
-   
-   
-
+ 
     const salvarSeguradora = () => {
-        let validaCnpj = false, validaEmailSis = false;
+   
         const dados = {
             codLegado : apenasNr(codLegado), cnpjSeguradora : apenasNr(cnpjSeguradora), 
             tipoPessoa, optSimples, statusSeg,
@@ -184,25 +197,33 @@ const CadastroSeguradora = () => {
             remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
             soapRetSol, soapRetNotas, token, idSeg : idSegN
         };
-        if(cnpj.isValid(apenasNr(cnpjSeguradora))){
-            validaCnpj = true
-        }else{window.alert("CNPJ inválido");       
-        document.getElementById('txtCnpj').style.borderColor = "red";     
-        }
-        if(emailV.test(emailSist)){
-            validaEmailSis = true
-        }else{window.alert("Email Sistema inválido");       
-        document.getElementById("txtEmailU").style.borderColor = "red";     
-        }
-
-
-
-
-
-
-
-
-        if(validaCnpj && validaEmailSis){
+      
+   
+        
+        if(validaRAZAO() &&    
+             validaNomeFANT() && 
+             validaCNPJ(cnpjSeguradora) &&     
+             validaCodLEG() &&  
+             validaTipoPESSOA() &&
+             validaOpSIMPLES() &&
+             validaStatusSEG() &&
+             validaCEP() &&
+             validaUF() &&
+             validaCIDADE() &&
+             validaBAIRRO() &&
+             validaLOGRAD() &&
+             validaNRLOGRAD()&&
+             validaCOMPL() &&
+             validaSMTP() &&
+             validaPORTA() &&
+             validaEMAIL(emailSist) &&
+             validaSEMAIL() &&
+             validaREMET() &&
+             validaNREMET() &&
+             validaSOAPRET() &&
+             validaSOAPNOT()    
+        
+        ){
         saveSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -232,7 +253,7 @@ const CadastroSeguradora = () => {
                 }
             }).catch((erro) => {
                 window.alert("Erro ao tentar cadastrar");
-                console.log(erro, "erro ao tentar cadastrar");
+                console.error(erro, "erro ao tentar cadastrar");
             })
         }
     }
@@ -255,17 +276,13 @@ const CadastroSeguradora = () => {
                 else if (res.data === "sucesso") {
                     // alert("Contato Cadastrado  com Sucesso!!!");   
                     buscarContatos(idSegN);
-
-
                 }
-
                 else {
                     alert("Erro ao cadastrar");
-
                 }
 
             }).catch((error) => {
-                console.log(error,
+                console.error(error,
                     "Erro ao salvar Contato");
 
             })
@@ -301,12 +318,14 @@ const CadastroSeguradora = () => {
         }
 
     };
-    const buscaCepOnline = (e) => {
-        e.preventDefault();
-        var cepSONr = cep.replace(/\D/g, '');
-        if (cepSONr !== "") {
+    const buscaCepOnline = () => {
+      
+        
+        var cepSONr = (isNaN(cep)) ? cep.replace(/\D/g, '') : cep;
+     
+    
             var validacep = /^[0-9]{8}$/;
-            console.log(apenasNr(cep));
+          
             if (validacep.test(cepSONr)) {
 
                 fetch(`https://viacep.com.br/ws/${cepSONr}/json/`)
@@ -318,7 +337,6 @@ const CadastroSeguradora = () => {
                             setBairro(data.bairro);
                             setEstadoUF(data.uf);
                             setLogradouro(data.logradouro);
-
                             setNomeCidade(data.localidade);
 
                         }
@@ -326,9 +344,7 @@ const CadastroSeguradora = () => {
                         alert("CEP não encontrado !!!")
                     })
             }
-        } else {
-            alert("Favor preencher cep corretamente !!!")
-        }
+      
     }
 
     const alertaSair = () => {
@@ -405,16 +421,26 @@ const CadastroSeguradora = () => {
                     id: startingAddedId + index,
                     ...row,
                 })),
-            ];
-            buscarContatos();
-            setRows(changedRows);
-            salvarContato(changedRows);
+            ];           
+           
+            changedRows.map((l)=>{
+                if(emailV.test(l.SGCO_EMAIL)) {                    
+                    setRows(changedRows);
+                    salvarContato(changedRows);
+                    buscarContatos();
+                }else{window.alert("Email do contato inválido")}
+            })
         }
         if (changed) {
-            changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-            setRows(changedRows);
-            salvarContato(changedRows);
-            console.log(changedRows)
+            changedRows = rows.map(row =>   (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+            changedRows.map((l)=>{
+                if(emailV.test(l.SGCO_EMAIL)) {
+                    setRows(changedRows);
+                    salvarContato(changedRows);
+                }else{window.alert("Email do contato inválido")}
+            })
+            
+          
         }
         if (deleted) {
 
@@ -452,36 +478,36 @@ const CadastroSeguradora = () => {
 
                 <div className="form-inline" id="" style={{ fontSize: "9" }}>
                     <div className="form-group col-md-8">
-                        <h3 id="titulo">CADASTRAR SEGURADORA </h3>
+                        <h3 id="titulo">CADASTRO DE SEGURADORAS </h3>
                     </div>
                     <div className="form-group col-md-12"></div>
                     <div className="form-group col-md-6 margemRight">
                         <Form.Label   >RAZÃO SOCIAL</Form.Label>
-                        <Form.Control required={true}  className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
+                        <Form.Control maxLength={128} id="razaoSoc" className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
                     </div>
 
 
                     <div className="form-group col-md-5 ">
                         <Form.Label   >NOME FANTASIA</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia} style={{ width: "102%" }} placeholder="" />
+                        <Form.Control maxLength={64} id="nomeFant" className="form__input1" type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia} style={{ width: "102%" }} placeholder="" />
 
                     </div>
 
 
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >CNPJ</Form.Label>
-                        <Form.Control id="txtCnpj" className="  form__input1 " maxLength={18} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
+                        <Form.Control id="txtCnpj" className="  form__input1 " maxLength={20} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
 
                     </div>
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >CODIGO LEGADO</Form.Label>
-                        <Form.Control className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)}  placeholder="" />
+                        <Form.Control maxLength={64} id="codLeg" className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)}  placeholder="" />
 
                     </div>
 
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >TIPO PESSOA</Form.Label>
-                        <Form.Select value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select id="tipoP" value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Juridica"} >Jurídica</option>
                             <option value={"Fisica"}>Física</option>
@@ -491,7 +517,7 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >OPTANTE SIMPLES</Form.Label>
-                        <Form.Select value={optSimples} onChange={(e) => setOptSimples(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Sim"} >Sim</option>
                             <option value={"Nao"}>Não</option>
@@ -502,7 +528,7 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-1.1 margemRight" >
                         <Form.Label  >STATUS SEGURADORA</Form.Label>
-                        <Form.Select value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Ativo"}>Ativo</option>
                             <option value={"Inativo"}>Inativo</option>
@@ -511,22 +537,19 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
                         <Form.Label   >INSCRIÇÃO ESTADUAL</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setIE(e.target.value)} value={ie} placeholder="" />
+                        <Form.Control maxLength={20} className="form__input1" type="text" onChange={(e) => setIE(e.target.value)} value={ie} placeholder="" />
 
                     </div>
                     <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
                         <Form.Label   >INSCRIÇÃO MUNICIPAL</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setIM(e.target.value)} value={im} style={{ maxWidth: "100%" }} placeholder="" />
+                        <Form.Control   maxLength={20} className="form__input1" type="text" onChange={(e) => setIM(e.target.value)} value={im} style={{ maxWidth: "100%" }} placeholder="" />
 
                     </div>
 
 
-
-
-
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label  >CEP</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setCep(e.target.value)} value={cep} placeholder=" " />
+                        <Form.Control  id="cep" className="form__input1" type="text" onChange={(e) => setCep(e.target.value)} value={cep} placeholder=" " />
 
                     </div>
 
@@ -540,57 +563,46 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label  >UF</Form.Label>
-                        <Form.Select value={estadoUF} onChange={(e) => setEstadoUF(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
-                            <option value={""} >Selecione</option>
-                            <option value={"62"}>{estadoUF}</option>
-                            <option value={"61"}>{estadoUF}</option>
+                        
+                        <Form.Select id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF}  className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        
+                            {listaUF.map((l)=>
+                            <option key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</option>
+                            )}
+                           
+                        
                         </Form.Select>
+                            
 
                     </div>
 
 
 
-                    {/* <div className="form-group col-md-1">
-                    <Form.Label >UF</Form.Label>
-                    <FormSelect className="form__input1" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF} >
-                        {listaUF.map((lf) => <option key={estadoUF} value={estadoUF}>{estadoUF}</option>)}
-                    </FormSelect>
-
-                </div> */}
+                   
                     <div className="form-group col-md-3 margemRight ">
                         <Form.Label  >CIDADE</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} style={{ width: "280PX" }} placeholder="" />
+                        <Form.Control  maxLength={64}  id="cidade" className="form__input1" type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} style={{ width: "280PX" }} placeholder="" />
                     </div>
 
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >BAIRRO</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro} style={{ width: "92%" }} placeholder=" " />
+                        <Form.Control  maxLength={64}  id="bairro" className="form__input1" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro} style={{ width: "92%" }} placeholder=" " />
                     </div>
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >LOGRADOURO</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} placeholder="" />
+                        <Form.Control  maxLength={128}  id="lograd" className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >NR</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
+                        <Form.Control maxLength={10}  id="nrLograd" className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
                     </div>
 
 
 
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >COMPLEMENTO</Form.Label>
-                        <Form.Control className="form__input1" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} placeholder="" />
+                        <Form.Control maxLength={64}  id="compl" className="form__input1" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} placeholder="" />
                     </div>
-
-
-
-
-
-
-
-
-
-
 
                     <hr style={{ width: "100%" }} />
                     <div className="form-group col-md-7">
@@ -601,27 +613,27 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >SMTP</Form.Label>
-                        <Form.Control value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="smtp" maxLength={256}  value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >PORTA</Form.Label>
-                        <Form.Control value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
+                        <Form.Control id="porta" maxLength={5}  value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Usuário(E-MAIL)</Form.Label>
-                        <Form.Control id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control  maxLength={128}  id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-3" style={{ width: "270px" }}>
                         <Form.Label   >Senha(E-MAIL)</Form.Label>
-                        <Form.Control  value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
+                        <Form.Control id="semail" maxLength={128}  value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Remetente</Form.Label>
-                        <Form.Control value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="remet" maxLength={256}  value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Nome Remetente</Form.Label>
-                        <Form.Control value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="nremet" maxLength={256}  value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >SMTP Auth</Form.Label>
@@ -641,11 +653,11 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-5 margemRight">
                         <Form.Label   >SOAP Retorno de Solicitação</Form.Label>
-                        <Form.Control value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-5 margemRight">
                         <Form.Label   >SOAP Retorno de Notas</Form.Label>
-                        <Form.Control value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
 
 

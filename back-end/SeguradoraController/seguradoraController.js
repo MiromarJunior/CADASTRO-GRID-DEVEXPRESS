@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 const oracledb = require("oracledb");
 const dbConfig = require("../ConfigDB/configDB.js");
-const { formataArrayStr } = require("../Service/utilServiceBackEnd.js");
+const { formataArrayStr, apenasNr } = require("../Service/utilServiceBackEnd.js");
 const { route } = require("../UsuarioController/usuarioController.js");
 const app = express();
 app.use(express.json());
@@ -22,6 +22,7 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
 let insertSql;
 let selectSql;
 let updateSql;
+let idEstado;
 
 
 
@@ -75,55 +76,69 @@ let updateSql;
           `
         )
 
+        updateSql = (
+          ` UPDATE SEGURADORA
+          SET SGRA_ID_LEGADO = :CODL,       
+          SGRA_NATUREZA_JURIDICA = :NATJ,
+          SGRA_NOME_FANTASIA = :NMFANT,
+          SGRA_RAZAO_SOCIAL = :RZSOC,
+          SGRA_OPTANTE_SIMPLES_NACIONAL = :OPTS,
+          SGRA_STATUS = :STSEG,
+          SGRA_INSCRICAO_ESTADUAL = :INE,
+          SGRA_INSCRICAO_MUNICIPAL = :INM,
+          SGRA_CEP =:CP,
+          SGRA_CIDADE = :NMCID,
+          ID_UNIDADE_FEDERATIVA = :UNIF,            
+          SGRA_NUMERO = :LGNR,
+          SGRA_COMPLEMENTO = :COMS,
+          SGRA_BAIRRO = :BRR,
+          SGRA_SMTP = :SS,
+          SGRA_PORTA = :SST,
+          SGRA_USUARIO_EMAIL = :USMAIL,
+          SRGA_SENHA = :SNEM,
+          SGRA_REMETENTE = :REM,
+          SGRA_NOME_REMETENTE = :NMREM,
+          SGRA_SMTP_AUTH = :SSMM,
+          SGRA_SMTP_SECURE = :SSSC,
+          SGRA_RETORNO_SOLICITACAO = :RESO,
+          SGRA_RETORNO_NOTAS = :RENS,
+          SGRA_RUA = :RLO
+          WHERE ID_SEGURADORA = :SEGI
+        `
+
+        )
+
         selectSql =(
           `SELECT SEG.ID_SEGURADORA FROM SEGURADORA SEG
           WHERE SEG.SGRA_CNPJ = :CNPJsEG         
         `
-        )
-
-        updateSql = (
-          ` UPDATE SEGURADORA
-            SET SGRA_ID_LEGADO = '${codLegado}',       
-            SGRA_NATUREZA_JURIDICA = '${tipoPessoa}',
-            SGRA_NOME_FANTASIA = '${nomeFantasia}',
-            SGRA_RAZAO_SOCIAL = '${razaoSocial}',
-            SGRA_OPTANTE_SIMPLES_NACIONAL = '${optSimples}',
-            SGRA_STATUS = '${statusSeg}',
-            SGRA_INSCRICAO_ESTADUAL = '${ie}',
-            SGRA_INSCRICAO_MUNICIPAL = '${im}',
-            SGRA_CEP = ${cep},
-            SGRA_CIDADE = '${nomeCidade}',
-            ID_UNIDADE_FEDERATIVA = '${estadoUF}',            
-            SGRA_NUMERO = '${nrLogradouro}',
-            SGRA_COMPLEMENTO = '${complemento}',
-            SGRA_BAIRRO = '${bairro}',
-            SGRA_SMTP = '${smtpSist}',
-            SGRA_PORTA = '${portaSist}',
-            SGRA_USUARIO_EMAIL = '${emailSist}',
-            SRGA_SENHA = '${senhaEmailSist}',
-            SGRA_REMETENTE = '${remetenteEmailSist}',
-            SGRA_NOME_REMETENTE = '${nomeRemetenteEmailSist}',
-            SGRA_SMTP_AUTH = '${smtpSistAuth}',
-            SGRA_SMTP_SECURE = '${smtpSistSecure}',
-            SGRA_RETORNO_SOLICITACAO = '${soapRetSol}',
-            SGRA_RETORNO_NOTAS = '${soapRetNotas}',
-            SGRA_RUA = '${logradouro}'
-            WHERE ID_SEGURADORA = ${idSeg}
-          `
-        )                   
+        )                       
                    
       }
-  })  
+  });  
 
   try {  
+    let estado = await connection.execute (  
+      `
+      SELECT ID_UNIDADE_FEDERATIVA FROM UNIDADE_FEDERATIVA
+      WHERE UNFE_SIGLA = :ESF
+      `
+      ,
+      [estadoUF],
+      { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
+        autoCommit :  true
+    }); 
+     idEstado = (estado.rows).toString();  
 
-
-    if(idSeg > 0){
-   
+    if(idSeg > 0){   
       await connection.execute (     
-        updateSql
+       updateSql
         ,
-        [],
+        [codLegado, tipoPessoa, nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
+          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
+          smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
+          smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
+          logradouro,idSeg],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
           autoCommit :  true
       });
@@ -135,7 +150,7 @@ let updateSql;
         ,
         [cnpjSeguradora,codLegado, tipoPessoa,
           nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-          cep, nomeCidade,estadoUF, nrLogradouro, complemento,bairro,
+          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
           smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
           smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
           logradouro  ],
@@ -175,6 +190,7 @@ let updateSql;
 
 
 });
+
 router.post("/listarSeguradora", async(req, res)=> {
   const {token,idSeg  
 } =req.body;
@@ -185,7 +201,7 @@ router.post("/listarSeguradora", async(req, res)=> {
     let result;
     let selectSql = "";
     if(idSeg > 0){
-     selectSql =  `WHERE ID_SEGURADORA = ${idSeg}`
+     selectSql =  `AND ID_SEGURADORA = ${idSeg}`
     }
 
   try {
@@ -199,11 +215,12 @@ router.post("/listarSeguradora", async(req, res)=> {
       } else{  
         result = await connection.execute ( 
           ` 
-          SELECT * FROM SEGURADORA  
+          SELECT  * FROM SEGURADORA SEG, UNIDADE_FEDERATIVA UF
+          WHERE SEG.ID_UNIDADE_FEDERATIVA = UF.ID_UNIDADE_FEDERATIVA(+)
           ${selectSql}
             
           `,
-          [ ],
+          [],
           { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
          
         } 
@@ -232,6 +249,7 @@ router.post("/listarSeguradora", async(req, res)=> {
 
 
 });
+
 router.post("/excluirSeguradora", async(req, res)=> {
   const {token,idSeg  
 } =req.body;
@@ -316,11 +334,6 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
 
 });
 
-
-
-
-
-
 router.post("/cadastrarContatoSeguradora", async(req, res)=> {
     const {
       token,idSeg,contatos  
@@ -342,35 +355,30 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
         } else{  
           contatos.map(async(l)=>{
-
-
+            
 
             if(l.ID_SEGURADORA_CONTATO){
-
-              await connection.execute(
-                `
+              await connection.execute(                `
                 UPDATE  SEGURADORA_CONTATO
                  SET  SGCO_NOME = '${l.SGCO_NOME}',
                   SGCO_FUNCAO = '${l.SGCO_FUNCAO}',
                   SGCO_DEPARTAMENTO = '${l.SGCO_DEPARTAMENTO}',
                   SGCO_EMAIL ='${l.SGCO_EMAIL}',
                   SGCO_URL='${l.SGCO_URL}',
-                  SGCO_CELULAR_DDD ='${l.SGCO_CELULAR_DDD}',
-                  SGCO_CELULAR_NUMERO ='${l.SGCO_CELULAR_NUMERO}',
+                  SGCO_CELULAR_DDD ='${apenasNr(l.SGCO_CELULAR_DDD)}',
+                  SGCO_CELULAR_NUMERO ='${apenasNr(l.SGCO_CELULAR_NUMERO)}',
                   SGCO_CELULAR_OPERADORA ='${l.SGCO_CELULAR_OPERADORA}',
-                  SGCO_FONE_COMERCIAL_DDD ='${l.SGCO_FONE_COMERCIAL_DDD}',
-                  SGCO_FONE_COMERCIAL_NUMERO ='${l.SGCO_FONE_COMERCIAL_NUMERO}',
-                  SGCO_FONE_COMERCIAL_RAMAL ='${l.SGCO_FONE_COMERCIAL_RAMAL}',
+                  SGCO_FONE_COMERCIAL_DDD ='${apenasNr(l.SGCO_FONE_COMERCIAL_DDD)}',
+                  SGCO_FONE_COMERCIAL_NUMERO ='${ apenasNr(l.SGCO_FONE_COMERCIAL_NUMERO)}',
+                  SGCO_FONE_COMERCIAL_RAMAL ='${apenasNr(l.SGCO_FONE_COMERCIAL_RAMAL)}',
                   ID_SEGURADORA ='${l.ID_SEGURADORA}'
-                  WHERE ID_SEGURADORA_CONTATO = '${l.ID_SEGURADORA_CONTATO}'
-                
+                  WHERE ID_SEGURADORA_CONTATO = '${l.ID_SEGURADORA_CONTATO}'                
                 `
 
               ,[],{outFormat  :  oracledb.OUT_FORMAT_OBJECT,
                 autoCommit :  true})
 
             }else{
-
           
             await connection.execute (               ` 
               INSERT INTO SEGURADORA_CONTATO(
@@ -390,10 +398,10 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
               )
               VALUES(
                 SQ_SEG_CONT.NEXTVAL,
-                '${l.SGCO_NOME}','${l.SGCO_FUNCAO}','${l.SGCO_DEPARTAMENTO}','${l.SGCO_EMAIL}','${l.SGCO_URL}','${l.SGCO_CELULAR_DDD}',
-                '${l.SGCO_CELULAR_NUMERO}','${l.SGCO_CELULAR_OPERADORA}','${l.SGCO_FONE_COMERCIAL_DDD}','${l.SGCO_FONE_COMERCIAL_NUMERO}',
-                '${l.SGCO_FONE_COMERCIAL_RAMAL}','${idSeg}'
-              )             
+                '${l.SGCO_NOME}','${l.SGCO_FUNCAO}','${l.SGCO_DEPARTAMENTO}','${l.SGCO_EMAIL}','${l.SGCO_URL}','${apenasNr(l.SGCO_CELULAR_DDD)}',
+                '${apenasNr(l.SGCO_CELULAR_NUMERO)}','${l.SGCO_CELULAR_OPERADORA}','${apenasNr(l.SGCO_FONE_COMERCIAL_DDD)}','${apenasNr(l.SGCO_FONE_COMERCIAL_NUMERO)}',
+                '${apenasNr(l.SGCO_FONE_COMERCIAL_RAMAL)}','${idSeg}'
+              )           
               
               `,
               [] ,
@@ -402,8 +410,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
             });
           }
             
-          })
-          
+          })          
       
              res.send("sucesso").status(200).end();           
         }
@@ -429,7 +436,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   }); 
 
-  router.post("/listarContatoSeguradora", async(req, res)=> {
+router.post("/listarContatoSeguradora", async(req, res)=> {
     const {token,idSeg  
   } =req.body;  
 
@@ -483,7 +490,8 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   
   });
-  router.post("/excluirContatoSeguradora", async(req, res)=> {
+  
+router.post("/excluirContatoSeguradora", async(req, res)=> {
     const {token,  idCont
   } =req.body;
   

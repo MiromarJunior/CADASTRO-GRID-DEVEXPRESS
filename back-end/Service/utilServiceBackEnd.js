@@ -47,5 +47,12 @@ const valorLiquido = (valor, desconto)=>{
     return (formataValorString(valor) - (formataValorString(valor) * (formataValorString(desconto)/100)));
 }
 
-module.exports ={formataValorString,valorLiquido,dataBR,formataArrayStr};
+
+ const apenasNr = (nr)=>{
+    
+  let nr1 = (isNaN(nr)) ? nr.replace(/\D/g, '') : nr;
+  return  nr1;
+}
+
+module.exports ={apenasNr,formataValorString,valorLiquido,dataBR,formataArrayStr};
 

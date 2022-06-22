@@ -23,6 +23,8 @@ app.listen(port, ()=>{
   let seguradoraRotas = require("./SeguradoraController/seguradoraController");
   app.use("/",seguradoraRotas) ;
 
+  let unidadeFederativaRotas = require("./EnderecoController/unidadeFederativaController");
+  app.use("/",unidadeFederativaRotas) ;
 
 
   console.log("Servidor online na porta  : ", port);

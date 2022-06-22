@@ -15,6 +15,7 @@ import {
   } from '@devexpress/dx-react-grid-bootstrap4';
 import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
 import { Button } from "react-bootstrap";
+import { cnpj } from "cpf-cnpj-validator";
 
 
 
@@ -111,6 +112,8 @@ const ListarSeguradora =()=> {
 
    ])
 
+
+
    
 //    const PriceFormatter = ({value})=>(
 //     valorBR(value)
@@ -128,7 +131,17 @@ const ListarSeguradora =()=> {
   
 //    const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
-     
+         const ValidCnpj = ({value})=>(       
+        cnpj.format(value)
+    )
+    const ValidCnpjProv = (props)=>(
+        <DataTypeProvider
+        formatterComponent={ValidCnpj}
+        {...props}
+
+        />
+    )
+    const [validCNPJ] = useState(["SGRA_CNPJ"]);
  
       const EditSeguradoras = ({value})=>(
         <div>
@@ -147,8 +160,7 @@ const ListarSeguradora =()=> {
 
     const [integratedSortingColumnExtensions] = useState([
         { columnName: 'SGRA_CNPJ' },
-      ]);
-  
+      ]); 
     
 
     return (
@@ -183,8 +195,10 @@ const ListarSeguradora =()=> {
           columnExtensions={editingStateColumns}
         />
         <EditSeguradorasProv
-        for={editSeg}
-        
+        for={editSeg}          
+        />
+        <ValidCnpjProv
+         for={validCNPJ}   
         />
         
         <Table  />
