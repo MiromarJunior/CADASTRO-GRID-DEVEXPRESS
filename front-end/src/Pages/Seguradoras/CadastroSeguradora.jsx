@@ -423,22 +423,40 @@ const CadastroSeguradora = () => {
                 })),
             ];           
            
+            let val = true; 
             changedRows.map((l)=>{
-                if(emailV.test(l.SGCO_EMAIL)) {                    
-                    setRows(changedRows);
-                    salvarContato(changedRows);
-                    buscarContatos();
-                }else{window.alert("Email do contato inválido")}
+             if(!emailV.test(l.SGCO_EMAIL)){val = false} 
             })
+            if(val){
+                setRows(changedRows);
+                salvarContato(changedRows);
+                buscarContatos();
+
+            }else{
+                window.alert("Email Contato inválido");
+            }
+          
+                                  
+                    
+               
+            
         }
         if (changed) {
-            changedRows = rows.map(row =>   (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-            changedRows.map((l)=>{
-                if(emailV.test(l.SGCO_EMAIL)) {
-                    setRows(changedRows);
-                    salvarContato(changedRows);
-                }else{window.alert("Email do contato inválido")}
-            })
+     changedRows = rows.map(row =>   (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+                    let val = true; 
+                    changedRows.map((l)=>{
+                     if(!emailV.test(l.SGCO_EMAIL)){val = false} 
+                    })
+                    if(val){
+                        setRows(changedRows);
+                     salvarContato(changedRows);
+
+                    }else{
+                        window.alert("Email Contato inválido");
+                    }
+                     
+               
+          
             
           
         }
