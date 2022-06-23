@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./cad.css";
 import { cnpj } from 'cpf-cnpj-validator';
 import { AuthContext } from "../../Autenticação/validacao";
-import { EditingState, IntegratedPaging, PagingState } from '@devexpress/dx-react-grid';
+import { DataTypeProvider, EditingState, IntegratedPaging, PagingState } from '@devexpress/dx-react-grid';
 import {
     Grid,
     Table,
@@ -22,8 +22,9 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-bootstrap4';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
-import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL,  validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT,  } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL,  validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaGRID,  } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
+import { max } from "moment";
 
 
 
@@ -260,6 +261,7 @@ const CadastroSeguradora = () => {
 
     const salvarContato = (rows) => {
         const dadosContato = { contatos: rows, token, idSeg: idSegN }
+        console.log(dadosContato);
         saveContatoSeguradora(dadosContato)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -423,39 +425,251 @@ const CadastroSeguradora = () => {
                 })),
             ];           
            
-            let val = true; 
-            changedRows.map((l)=>{
-             if(!emailV.test(l.SGCO_EMAIL)){val = false} 
-            })
+                        let val = true; 
+                        let msg = "";
+                        changedRows.forEach((l)=>{
+
+                            
+                            if(l.SGCO_NOME === "" || !l.SGCO_NOME ){                      
+                                val = false;
+                                msg = "Campo Nome não pode ser nulo";
+                                setRows(changedRows);
+                             }
+                           else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO ){                      
+                                val = false;
+                                msg = "Campo Função não pode ser nulo";
+                                setRows(changedRows);
+                             }
+                             
+                             else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
+                                val = false;
+                                msg = "Campo Departamento não pode ser nulo";
+                                setRows(changedRows);
+                             }
+                            else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
+                                val = false;
+                                msg = "Campo Departamento não pode ser nulo";
+                                setRows(changedRows);
+                             } 
+                             else if(!emailV.test(l.SGCO_EMAIL))
+                             { val = false; 
+                                msg = "Email Contato inválido" ;
+                                 setRows(changedRows);
+                            }
+                            else if(l.SGCO_URL === "" || !l.SGCO_URL ){                      
+                                val = false;
+                                msg = "Campo URL não pode ser nulo";
+                                setRows(changedRows);
+                             } 
+                             else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD)){                      
+                                
+        
+                                if(l.SGCO_CELULAR_DDD === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                msg = "Campo Celular DDD inválido";
+                                setRows(changedRows);
+                                 }
+                             } 
+                             else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO)){                      
+                                
+        
+                                if(l.SGCO_CELULAR_NUMERO === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                    msg = "Campo Celular NR inválido";
+                                    setRows(changedRows);
+                                 }
+        
+        
+        
+        
+                             } 
+                             else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  ){                      
+                                val = false;
+                                msg = "Campo Operadora  não pode ser nulo";
+                                setRows(changedRows);
+        
+        
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) ){                      
+                               
+        
+                                if(l.SGCO_FONE_COMERCIAL_DDD === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                msg = "Campo Fone Comercial DDD inválido";
+                                setRows(changedRows);
+                                 }           
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO)  ){                      
+                               
+                                if(l.SGCO_FONE_COMERCIAL_NUMERO === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                    msg = "Campo Fone Comercial NR  inválido";
+                                    setRows(changedRows);
+                                 }          
+        
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)   ){                      
+                                
+                             if(l.SGCO_FONE_COMERCIAL_RAMAL === 0 ){
+                                val = true;
+                             }else{
+                                msg = "Campo Fone Comercial Ramal  inválido";
+                                setRows(changedRows);
+                                val = false;
+                             }
+                                
+                             }      
+        
+        
+                            })         
+                          
+
+
+
+
             if(val){
                 setRows(changedRows);
                 salvarContato(changedRows);
                 buscarContatos();
 
             }else{
-                window.alert("Email Contato inválido");
-            }
-          
-                                  
-                    
+                window.alert(msg);
+            }                       
                
             
         }
         if (changed) {
      changedRows = rows.map(row =>   (changed[row.id] ? { ...row, ...changed[row.id] } : row));
                     let val = true; 
-                    changedRows.map((l)=>{
-                     if(!emailV.test(l.SGCO_EMAIL)){val = false} 
-                    })
+                    let msg = "";
+                    changedRows.forEach((l)=>{
+
+                        if(l.SGCO_NOME === "" || !l.SGCO_NOME ){                      
+                            val = false;
+                            msg = "Campo Nome não pode ser nulo";
+                            setRows(changedRows);
+                         }
+                       else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO ){                      
+                            val = false;
+                            msg = "Campo Função não pode ser nulo";
+                            setRows(changedRows);
+                         }
+                         
+                         else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
+                            val = false;
+                            msg = "Campo Departamento não pode ser nulo";
+                            setRows(changedRows);
+                         }
+                        else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
+                            val = false;
+                            msg = "Campo Departamento não pode ser nulo";
+                            setRows(changedRows);
+                         } 
+                         else if(!emailV.test(l.SGCO_EMAIL))
+                         { val = false; 
+                            msg = "Email Contato inválido" ;
+                             setRows(changedRows);
+                        }
+                        else if(l.SGCO_URL === "" || !l.SGCO_URL ){                      
+                            val = false;
+                            msg = "Campo URL não pode ser nulo";
+                            setRows(changedRows);
+                         } 
+                         else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD)){                      
+                            
+    
+                            if(l.SGCO_CELULAR_DDD === 0 ){
+                                val = true;
+                             }else{
+                                val = false;
+                            msg = "Campo Celular DDD inválido";
+                            setRows(changedRows);
+                             }
+                         } 
+                         else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO)){                      
+                            
+    
+                            if(l.SGCO_CELULAR_NUMERO === 0 ){
+                                val = true;
+                             }else{
+                                val = false;
+                                msg = "Campo Celular NR inválido";
+                                setRows(changedRows);
+                             }
+    
+    
+    
+    
+                         } 
+                         else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  ){                      
+                            val = false;
+                            msg = "Campo Operadora  não pode ser nulo";
+                            setRows(changedRows);
+    
+    
+                         }
+                         else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) ){                      
+                           
+    
+                            if(l.SGCO_FONE_COMERCIAL_DDD === 0 ){
+                                val = true;
+                             }else{
+                                val = false;
+                            msg = "Campo Fone Comercial DDD inválido";
+                            setRows(changedRows);
+                             }
+    
+    
+    
+                         }
+                         else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO)  ){                      
+                           
+                            if(l.SGCO_FONE_COMERCIAL_NUMERO === 0 ){
+                                val = true;
+                             }else{
+                                val = false;
+                                msg = "Campo Fone Comercial NR  inválido";
+                                setRows(changedRows);
+                             }
+    
+    
+    
+                         }
+                         else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)   ){                      
+                            
+                         if(l.SGCO_FONE_COMERCIAL_RAMAL === 0 ){
+                            val = true;
+                         }else{
+                            msg = "Campo Fone Comercial Ramal  inválido";
+                            setRows(changedRows);
+                            val = false;
+                         }
+                            
+                         }      
+    
+    
+                        })
+    
+
+
                     if(val){
-                        setRows(changedRows);
-                     salvarContato(changedRows);
+                    setRows(changedRows);
+                    salvarContato(changedRows);
 
                     }else{
-                        window.alert("Email Contato inválido");
+                        window.alert(msg);
                     }
                      
-               
+                //   setRows(changedRows);
+                //     salvarContato(changedRows);
           
             
           
@@ -473,10 +687,28 @@ const CadastroSeguradora = () => {
     };
 
 
+    const ValidaNumber = ({value})=>(       
+        apenasNr(value)
+        
+    )
+    const ValidaNumberProv = (props)=>(
+        <DataTypeProvider
+        formatterComponent={ValidaNumber}
+        {...props}
+
+        />
+    )
+    const [validaNumber] = useState(["SGCO_CELULAR_DDD","SGCO_CELULAR_NUMERO",
+    "SGCO_FONE_COMERCIAL_DDD","SGCO_FONE_COMERCIAL_NUMERO","SGCO_FONE_COMERCIAL_RAMAL","ID_SEGURADORA"]);
 
 
-
-
+    const [editingStateColumns] = useState([
+         {columnName : "SGCO_NOME", maxLength : 5 },
+       
+        // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
+        // {columnName : "PRDT_VALOR",align: 'center'},
+    
+       ])
 
 
 
@@ -696,14 +928,16 @@ const CadastroSeguradora = () => {
                                 columns={columns}
                             //  getRowId={getRowId}
                             >
+                                 <ValidaNumberProv
+                                 for={validaNumber}
+        
+                                    />
                                 <EditingState
                                     onCommitChanges={commitChanges}
+                                    columnExtensions={editingStateColumns}
                                 // columnExtensions={"editingStateColumns"}
                                 />
-                                {/* <PriceProvider
-        for={"priceColumns"}
-        
-        /> */}
+                               
 
                                 {/* <Table  />
         <TableHeaderRow />
@@ -725,6 +959,7 @@ const CadastroSeguradora = () => {
                                     pageSize={3}
                                 />
                                 <IntegratedPaging />
+           
                                 <PagingPanel />
                                 <Table />
                                 <TableHeaderRow />

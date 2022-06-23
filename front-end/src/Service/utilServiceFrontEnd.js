@@ -303,7 +303,9 @@ export const validaSOAPRET = ()=>{
 
 export const validaSOAPNOT = ()=>{
     if(document.getElementById("soapNo").value.length > 0){
-        return true;
+        document.getElementById("soapNo").style.borderColor = "#ddd";
+        return true
+        
     }else{
         window.alert("Favor Preencher o campo SOAP Notas");       
     document.getElementById("soapNo").style.borderColor = "red";     
@@ -312,7 +314,18 @@ export const validaSOAPNOT = ()=>{
 
 }
 
+export const validaGRID =(valor,val,changedRows,setRows,msg)=>{
+   
+    // if(valor === "" || !valor ){                      
+    //     val = false;
+    //     msg = "Campo URL não pode ser nulo";
+    //     setRows(changedRows);
+    //     return true;
+    //  } else {
+    //     return false;
+    //  }
 
+}
 
 
 

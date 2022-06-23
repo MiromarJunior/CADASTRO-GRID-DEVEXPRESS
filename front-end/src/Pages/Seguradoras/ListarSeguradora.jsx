@@ -166,7 +166,7 @@ const ListarSeguradora =()=> {
     return (
         <div className="container-fluid">
 
-            <h1>Listar Produtos</h1>
+            <h3 className="centralizar">SEGURADORAS</h3>
 
             <div style={{marginBottom : "10px"}} >
                 {/* <button onClick={() => navigate("/home")}  > HOME</button> */}
