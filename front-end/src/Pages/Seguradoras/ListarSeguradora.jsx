@@ -12,10 +12,14 @@ import {
     TableEditRow,
     TableFilterRow,
     
-  } from '@devexpress/dx-react-grid-bootstrap4';
+  } from '@devexpress/dx-react-grid-material-ui';
 import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
 import { Button } from "react-bootstrap";
 import { cnpj } from "cpf-cnpj-validator";
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 
 
 
@@ -26,18 +30,19 @@ const ListarSeguradora =()=> {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout } = useContext(AuthContext);
-   
-
-    
+      
 
    
-    useEffect(() => {        
+    useEffect(() => {    
+      
+        
+        
         listarSeguradoras();        
-    }, []);
+    }, [logout,token]);
 
-    const listarSeguradoras = async ()=> {      
+    const listarSeguradoras =  ()=> {      
         let dados = { token };
-      await  getSeguradora(dados)
+        getSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
                     alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -59,7 +64,7 @@ const ListarSeguradora =()=> {
                 }
             })
             .catch((res) => {
-              return  console.log(res);
+              return  console.error(res);
             })
     };
 
@@ -82,23 +87,22 @@ const ListarSeguradora =()=> {
                     else if (res.data === "erroSalvar") {
                         alert("Erro a tentar salvar ou alterar!!!");
                     }    
-                    else {                       
-                        listarSeguradoras();
-                    }
+                    
                 })
                 .catch((res) => {
                     console.error(res);
-                    window.alert("Erro ao tentar exluir seguradora");
+                    window.alert("Erro ao tentar excluir seguradora");
                 })
         }
 
     };
  
+    const element = <AddCircleOutlinedIcon fontSize="large" style={{color : "blue"}} type="button" onClick={()=>navigate("/cadastroSeguradora/0")}/>
     const [columns] = useState([ 
-       { name: 'SGRA_CNPJ', title: "CNPJ"},
+       { name: 'SGRA_CNPJ', title: `CNPJ`},
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL"},
          { name: 'SGRA_CIDADE', title: "CIDADE" },
-         {name : "ALTERACAO", title :"ALTERAÇÃO",                
+         {name : "ALTERACAO", title : element,                
          getCellValue: row => (row.ID_SEGURADORA)  
            
     },      
@@ -106,7 +110,7 @@ const ListarSeguradora =()=> {
     ]);
 
    const [editingStateColumns] = useState([
-    // {columnName : "SGRA_CNPJ",editingEnabled: false},
+     {columnName : "ALTERACAO",editingEnabled: false},
     // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
     // {columnName : "PRDT_VALOR",align: 'center'},
 
@@ -145,8 +149,8 @@ const ListarSeguradora =()=> {
  
       const EditSeguradoras = ({value})=>(
         <div>
-            <Button variant="info" className="margemRight"onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)}>EDIT</Button> 
-           <Button variant="danger" className="margemRight" onClick={(e)=>deletarSeguradora(value)}>EXCLUIR</Button> 
+ <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} className="margemRight" onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)} type="button"/>
+<DeleteForeverOutlinedIcon type="button" fontSize="medium"  style={{ color: "red" }} onClick={(e)=>deletarSeguradora(value)}/>
         </div>       
        
        )    
@@ -158,9 +162,7 @@ const ListarSeguradora =()=> {
        )
     const [editSeg] = useState(["ALTERACAO"]);       
 
-    const [integratedSortingColumnExtensions] = useState([
-        { columnName: 'SGRA_CNPJ' },
-      ]); 
+   
     
 
     return (
@@ -185,10 +187,14 @@ const ListarSeguradora =()=> {
         <IntegratedFiltering />
         
          <SortingState 
-       //  defaultSorting={[{ columnName: 'ALTERACAO', direction: 'asc' }]}
+       //  defaultSorting={[{ columnName: 'ALTERACAO', sortingEnabled: false }]}
+       columnExtensions={editingStateColumns}
+     
+       
          />
          <IntegratedSorting
-           columnExtensions={integratedSortingColumnExtensions}
+          // columnExtensions={integratedSortingColumnExtensions}
+         
         />
         <EditingState
         

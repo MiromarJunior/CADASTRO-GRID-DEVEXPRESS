@@ -328,7 +328,28 @@ export const validaGRID =(valor,val,changedRows,setRows,msg)=>{
 }
 
 
+export const criandoU=(n)=>{
+    let v = n+1
+    const res = {
+        id: v,
+        SGCO_NOME: "",
+        SGCO_FUNCAO: "",
+        SGCO_DEPARTAMENTO: "",
+        SGCO_EMAIL: "",
+        SGCO_URL: "",
+        SGCO_CELULAR_DDD: "",
+        SGCO_CELULAR_NUMERO: "",
+        SGCO_CELULAR_OPERADORA: "",
+        SGCO_FONE_COMERCIAL_DDD: "",
+        SGCO_FONE_COMERCIAL_NUMERO: "",
+        SGCO_FONE_COMERCIAL_RAMAL: "",    
 
+    }
+    v++;
+   
+  return res;
+
+}
 
 
 
