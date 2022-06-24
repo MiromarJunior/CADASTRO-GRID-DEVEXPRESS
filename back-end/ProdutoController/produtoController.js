@@ -136,8 +136,7 @@ const objExterno = (lista).map(
       PRDT_VALOR : PRDT_VALOR ,PRDT_DT_VALIDADE : PRDT_DT_VALIDADE,
       PRDT_ID : PRDT_ID,PRDT_PERC_DESCONTO : formataValorString(PRDT_PERC_DESCONTO) , 
       PRDT_VALOR_LIQUIDO : formataValorString(valorLiquido(PRDT_VALOR,PRDT_PERC_DESCONTO )) 
-     }))
-  
+     }))  
 
 
 try {
@@ -161,7 +160,7 @@ try {
                      VALUES
                     ('${l.PRDT_DESCRICAO}','${l.PRDT_CODIGO}',${formataValorString(l.PRDT_VALOR)},
                     '${l.PRDT_DT_VALIDADE}',                     
-                     SQ_PRDT.NEXTVAL, '0', '0')       
+                     SQ_PRDT.NEXTVAL, '0', '0')     
               
               
               `,
@@ -181,8 +180,7 @@ try {
               PRDT_VALOR = ${formataValorString(l.PRDT_VALOR)},
               PRDT_DT_VALIDADE = '${l.PRDT_DT_VALIDADE}',
               PRDT_PERC_DESCONTO = ${formataValorString(l.PRDT_PERC_DESCONTO)},  
-              PRDT_VALOR_LIQUIDO = ${formataValorString(l.PRDT_VALOR_LIQUIDO)}
-             
+              PRDT_VALOR_LIQUIDO = ${formataValorString(l.PRDT_VALOR_LIQUIDO)}             
               WHERE PRDT_ID = '${l.PRDT_ID}' `,
         
               [],
@@ -190,7 +188,6 @@ try {
                 autoCommit : true} 
                  
                );
-
 
 
 

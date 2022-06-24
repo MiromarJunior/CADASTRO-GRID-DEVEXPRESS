@@ -1,8 +1,88 @@
 import { useContext, useEffect, useState } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Autenticação/validacao";
-import { slide as Menu } from 'react-burger-menu'
+
+
+
+
+
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import ListIcon from '@mui/icons-material/List';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import ExitToAppTwoToneIcon from '@mui/icons-material/ExitToAppTwoTone';
+import TreeView from '@mui/lab/TreeView';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TreeItem from '@mui/lab/TreeItem';
+
+
+
+
+const drawerWidth = 320;
+
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: `-${drawerWidth}px`,
+    ...(open && {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
+    }),
+  }),
+);
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
+
 
 
 
@@ -12,29 +92,170 @@ const HomePage = () => {
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
 
-  const showSettings = (e)=> {
-    e.preventDefault();
-    
-  }
+
+
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   
   return (
     <div style={{ display: nomeUser() ? "" : "none" }} >
 
-.
-    .
-    .
-  }
+<Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+        <Toolbar style={{backgroundColor : "black"}}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6"  noWrap component="div">
+            SISTEMA SEGURADORAS
+          
+          </Typography>
+          
+                 
+
+           
+        </Toolbar>
+        
+      </AppBar>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="persistent"
+        anchor="left"
+        open={open}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+          
+        </DrawerHeader>
+        
+        <Divider />
+
+        <TreeView
+      aria-label="file system navigator"
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      defaultExpandIcon={<ChevronRightIcon />}
+      
+    >
+      
+      <TreeItem nodeId="1" label="CADASTROS GERAIS">
+
+       
+
+        <TreeItem nodeId="3" label="BÁSICO">
+
+
+          <TreeItem nodeId="4" label="SUCURSAIS">
+          <ListItem  disablePadding>
+              <ListItemButton onClick={ ()=> navigate("/listarSeguradora") }>
+                <ListItemIcon>
+                  <ListIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Listar Seguradora"} />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem  disablePadding>
+              <ListItemButton onClick={ ()=> navigate("/cadastroSeguradora/0")}>
+                <ListItemIcon>
+                  <AddBoxOutlinedIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Cadastrar Seguradora"}   />
+              </ListItemButton>
+            </ListItem>
+
+          </TreeItem>
+
+
+        </TreeItem>
+
+      </TreeItem>
 
 
 
+
+
+    </TreeView>
+
+
+
+
+
+
+
+
+
+     
+
+
+         
+            
+
+            
+   
+      
+        
+
+        <Divider />
+        {/* <List>
+          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List> */}
+
+        
+            <ListItem  disablePadding  style={{marginTop : 300}}>
+              <ListItemButton onClick={logout}>
+                <ListItemIcon>
+                  <ExitToAppTwoToneIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Sair"} />
+              </ListItemButton>
+            </ListItem>
+      </Drawer>
+      <Main open={open}>
+        
+        <DrawerHeader />  
+        
+      </Main>
+
+      
+    </Box>
+     
 
 
     </div>
-   
-         
-
-        
 
   )
 
@@ -43,53 +264,6 @@ const HomePage = () => {
 export default HomePage;
 
 
-/*
-
-
-                <div className="dropdown"style={{  marginBottom: "5px" }} >
-                  <button  className="btn btn-secondary dropdown-toggle btnMenu" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    CADASTROS GERAIS
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                     <li>
-                                     
-                                     </li>
-                  </ul>
-                </div>
-
-                <div className="dropdown" style={{  marginBottom: "5px" }} >
-                  <button className="btn btn-secondary dropdown-toggle btnMenu" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    PEÇAS
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  </ul>
-                </div>
-
-                <div className="dropdown" style={{  marginBottom: "5px" }} >
-                  <button className="btn btn-secondary dropdown-toggle btnMenu" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    RADAR HDI
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  </ul>
-                </div>
-
-                <div className="dropdown" style={{  marginBottom: "5px" }} >
-                  <button className="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    RANKING
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  </ul>
-                </div>
-
-
-          <li className="list-group-item">DOCUMENTOS</li>
-          <li className="list-group-item">APLICATIVO</li>
-          <li className="list-group-item">CONTATOS</li>
-          <li className="list-group-item">SOBRE</li>
-
-
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
 
 
 
@@ -97,33 +271,3 @@ export default HomePage;
 
 
 
-
-
-    
-            <DropdownButton id="" variant="secondary"title="PEÇAS   "  className="btnMenu">
-              <Dropdown.Item >
-                        </Dropdown.Item>              
-              </DropdownButton>
-          
-             
-              <DropdownButton id="dropdown-basic-button" variant="secondary"title="RADAR HDI"  className="btnMenu">
-              <Dropdown.Item >
-                        </Dropdown.Item>              
-              </DropdownButton>
-
-              <DropdownButton id="dropdown-basic-button" variant="secondary"title="RANKING"  className="btnMenu">
-              <Dropdown.Item >
-                        </Dropdown.Item>              
-              </DropdownButton>
-
-              <DropdownButton id="dropdown-basic-button" variant="secondary"title=""  className="btnMenu">
-              <Dropdown.Item >
-                        </Dropdown.Item>              
-              </DropdownButton>
-
-              <DropdownButton id="dropdown-basic-button" variant="secondary"title=""  className="btnMenu">
-              <Dropdown.Item >
-                        </Dropdown.Item>              
-              </DropdownButton>
-          
-*/

@@ -508,7 +508,7 @@
      const [columns] = useState([        
          { name: 'SGCO_NOME', title: "Nome Contato" },
          { name: 'SGCO_FUNCAO', title: "FUNÇÃO" },
-         { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO" },
+         { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO",  },
          { name: 'SGCO_EMAIL', title: "EMAIL" },
          { name: 'SGCO_URL', title: "URL" },
          { name: 'SGCO_CELULAR_DDD', title: " DDD" },
@@ -576,107 +576,109 @@
                          let msg = "";
                          changedRows.forEach((l)=>{
  
-                             
-                             if(l.SGCO_NOME === "" || !l.SGCO_NOME ){                      
-                                 val = false;
-                                 msg = "Campo Nome não pode ser nulo";
-                                 setRows(changedRows);
-                              }
-                            else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO ){                      
-                                 val = false;
-                                 msg = "Campo Função não pode ser nulo";
-                                 setRows(changedRows);
-                              }
+                            if(l.SGCO_NOME === "" || !l.SGCO_NOME  || l.SGCO_NOME.length > 64 ){  
                               
-                              else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
-                                 val = false;
-                                 msg = "Campo Departamento não pode ser nulo";
-                                 setRows(changedRows);
-                              }
-                             else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
-                                 val = false;
-                                 msg = "Campo Departamento não pode ser nulo";
-                                 setRows(changedRows);
-                              } 
-                              else if(!emailV.test(l.SGCO_EMAIL))
-                              { val = false; 
-                                 msg = "Email Contato inválido" ;
-                                  setRows(changedRows);
+   
+                                val = false;
+                                msg = "Campo Nome com tamanho inválido";
+                                setRows(changedRows);
                              }
-                             else if(l.SGCO_URL === "" || !l.SGCO_URL ){                      
-                                 val = false;
-                                 msg = "Campo URL não pode ser nulo";
+                           else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO || l.SGCO_FUNCAO.length > 64){                      
+                                val = false;
+                                msg = "Campo Função com tamanho inválido";
+                                setRows(changedRows);
+                             }
+                             
+                             else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO || l.SGCO_DEPARTAMENTO.length > 12 ){                      
+                                val = false;
+                                msg = "Campo Departamento com tamanho inválido";
+                                setRows(changedRows);
+                             }
+                            
+                             else if(!emailV.test(l.SGCO_EMAIL) || l.SGCO_EMAIL.length > 128)
+                             { val = false; 
+                                msg = "Email Contato inválido" ;
                                  setRows(changedRows);
-                              } 
-                              else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD)){                      
-                                 
-         
-                                 if(l.SGCO_CELULAR_DDD === 0 ){
-                                     val = true;
-                                  }else{
-                                     val = false;
-                                 msg = "Campo Celular DDD inválido";
-                                 setRows(changedRows);
-                                  }
-                              } 
-                              else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO)){                      
-                                 
-         
-                                 if(l.SGCO_CELULAR_NUMERO === 0 ){
-                                     val = true;
-                                  }else{
-                                     val = false;
-                                     msg = "Campo Celular NR inválido";
-                                     setRows(changedRows);
-                                  }
-         
-         
-         
-         
-                              } 
-                              else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  ){                      
-                                 val = false;
-                                 msg = "Campo Operadora  não pode ser nulo";
-                                 setRows(changedRows);
-         
-         
-                              }
-                              else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) ){                      
+                            }
+                            else if(l.SGCO_URL === "" || !l.SGCO_URL  || l.SGCO_URL.length > 256){                      
+                                val = false;
+                                msg = "Campo URL com tamanho inválido";
+                                setRows(changedRows);
+                             } 
+                             else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD) || l.SGCO_CELULAR_DDD.length > 3){                      
                                 
-         
-                                 if(l.SGCO_FONE_COMERCIAL_DDD === 0 ){
-                                     val = true;
-                                  }else{
-                                     val = false;
-                                 msg = "Campo Fone Comercial DDD inválido";
-                                 setRows(changedRows);
-                                  }           
-                              }
-                              else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO)  ){                      
+        
+                                if(l.SGCO_CELULAR_DDD === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                msg = "Campo Celular DDD inválido";
+                                setRows(changedRows);
+                                 }
+                             } 
+                             else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO) || l.SGCO_CELULAR_NUMERO.length > 10){                      
                                 
-                                 if(l.SGCO_FONE_COMERCIAL_NUMERO === 0 ){
-                                     val = true;
-                                  }else{
-                                     val = false;
-                                     msg = "Campo Fone Comercial NR  inválido";
-                                     setRows(changedRows);
-                                  }          
-         
-                              }
-                              else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)   ){                      
-                                 
-                              if(l.SGCO_FONE_COMERCIAL_RAMAL === 0 ){
-                                 val = true;
-                              }else{
-                                 msg = "Campo Fone Comercial Ramal  inválido";
-                                 setRows(changedRows);
-                                 val = false;
-                              }
-                                 
-                              }      
-         
-         
-                             })         
+        
+                                if(l.SGCO_CELULAR_NUMERO === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                    msg = "Campo Celular NR inválido";
+                                    setRows(changedRows);
+                                 }
+        
+        
+        
+        
+                             } 
+                             else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  || l.SGCO_CELULAR_OPERADORA.length > 20 ){                      
+                                val = false;
+                                msg = "Campo Operadora  com tamanho inválido";
+                                setRows(changedRows);
+        
+        
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) || l.SGCO_FONE_COMERCIAL_DDD.length > 3 ){                      
+                               
+        
+                                if(l.SGCO_FONE_COMERCIAL_DDD === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                msg = "Campo Fone Comercial DDD inválido";
+                                setRows(changedRows);
+                                 }
+        
+        
+        
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO) || l.SGCO_FONE_COMERCIAL_NUMERO.length > 10 ){                      
+                               
+                                if(l.SGCO_FONE_COMERCIAL_NUMERO === 0 ){
+                                    val = true;
+                                 }else{
+                                    val = false;
+                                    msg = "Campo Fone Comercial NR  inválido";
+                                    setRows(changedRows);
+                                 }
+        
+        
+        
+                             }
+                             else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)  || l.SGCO_FONE_COMERCIAL_RAMAL.length > 5   ){                      
+                                
+                             if(l.SGCO_FONE_COMERCIAL_RAMAL === 0 ){
+                                val = true;
+                             }else{
+                                msg = "Campo Fone Comercial Ramal  inválido";
+                                setRows(changedRows);
+                                val = false;
+                             }
+                                
+                             }      
+        
+        
+                            })      
                            
  
              if(val){
@@ -697,38 +699,36 @@
                      let msg = "";
                      changedRows.forEach((l)=>{
  
-                         if(l.SGCO_NOME === "" || !l.SGCO_NOME ){                      
+                         if(l.SGCO_NOME === "" || !l.SGCO_NOME  || l.SGCO_NOME.length > 64 ){  
+                           
+
                              val = false;
-                             msg = "Campo Nome não pode ser nulo";
+                             msg = "Campo Nome com tamanho inválido";
                              setRows(changedRows);
                           }
-                        else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO ){                      
+                        else if(l.SGCO_FUNCAO === "" || !l.SGCO_FUNCAO || l.SGCO_FUNCAO.length > 64){                      
                              val = false;
-                             msg = "Campo Função não pode ser nulo";
+                             msg = "Campo Função com tamanho inválido";
                              setRows(changedRows);
                           }
                           
-                          else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
+                          else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO || l.SGCO_DEPARTAMENTO.length > 12 ){                      
                              val = false;
-                             msg = "Campo Departamento não pode ser nulo";
+                             msg = "Campo Departamento com tamanho inválido";
                              setRows(changedRows);
                           }
-                         else if(l.SGCO_DEPARTAMENTO === "" || !l.SGCO_DEPARTAMENTO ){                      
-                             val = false;
-                             msg = "Campo Departamento não pode ser nulo";
-                             setRows(changedRows);
-                          } 
-                          else if(!emailV.test(l.SGCO_EMAIL))
+                         
+                          else if(!emailV.test(l.SGCO_EMAIL) || l.SGCO_EMAIL.length > 128)
                           { val = false; 
                              msg = "Email Contato inválido" ;
                               setRows(changedRows);
                          }
-                         else if(l.SGCO_URL === "" || !l.SGCO_URL ){                      
+                         else if(l.SGCO_URL === "" || !l.SGCO_URL  || l.SGCO_URL.length > 256){                      
                              val = false;
-                             msg = "Campo URL não pode ser nulo";
+                             msg = "Campo URL com tamanho inválido";
                              setRows(changedRows);
                           } 
-                          else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD)){                      
+                          else if(l.SGCO_CELULAR_DDD === "" || !l.SGCO_CELULAR_DDD  || isNaN(l.SGCO_CELULAR_DDD) || l.SGCO_CELULAR_DDD.length > 3){                      
                              
      
                              if(l.SGCO_CELULAR_DDD === 0 ){
@@ -739,7 +739,7 @@
                              setRows(changedRows);
                               }
                           } 
-                          else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO)){                      
+                          else if(l.SGCO_CELULAR_NUMERO === "" || !l.SGCO_CELULAR_NUMERO || isNaN(l.SGCO_CELULAR_NUMERO) || l.SGCO_CELULAR_NUMERO.length > 10){                      
                              
      
                              if(l.SGCO_CELULAR_NUMERO === 0 ){
@@ -754,14 +754,14 @@
      
      
                           } 
-                          else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  ){                      
+                          else if(l.SGCO_CELULAR_OPERADORA === "" || !l.SGCO_CELULAR_OPERADORA  || l.SGCO_CELULAR_OPERADORA.length > 20 ){                      
                              val = false;
-                             msg = "Campo Operadora  não pode ser nulo";
+                             msg = "Campo Operadora  com tamanho inválido";
                              setRows(changedRows);
      
      
                           }
-                          else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) ){                      
+                          else if(l.SGCO_FONE_COMERCIAL_DDD === "" || !l.SGCO_FONE_COMERCIAL_DDD || isNaN(l.SGCO_FONE_COMERCIAL_DDD) || l.SGCO_FONE_COMERCIAL_DDD.length > 3 ){                      
                             
      
                              if(l.SGCO_FONE_COMERCIAL_DDD === 0 ){
@@ -775,7 +775,7 @@
      
      
                           }
-                          else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO)  ){                      
+                          else if(l.SGCO_FONE_COMERCIAL_NUMERO === "" || !l.SGCO_FONE_COMERCIAL_NUMERO ||  isNaN(l.SGCO_FONE_COMERCIAL_NUMERO) || l.SGCO_FONE_COMERCIAL_NUMERO.length > 10 ){                      
                             
                              if(l.SGCO_FONE_COMERCIAL_NUMERO === 0 ){
                                  val = true;
@@ -788,7 +788,7 @@
      
      
                           }
-                          else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)   ){                      
+                          else if(l.SGCO_FONE_COMERCIAL_RAMAL === "" || !l.SGCO_FONE_COMERCIAL_RAMAL ||  isNaN(l.SGCO_FONE_COMERCIAL_RAMAL)  || l.SGCO_FONE_COMERCIAL_RAMAL.length > 5   ){                      
                              
                           if(l.SGCO_FONE_COMERCIAL_RAMAL === 0 ){
                              val = true;
@@ -1067,15 +1067,16 @@
  
  
  
-                     <hr style={{ width: "100%" }} />
+                     <hr style={{ width: "100%" }}  />
+                     <div className="form-group col-md-7" style={{display: displayCont }}   >
+                 <h3 id="titulo" >Cadastrar Contato</h3>
+                 </div> 
  
                      <div style={{ display: displayCont }} className="form-group col-md-12"    >
  
  
- 
-                         {/* <div className="form-group col-md-7"  >
-                 <h3 id="titulo" >Cadastrar Contato</h3>
-                 </div> */}
+
+                         
  
                          <div className="card" >
                              <Grid
@@ -1094,77 +1095,29 @@
                                      editingRowIds={editingRowIds}
                                      onEditingRowIdsChange={getEditingRowIds}
                                      rowChanges={rowChanges}
-                                     onRowChangesChange={setRowChanges}
-                                    //  addedRows={addedRows}
-                                    //  onAddedRowsChange={changeAddedRows}
-                                     onCommitChanges={commitChanges}
-                                
-      
-
-
-
-
-
-                                 // columnExtensions={"editingStateColumns"}
-                                 />
-                                 
-     
-                                
+                                     onRowChangesChange={setRowChanges}                                 
+                                     onCommitChanges={commitChanges}   
+                                 />                                
  
                                  <PagingState
                                      defaultCurrentPage={0}
                                      pageSize={3}
                                  />
-                                 <IntegratedPaging />
-            
+                                 <IntegratedPaging />            
                                  <PagingPanel />
                                  <Table />
                                  <TableHeaderRow />
-                                 <TableEditRow />
-                                 
+                                 <TableEditRow />                                 
                               <TableEditColumn
                                 
                                      showEditCommand
-                                     showAddCommand={!addedRows.length}
- 
-          showDeleteCommand
-                                                     
-         
-                                  commandComponent={Command}
-                                 
-                               />
- 
-                             </Grid>
- 
-                         </div>
- 
- 
- 
- 
- 
- 
- 
+                                     showAddCommand
+                                     showDeleteCommand
+                                     commandComponent={Command}                                 
+                               /> 
+                             </Grid> 
+                         </div> 
                      </div>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  
  
  
@@ -1186,12 +1139,7 @@
  
  
  
-                     {/* 
-                 <div style={{ display: "none" }}>
-                     <Form.Control type="text" onChange={(e) => setCodigoIBGECidade(e.target.value)} value={codigoIBGECidade} style={{ width: "50%" }} placeholder="Código Cidade" />
- 
- 
-                 </div> */}
+                  
  
  
  
