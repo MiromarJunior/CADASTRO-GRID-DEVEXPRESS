@@ -169,7 +169,7 @@
  
          }).catch((res)=>{
              console.error(res);
-             
+             window.alert("Erro ao listar Estados")
          })
      }
    
