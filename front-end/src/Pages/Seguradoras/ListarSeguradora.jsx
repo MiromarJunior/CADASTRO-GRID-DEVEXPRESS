@@ -14,9 +14,7 @@ import {
     
   } from '@devexpress/dx-react-grid-material-ui';
 import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
-import { Button } from "react-bootstrap";
 import { cnpj } from "cpf-cnpj-validator";
-import ViewListIcon from '@mui/icons-material/ViewList';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -29,17 +27,15 @@ const ListarSeguradora =()=> {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
-    const { logout } = useContext(AuthContext);
-      
+    const { logout } = useContext(AuthContext);      
 
    
-    useEffect(() => {    
-      
+    useEffect(() => {        
+        
         
         
         listarSeguradoras();        
     }, [logout,token]);
-
     const listarSeguradoras =  ()=> {      
         let dados = { token };
         getSeguradora(dados)
@@ -67,6 +63,7 @@ const ListarSeguradora =()=> {
               return  console.error(res);
             })
     };
+   
 
     const deletarSeguradora = (idSeg) => {        
         let dados = { idSeg, token };      
@@ -74,18 +71,22 @@ const ListarSeguradora =()=> {
             deleteSeguradoraID(dados)
                 .then((res) => {
                     if (res.data === "erroLogin") {
-                        alert("Sessão expirada, Favor efetuar um novo login !!");
+                        window.alert("Sessão expirada, Favor efetuar um novo login !!");
                         logout();
                         window.location.reload();
                     }
                     else if (res.data === "semAcesso") {
-                        alert("Usuário sem permissão !!!");
+                        window.alert("Usuário sem permissão !!!");
     
                     } else if (res.data === "campoNulo") {
-                        alert("Preencha todos os Campos obrigatorios!!!");
+                        window.alert("Preencha todos os Campos obrigatorios!!!");
                     }
                     else if (res.data === "erroSalvar") {
-                        alert("Erro a tentar salvar ou alterar!!!");
+                        window.alert("Erro a tentar salvar ou alterar!!!");
+                    }
+                    else if (res.data === "sucesso") {
+                       window.alert("Seguradora Excluída com Sucesso!!!");
+                       listarSeguradoras();
                     }    
                     
                 })
@@ -116,24 +117,7 @@ const ListarSeguradora =()=> {
 
    ])
 
-
-
    
-//    const PriceFormatter = ({value})=>(
-//     valorBR(value)
-//    )
-
-//    const PriceProvider = props =>(
-//     <DataTypeProvider
-//         formatterComponent={PriceFormatter}
-//         {...props}
-    
-//     />
-//    )
- 
-
-  
-//    const [priceColumns] = useState(["PRDT_VALOR","PRDT_VALOR_LIQUIDO"]);
 
          const ValidCnpj = ({value})=>(       
         cnpj.format(value)
@@ -168,14 +152,7 @@ const ListarSeguradora =()=> {
     return (
         <div className="container-fluid">
 
-            <h3 className="centralizar">SEGURADORAS</h3>
-
-            <div style={{marginBottom : "10px"}} >
-                {/* <button onClick={() => navigate("/home")}  > HOME</button> */}
-                {/* <button className="btn btn-outline-primary margemRight" onClick={(e)=>navigate("/cadastroSeguradora/0")}>CADASTRAR UNIDADE EMPRESARIAL</button>           
-                <button className="btn btn-outline-danger margemRight" onClick={(e) => logout(e)}  > SAIR</button> */}
-            </div>
-
+            <h3 className="centralizar">SEGURADORAS</h3>  
 
             <div className="card">
       <Grid
@@ -186,18 +163,12 @@ const ListarSeguradora =()=> {
         <FilteringState defaultFilters={[]} />
         <IntegratedFiltering />
         
-         <SortingState 
-       //  defaultSorting={[{ columnName: 'ALTERACAO', sortingEnabled: false }]}
-       columnExtensions={editingStateColumns}
-     
-       
+         <SortingState       
+       columnExtensions={editingStateColumns}       
          />
-         <IntegratedSorting
-          // columnExtensions={integratedSortingColumnExtensions}
-         
+         <IntegratedSorting         
         />
-        <EditingState
-        
+        <EditingState        
           columnExtensions={editingStateColumns}
         />
         <EditSeguradorasProv
@@ -210,8 +181,7 @@ const ListarSeguradora =()=> {
         <Table  />
         <TableHeaderRow  showSortingControls />
         <TableEditRow />
-        <TableFilterRow />
-       
+        <TableFilterRow />      
         
       </Grid>
     </div>

@@ -334,8 +334,7 @@
      }
  
      const salvarContato = (rows) => {
-         const dadosContato = { contatos: rows, token, idSeg: idSegN }
-         console.log(dadosContato);
+         const dadosContato = { contatos: rows, token, idSeg: idSegN }       
          saveContatoSeguradora(dadosContato)
              .then((res) => {
                  if (res.data === "erroLogin") {
