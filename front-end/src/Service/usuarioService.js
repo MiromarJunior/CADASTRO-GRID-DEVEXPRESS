@@ -14,9 +14,14 @@ const saveUsuario = data=>{
 const loginUsuario = (data)=>{
     return axios.post(`${baseURL}loginUsuario`,data);
 } 
+const getUsuarios = (data)=>{
+    return axios.post(`${baseURL}listarUsu`,data);
+} 
+
+
 
 
 
 const api = axios.create({baseURL});
 
-module.exports = {api,saveUsuario,loginUsuario};
+module.exports = {api,saveUsuario,loginUsuario,getUsuarios};

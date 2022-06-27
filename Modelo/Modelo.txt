@@ -1,5 +1,12 @@
 #FRONT END
 REACT_APP_API_URL=http://localhost:5000/
+#http://192.168.1.42:5004/
+#http://localhost:5000/
+
+
+
+
+
 
 #BACK END
 DB_USER=curso
@@ -8,4 +15,7 @@ DB_CONSTRING=avvante
 SECRET=avvante
 
 URL_FRONT_END=http://localhost:3000
+#http://localhost:3000
+#http://192.168.1.42:13004
+
 

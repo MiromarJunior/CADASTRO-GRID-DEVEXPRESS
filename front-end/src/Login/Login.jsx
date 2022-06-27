@@ -67,7 +67,7 @@ function LoginPage(){
                             
 							
 							<div className="row">
-                            <button style={{marginLeft : "90px"}} className="btnL" onClick={(e)=>acessoLogin(e)}>Login</button>
+                            <button style={{marginLeft : "20%"}} className="btnL" onClick={(e)=>acessoLogin(e)}>Login</button>
 							</div>
 						</form>
 					</div>

@@ -89,7 +89,6 @@
   
   };
 
-
   
   const Command = ({ id, onExecute }) => {
     const CommandButton = commandComponents[id];

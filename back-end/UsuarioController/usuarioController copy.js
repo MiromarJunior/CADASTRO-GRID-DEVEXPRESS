@@ -30,114 +30,85 @@ const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 
 
-router.post("/listarUsu", async(req, res)=> {
-    let connection = await oracledb.getConnection(dbConfig);
-    let result;
+// router.get("/listar", async(req, res)=> {
+//     let connection = await oracledb.getConnection(dbConfig);
+//     let result;
 
-  try {
+//   try {
 
-    result = await connection.execute ( 
+//     result = await connection.execute ( 
 
-        ` SELECT U.ID_USUARIO,
-        U.USRO_USUARIO,
-        U.USRO_NOME,       
-        U.USRO_CATEGORIA,
-        U.USRO_CNPJ_FORNECEDOR,
-        U.USRO_CPF FROM USUARIO U  `,
-        [],
-        { outFormat  :  oracledb.OUT_FORMAT_OBJECT} 
-         );
-         res.send(result.rows).status(200);
+//         ` SELECT  * FROM USUARIO  `,
+//         [],
+//         { outFormat  :  oracledb.OUT_FORMAT_OBJECT} 
+//          );
+//          res.send(result.rows).status(200);
         
     
       
-  } catch (error) {
-      console.error(error);
-      res.send("erro de conexao").status(500);
+//   } catch (error) {
+//       console.error(error);
+//       res.send("erro de conexao").status(500);
       
-  }finally {
-      if(connection){
-          try {
-              await connection.close();
-             
-          } catch (error) {
-            console.error(error);              
-          }
-      }
-  }
+//   }finally {
+//       if(connection){
+//           try {
+//               await connection.close();
+//               console.log("conexão fechada");
+//           } catch (error) {
+//             console.error(error);              
+//           }
+//       }
+//   }
 
 
 
 
-});
+// });
 
 
 router.post("/cadastrarUsuario", async(req, res)=> {
-  let ={lista} =req.body
+  let ={nome, usuario, dataNasc, senha, cpf} =req.body
   let connection = await oracledb.getConnection(dbConfig);
-
-  
+  await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`);
+  let result;
+  let erroAcesso = "";
+  const senhaC = bcrypt.hashSync(senha,saltRounds);
+  let data_brasileira = dataNasc.split('-').reverse().join('/');
  
 
 
 try {
-  let senhaC = "";
-  let senhaSQL = "";
-  let senhaSQLV = "";
-  lista.map( async (l)=>{
-
-    try {
-      
-    if(!l.ID_USUARIO){      
-      console.log(l);
-      let  senhaC = bcrypt.hashSync(l.SENHA,saltRounds);       
-    
-       let result = await connection.execute ( 
+  let result = await connection.execute ( 
     ` SELECT USRO_CPF FROM USUARIO 
-    WHERE USRO_CPF = '${l.USRO_CPF}' 
-    OR USRO_USUARIO = '${l.USRO_USUARIO}'`,
+    WHERE USRO_CPF = :CPF1 
+    OR USRO_USUARIO = :USUARIO1 `,
 
-    [],
+    [cpf,usuario],
     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
       
     } 
      );
      if(result.rows.length > 0){
-      res.send("duplicidade").status(200).end();
+      res.send("Usuário ou CPF já cadastrados !\nFavor verificar!!").status(200).end();
      }else{
-        await connection.execute( 
+        await connection.execute ( 
       ` INSERT INTO USUARIO(ID_USUARIO,
         USRO_NOME,
         USRO_CPF,       
         USRO_USUARIO,
         USRO_SENHA,
-        USRO_CATEGORIA,
-        USRO_CNPJ_FORNECEDOR       
-        )
-        VALUES(SEQ_USRO.NEXTVAL,'${l.USRO_NOME}', '${l.USRO_CPF}', '${l.USRO_USUARIO}', '${senhaC}', '${l.USRO_CATEGORIA}','${l.USRO_CNPJ_FORNECEDOR}') `,
+        USRO_CATEGORIA)
+        VALUES(SEQ_USRO.NEXTVAL,:NOME, :CPF, :USUARIO, :SENHA, 'Vendedor') `,
   
-      [],
+      [nome, cpf,usuario,senhaC],
       { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
         autoCommit : true
       } 
        );
-       res.send("sucesso").status(200).end();
+       res.send("Usuário Cadastrado com Sucesso !!").status(200).end();
       
      }
-
-
-
-
-
-    }
-      
-    } catch (error) {
-      
-    }
-
-   
-  })
- 
     
 } catch (error) {
   
@@ -183,8 +154,8 @@ try {
 
        if(result.rows.length > 0){
          result.rows.map((l)=>{
-           usuarioLocal = l.USRO_USUARIO;
-           senhaLocal = l.USRO_SENHA;
+           usuarioLocal = l.USUARIO;
+           senhaLocal = l.SENHA;
          });
          validaSenha = bcrypt.compareSync(senha,senhaLocal);
          if(usuarioLocal === usuario && (validaSenha)){
@@ -224,54 +195,7 @@ try {
 
 });
 
-router.post("/cadastrarUsuario", async(req, res)=> {
-  let ={idUsu, token} =req.body
-  let connection = await oracledb.getConnection(dbConfig);
-  let result;
-  let erroAcesso = "";
 
-
- 
-
-
-try {
- 
-    
-        await connection.execute ( 
-      ` DELETE FROM USUARIO
-      WHERE ID_USUARIO = :ID`,
-  
-      [idUsu],
-      { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-        autoCommit : true
-      } 
-       );
-       res.send("sucesso").status(200).end();
-      
-     
-    
-} catch (error) {
-  
-    console.error(error);
-    res.send("erro ao Excluir usuário").status(500);
-
-   
-    
-}finally {
-    if(connection){
-        try {
-            await connection.close();
-         
-        } catch (error) {
-          console.error(error);              
-        }
-    }
-}
-
-
-
-
-});
 
 
 

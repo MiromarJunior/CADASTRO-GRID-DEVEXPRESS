@@ -123,7 +123,7 @@ const HomePage = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6"  noWrap component="div">
-            SISTEMA SEGURADORAS
+            SISTEMA DE COTAÇÕES
           
           </Typography>
           
@@ -147,9 +147,15 @@ const HomePage = () => {
         open={open}
       >
         <DrawerHeader>
+        <Typography variant="h6" fontFamily={"serif"} noWrap component="div" marginRight={"65%"}>
+           MENU
+          
+          </Typography>
+      
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
+          
           
         </DrawerHeader>
         
@@ -166,11 +172,8 @@ const HomePage = () => {
 
        
 
-        <TreeItem nodeId="3" label="BÁSICO">
-
-
-          <TreeItem nodeId="4" label="SUCURSAIS">
-          <ListItem  disablePadding>
+        <TreeItem nodeId="2" label="BÁSICO">
+        <ListItem  disablePadding>
               <ListItemButton onClick={ ()=> navigate("/listarSeguradora") }>
                 <ListItemIcon>
                   <ListIcon /> 
@@ -188,12 +191,28 @@ const HomePage = () => {
               </ListItemButton>
             </ListItem>
 
-          </TreeItem>
+
+          
 
 
         </TreeItem>
 
+        <TreeItem nodeId="3" label="USUÁRIO">
+        <ListItem  disablePadding>
+              <ListItemButton onClick={ ()=> navigate("/cadastroSeguradora/0")}>
+                <ListItemIcon>
+                  <AddBoxOutlinedIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Usuários"}   />
+              </ListItemButton>
+            </ListItem>
+
+        </TreeItem>
+        
+
       </TreeItem>
+
+      
 
 
 
