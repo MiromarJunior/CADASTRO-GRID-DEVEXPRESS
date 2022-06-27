@@ -31,7 +31,7 @@
  import SaveIcon from '@mui/icons-material/Save';
  import CancelIcon from '@mui/icons-material/Cancel';
 
- const { format } = require('telefone');
+ //const { format } = require('telefone');
  const emailV = /\S+@\S+\.\S+/;
  
  const DeleteButton = ({ onExecute }) => (
@@ -99,10 +99,7 @@
       />
     );
   };
- 
-
- 
- 
+  
  
  const CadastroSeguradora = () => {
      const { logout } = useContext(AuthContext);
@@ -121,8 +118,7 @@
      const [estadoUF, setEstadoUF] = useState("");
      const [nrLogradouro, setNrLogradouro] = useState("");
      const [cep, setCep] = useState("");
-     const [nomeCidade, setNomeCidade] = useState("");
-     
+     const [nomeCidade, setNomeCidade] = useState("");     
      const [smtpSist, setSmtpSist] = useState("");
      const [portaSist, setPortaSist] = useState("");
      const [emailSist, setEmailSist] = useState("");
@@ -142,7 +138,7 @@
      const [listaUF,setListaUF] = useState([]);
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [rowChanges, setRowChanges] = useState({});
-    const [addedRows, setAddedRows] = useState([]);
+   
  
  
  
@@ -339,7 +335,7 @@
              .then((res) => {
                  if (res.data === "erroLogin") {
                      alert("Sessão expirada, Favor efetuar um novo login !!");
-                     //logout();
+                     logout();
                      window.location.reload();
                  }
                  else if (res.data === "semAcesso") {
@@ -349,7 +345,7 @@
                      alert("Preencha todos os Campos obrigatorios!!!");
                  }
                  else if (res.data === "sucesso") {
-                     // alert("Contato Cadastrado  com Sucesso!!!");   
+                      alert("Contato Cadastrado  com Sucesso!!!");   
                      buscarContatos(idSegN);
                  }
                  else {
@@ -365,8 +361,7 @@
      }
  
      const deletarContato = (idCont) => {
-         let dados = { token, idCont };
-       
+         let dados = { token, idCont };       
              deleteContatoSegID(dados)
                  .then((res) => {
                      if (res.data === "erroLogin") {
@@ -434,75 +429,7 @@
  
  
  
- // abaixo GRID
- 
- 
- 
-     // const SelectInputDep = ({value})=>(       
-     //     <FormSelect>      
-     //              <option>{value[0]}</option>
-     //              <option>{value[1]}</option>            
-     //     </FormSelect>
-     // )
-     // const SelectInpuDepProv = (props)=>(
-     //     <DataTypeProvider
-     //     formatterComponent={SelectInputDep}
-     //     {...props}
- 
-     //     />
-     // )
-     // const SelectInputFunc = ({value})=>(       
-     //     <FormSelect>      
-     //              <option>{"PEÇAS"}</option>
-     //              <option>{"SERVIÇOS"}</option>                            
-     //     </FormSelect>
-     // )
-     // const SelectInpuFuncProv = (props)=>(
-     //     <DataTypeProvider
-     //     formatterComponent={SelectInputFunc}
-     //     {...props}
- 
-     //     />
-     // )
- 
- 
- 
- 
- 
- 
-     //const gridRef = useRef();
- 
-     
-    
-    
-    
-
-
-
-//      const BotaoDEL = ({value})=>(     
-//        <div> 
-        
-//        <ModeEditOutlineOutlinedIcon style={{ color: "blue" }} className="margemRight" type="button"/>
-//  <DeleteForeverOutlinedIcon type="button" fontSize="medium"  style={{ color: "red" }} onClick={(e)=>deletarContato(value)}/>
-   
-//        </div>
-            
- 
-         
-        
-//      )
-//      const BoataoDELjProv = (props)=>(
-//          <DataTypeProvider
-//          formatterComponent={BotaoDEL}
-//          {...props}
- 
-//          />
-//      )
-//      const [botaoDel] = useState(["ALTERAÇÃO"]);
- 
- 
- 
- 
+//grid 
  
      const [columns] = useState([        
          { name: 'SGCO_NOME', title: "Nome Contato" },
@@ -518,47 +445,7 @@
          { name: 'SGCO_FONE_COMERCIAL_RAMAL', title: " RAMAL" },
  
      ]);
-     //  const [selectDep]= useState(["SGCO_DEPARTAMENTO"]);
- 
-     //  const [selectFunc]= useState(["SGCO_FUNCAO"]);
- 
-    //  const changeAddedRows = value => setAddedRows(
-    //     value.map(row => (Object.keys(row).length ? row : {
-    //         SGCO_NOME: "",
-    //         SGCO_FUNCAO: "",
-    //         SGCO_DEPARTAMENTO: "",
-    //         SGCO_EMAIL: "",
-    //         SGCO_URL: "",
-    //         SGCO_CELULAR_DDD: "",
-    //         SGCO_CELULAR_NUMERO: "",
-    //         SGCO_CELULAR_OPERADORA: "",
-    //         SGCO_FONE_COMERCIAL_DDD: "",
-    //         SGCO_FONE_COMERCIAL_NUMERO: "",
-    //         SGCO_FONE_COMERCIAL_RAMAL: "",            
-    //     })),
-    //   );
-
-
-
-
-
-    
-    //   const deleteRows = (deletedIds) => {
-    //     const rowsForDelete = rows.slice();
-    //     deletedIds.forEach((rowId) => {
-    //       const index = rowsForDelete.findIndex(row => row.id === rowId);
-    //       if (index > -1) {
-    //         rowsForDelete.splice(index, 1);
-    //       }
-    //     });
-    //     return rowsForDelete;
-    //   };
-    
-    
-    
-    
-    
-    
+  
      const commitChanges = ({ added, changed, deleted }) => {
          let changedRows;
          if (added) {
@@ -810,35 +697,21 @@
  
                      }else{
                          window.alert(msg);
-                     }
-                      
-                 //   setRows(changedRows);
-                 //     salvarContato(changedRows);
+                     }                      
+                
            
              
            
          }
          if (deleted) {
  
-             const deletedSet = new Set(deleted);
- 
-             // changedRows = rows.filter(row => !deletedSet.has(row.id));
- 
+             const deletedSet = new Set(deleted); 
+             // changedRows = rows.filter(row => !deletedSet.has(row.id)); 
              changedRows = rows.filter(row => deletedSet.has(row.id));
              deletarContato(changedRows.map(l => l.ID_SEGURADORA_CONTATO));
              setRows(changedRows);
          }
      };
- 
- 
-    
- 
- 
- 
- 
- 
- 
- 
  
  
      const ValidaNumber = ({value})=>(       
@@ -854,28 +727,11 @@
      )
      const [validaNumber] = useState(["SGCO_CELULAR_DDD","SGCO_CELULAR_NUMERO",
      "SGCO_FONE_COMERCIAL_DDD","SGCO_FONE_COMERCIAL_NUMERO","SGCO_FONE_COMERCIAL_RAMAL","ID_SEGURADORA"]);
+    
+  
  
- 
-     const [editingStateColumns] = useState([
-          {columnName : "SGCO_NOME", maxLength : 5 ,editingEnabled: false},
-        
-         // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
-         // {columnName : "PRDT_VALOR",align: 'center'},
-     
-        ])
- 
- 
- 
- 
- 
- 
- 
- 
- 
-     return (
- 
+     return ( 
          <div>
- 
  
              <div className="container-fluid" style={{ marginBottom: "10px", marginTop: "10px" }}>
  
@@ -1071,25 +927,20 @@
                  <h3 id="titulo" >Cadastrar Contato</h3>
                  </div> 
  
-                     <div style={{ display: displayCont }} className="form-group col-md-12"    >
- 
- 
-
+                     <div style={{ display: displayCont }} className="form-group col-md-12"    > 
                          
  
                          <div className="card" >
                              <Grid
                                  rows={rows}
-                                 columns={columns}
-                             //  getRowId={getRowId}
+                                 columns={columns}                             
+                                 
                              >
                                   <ValidaNumberProv
                                   for={validaNumber}
          
                                      />
-                                     {/* <BoataoDELjProv
-                                          for={botaoDel}   
-                                         /> */}
+                                    
                                  <EditingState
                                      editingRowIds={editingRowIds}
                                      onEditingRowIdsChange={getEditingRowIds}
@@ -1107,8 +958,7 @@
                                  <Table />
                                  <TableHeaderRow />
                                  <TableEditRow />                                 
-                              <TableEditColumn
-                                
+                              <TableEditColumn                                
                                      showEditCommand
                                      showAddCommand
                                      showDeleteCommand
@@ -1131,23 +981,7 @@
                      </div>
  
                      <div className="form-group col-md-4"></div>
-                     <div className="form-group col-md-4"></div>
- 
-                     <div className="form-group col-md-4"></div>
-                     <div className="form-group col-md-4"></div>
- 
- 
- 
-                  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+                     
  
  
                  </div>
@@ -1172,7 +1006,85 @@
   * 
   * 
   * 
-  * <div className="form-group col-md-1">
+  // abaixo GRID
+ 
+ 
+ 
+     // const SelectInputDep = ({value})=>(       
+     //     <FormSelect>      
+     //              <option>{value[0]}</option>
+     //              <option>{value[1]}</option>            
+     //     </FormSelect>
+     // )
+     // const SelectInpuDepProv = (props)=>(
+     //     <DataTypeProvider
+     //     formatterComponent={SelectInputDep}
+     //     {...props}
+ 
+     //     />
+     // )
+     // const SelectInputFunc = ({value})=>(       
+     //     <FormSelect>      
+     //              <option>{"PEÇAS"}</option>
+     //              <option>{"SERVIÇOS"}</option>                            
+     //     </FormSelect>
+     // )
+     // const SelectInpuFuncProv = (props)=>(
+     //     <DataTypeProvider
+     //     formatterComponent={SelectInputFunc}
+     //     {...props}
+ 
+     //     />
+     // )
+ 
+ 
+ 
+ 
+ 
+ 
+     //const gridRef = useRef();
+ 
+     
+    
+    
+    
+
+
+
+//      const BotaoDEL = ({value})=>(     
+//        <div> 
+        
+//        <ModeEditOutlineOutlinedIcon style={{ color: "blue" }} className="margemRight" type="button"/>
+//  <DeleteForeverOutlinedIcon type="button" fontSize="medium"  style={{ color: "red" }} onClick={(e)=>deletarContato(value)}/>
+   
+//        </div>
+            
+ 
+         
+        
+//      )
+//      const BoataoDELjProv = (props)=>(
+//          <DataTypeProvider
+//          formatterComponent={BotaoDEL}
+//          {...props}
+ 
+//          />
+//      )
+//      const [botaoDel] = useState(["ALTERAÇÃO"]);
+ 
+ 
+  
+ 
+
+
+  * 
+  * 
+  * 
+  * 
+  * 
+  * 
+  * 
+  *  <div className="form-group col-md-1">
          <Form.Label   >CEP</Form.Label>
           <Form.Control   type="text" onChange={(e)=>setCep(e.target.value)} value={cep} style={{width : "110%"  }} placeholder = "00000000" />
          </div>        
