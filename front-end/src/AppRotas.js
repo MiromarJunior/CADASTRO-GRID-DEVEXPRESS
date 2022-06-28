@@ -8,7 +8,7 @@ import HomePage from "./Pages/Home";
 import LoginPage from "./Login/Login";
 import ListarProdutos from "./Pages/Produtos/ListarProdutos";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
-import CadastroUsuario from "./Pages/Usuario/CadastroUsuario";
+import ListarUsuario from "./Pages/Usuario/ListarUsuario";
 import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
 
 
@@ -45,7 +45,7 @@ const AppRotas = () => {
                             
                 <Route exact path="/listarSeguradora" element={ <ListarSeguradora /> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={ <CadastroSeguradora /> } />
-                <Route exact path="/cadastroUsuario" element={ <CadastroUsuario /> } />
+                <Route exact path="/listarUsuario" element={ <ListarUsuario /> } />
               
                 <Route exact path="/listarProdutos" element={<Private><ListarProdutos /></Private> } />
               

@@ -149,9 +149,9 @@
  
      }, [idSeg]);
  
-     const buscaUnidadeFederativa = ()=>{
+     const buscaUnidadeFederativa = async ()=>{
          const dados = {token};
-         getUnidadeFederativa(dados)
+     await    getUnidadeFederativa(dados)
          .then((res)=>{
              if (res.data === "erroLogin") {
                  alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -169,10 +169,10 @@
      }
    
  
-     const buscarSeguradoras =  () => {
+     const buscarSeguradoras =  async () => {
          if (idSeg > 0) {
              let dados = { token, idSeg };
-             getSeguradora(dados)
+          await   getSeguradora(dados)
                  .then((res) => {
                      if (res.data === "erroLogin") {
                          alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -227,9 +227,9 @@
          }
      }
      
-     const buscarContatos = (idSegN) => {
+     const buscarContatos = async (idSegN) => {
          const dados = { token, idSeg: idSegN }
-         getContatoSeguradora(dados)
+       await  getContatoSeguradora(dados)
              .then((res) => {
                  if (res.data === "erroLogin") {
                      alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -250,10 +250,10 @@
  
                  }
  
-             }).catch = (res) => {
+             }).catch((res) => {
                  console.error(res);
                  window.alert("Erro ao listar contatos");
-             }
+             })
      }
   
      const salvarSeguradora = () => {
@@ -343,8 +343,7 @@
                  } else if (res.data === "campoNulo") {
                      alert("Preencha todos os Campos obrigatorios!!!");
                  }
-                 else if (res.data === "sucesso") {
-                      alert("Contato Cadastrado  com Sucesso!!!");   
+                 else if (res.data === "sucesso") {                      
                      buscarContatos(idSegN);
                  }
                  else {
@@ -387,21 +386,20 @@
      
  
      };
-     const buscaCepOnline = () => {
+     const buscaCepOnline = async() => {
        
          
-         var cepSONr = (isNaN(cep)) ? cep.replace(/\D/g, '') : cep;
-      
+         var cepSONr = (isNaN(cep)) ? cep.replace(/\D/g, '') : cep;      
      
              var validacep = /^[0-9]{8}$/;
            
              if (validacep.test(cepSONr)) {
  
-                 fetch(`https://viacep.com.br/ws/${cepSONr}/json/`)
+             await  fetch(`https://viacep.com.br/ws/${cepSONr}/json/`)
                      .then(res => res.json()).then(data => {
  
                          if (data.erro) {
-                             alert("CEP não encontrado")
+                            window.alert("CEP não encontrado")
                          } else {
                              setBairro(data.bairro);
                              setEstadoUF(data.uf);
@@ -410,22 +408,15 @@
  
                          }
                      }).catch(res => {
-                         alert("CEP não encontrado !!!")
+                        window.alert("CEP não encontrado !!!")
                      })
+             }else{
+                window.alert("CEP inválido!");
              }
        
      }
  
-     const alertaSair = () => {
-         if (idSegN === "0") {
-             if (window.confirm("Deseja sair sem salvar a seguradora ?")) {
-                 navigate("/listarSeguradora");
-             }
-         } else {
-             navigate("/listarSeguradora");
-         }
-     }
- 
+   
  
  
 //grid 
@@ -713,8 +704,9 @@
      };
  
  
-     const ValidaNumber = ({value})=>(       
-         apenasNr(value)
+     const ValidaNumber = ({value})=>(  
+    value ? apenasNr(value) : value              
+       
          
      )
      const ValidaNumberProv = (props)=>(
@@ -727,7 +719,7 @@
      const [validaNumber] = useState(["SGCO_CELULAR_DDD","SGCO_CELULAR_NUMERO",
      "SGCO_FONE_COMERCIAL_DDD","SGCO_FONE_COMERCIAL_NUMERO","SGCO_FONE_COMERCIAL_RAMAL","ID_SEGURADORA"]);
     
-  
+
  
      return ( 
          <div>
@@ -975,7 +967,7 @@
                      <div className="form-group col-md-10">
                          {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
                          <Button className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
-                         <Button id="buttonAlert" onClick={(e) => alertaSair(e)} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
+                         <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
  
                      </div>
  

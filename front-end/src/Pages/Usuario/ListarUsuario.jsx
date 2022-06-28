@@ -1,5 +1,6 @@
 /**
- * Envia os dados para o usuário controller cadastrar um novo usuário
+ * Lista de Usuários cadastrados no sistema,
+ * Podemos cadastrar ou atualizar os usuárioso
  */
 
  import Paper from '@mui/material/Paper';
@@ -22,7 +23,7 @@ import {  Grid,
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
-import { getUsuarios, saveUsuario } from "../../Service/usuarioService";
+import { deleteUsuario, getUsuarios, saveUsuario } from "../../Service/usuarioService";
 
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
  import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -64,6 +65,38 @@ const CategoriaProvider = props => (
   );
 
   
+  const SenhaFormatter = ({ value }) => <Chip label={ "****" } />;
+
+  const SenhaEditor = ({ value, onValueChange }) => (
+    <Input
+      input={<Input  />}
+      value={value}
+      type={"password"}
+      onChange={event => onValueChange(event.target.value)}
+    
+    >
+    
+    </Input>
+  );
+  
+  const SenhaProvider = props => (
+      <DataTypeProvider
+        formatterComponent={SenhaFormatter}
+        editorComponent={SenhaEditor}
+        {...props}
+      />
+    );
+
+
+
+
+
+
+
+
+
+
+
 
 
   const DeleteButton = ({ onExecute }) => (
@@ -131,61 +164,20 @@ const CategoriaProvider = props => (
   };
   
 
-const CadastroUsuario =()=>{
+const ListarUsuario =()=>{
 
-    const [nome, setNome]=useState("");
-    const [usuario, setUsuario]=useState("");
-    const [categoria, setCategoria]=useState(['Vendedor','Oficina','Gestor','Regulador']);
-    const [senha, setSenha]=useState("");
-    const [cnpjFornecedor, setCnpjFornecedor]=useState("");
-    const [cpf, setCpf]=useState("");
-    const navigate = useNavigate();
-    const { logout, nomeUser } = useContext(AuthContext);
+
+    const { logout } = useContext(AuthContext);
     const token = localStorage.getItem("token");
     const [rows, setRows] = useState([]);
     const [booleanColumns] = useState(['USRO_CATEGORIA']);
+    const [SenhaColumns] = useState(['SENHA']);
 
     
-
-    // const cadastraUsuario =(e)=>{
-    //     e.preventDefault();
-    //     let dados = {nome, usuario, categoria , senha, cpf,cnpjFornecedor,token};
-    //     saveUsuario(dados)
-    //     .then((res)=>{
-    //         if (res.data === "erroLogin") {
-    //             window.alert("Sessão expirada, Favor efetuar um novo login !!");
-    //             logout();
-    //             window.location.reload();
-    //         }
-    //         else if (res.data === "semAcesso") {
-    //             window.alert("Usuário sem permissão !!!");
-
-    //         }else if(res.data ==="sucesso"){
-    //             window.alert("Usuário cadastrado com sucesso !!")
-    //         }else if(res.data ==="duplicidade"){
-    //             window.alert("Usuário ou CPF já cadastrados !\nFavor verificar!!");
-                
-    //         }else{ 
-    //             window.alert(" erro ao tentar cadastrar usuário");
-    //         }
-
-
-
-
-
-            
-    //     })
-    //     .catch((err)=>{
-    //         console.error(err);
-    //         window.alert("Erro ao cadastrar !!")
-    //     })
-    // }
-
-
-    const cadastraUsuario =(lista)=>{
-     
+       
+    const cadastraUsuario =(lista)=>{     
         let dados = {lista};
-        console.log(dados);
+     
         saveUsuario(dados)
         .then((res)=>{
             if (res.data === "erroLogin") {
@@ -197,7 +189,9 @@ const CadastroUsuario =()=>{
                 window.alert("Usuário sem permissão !!!");
 
             }else if(res.data ==="sucesso"){
-                window.alert("Usuário cadastrado com sucesso !!")
+                window.alert("Usuário cadastrado com sucesso !!");
+                listaUsuarios();
+                
             }else if(res.data ==="duplicidade"){
                 window.alert("Usuário ou CPF já cadastrados !\nFavor verificar!!");
                 
@@ -217,19 +211,10 @@ const CadastroUsuario =()=>{
         })
     }
 
-
-
-
-
-
-
-
-
-
-    const deletarUsuario =(e)=>{
-        e.preventDefault();
-        let dados = {token};
-        saveUsuario(dados)
+    const deletarUsuario = (idUsu)=>{
+    
+        let dados = {token, idUsu : parseInt(idUsu)};
+        deleteUsuario(dados)
         .then((res)=>{
             if (res.data === "erroLogin") {
                 window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -240,19 +225,11 @@ const CadastroUsuario =()=>{
                 window.alert("Usuário sem permissão !!!");
 
             }else if(res.data ==="sucesso"){
-                window.alert("Usuário cadastrado com sucesso !!")
-            }else if(res.data ==="duplicidade"){
-                window.alert("Usuário ou CPF já cadastrados !\nFavor verificar!!");
-                
+                window.alert("Usuário excluído com sucesso !!");
+                listaUsuarios();
             }else{ 
-                window.alert(" erro ao tentar cadastrar usuário");
-            }
-
-
-
-
-
-            
+                window.alert(" erro ao tentar excluír usuário");
+            }            
         })
         .catch((err)=>{
             console.error(err);
@@ -261,40 +238,40 @@ const CadastroUsuario =()=>{
     }
 
     useEffect(() => {   
-        const listaUsuarios =()=>{           
-            let dados = {token};
-            getUsuarios(dados)
-            .then((res)=>{
-              
-                if (res.data === "erroLogin") {
-                    window.alert("Sessão expirada, Favor efetuar um novo login !!");
-                    logout();
-                    window.location.reload();
-                }
-                else if (res.data === "semAcesso") {
-                    window.alert("Usuário sem permissão !!!");
-    
-                } else{
-                    (res.data).forEach((item, index) => (item.id = index));                 
-                    return  setRows(res.data);
-                }
-    
-                
-            })
-            .catch((err)=>{
-                console.error(err);
-                window.alert("Erro ao cadastrar !!")
-            })
-        }
+        
        
         listaUsuarios();
 
-    }, [token]);
+    }, []);
 
     //GRID
 
 
-   
+    const listaUsuarios = async()=>{           
+      let dados = {token};
+    await  getUsuarios(dados)
+      .then((res)=>{
+        
+          if (res.data === "erroLogin") {
+              window.alert("Sessão expirada, Favor efetuar um novo login !!");
+              logout();
+              window.location.reload();
+          }
+          else if (res.data === "semAcesso") {
+              window.alert("Usuário sem permissão !!!");
+
+          } else{
+              (res.data).forEach((item, index) => (item.id = index));                 
+              return  setRows(res.data);
+          }
+
+          
+      })
+      .catch((err)=>{
+          console.error(err);
+          window.alert("Erro ao cadastrar !!")
+      })
+  }
       
    
 
@@ -329,13 +306,6 @@ const CadastroUsuario =()=>{
 
 
 
-
-
-
-
-
-
-
     const commitChanges = ({ added, changed, deleted }) => {
         
         let changedRows;
@@ -349,28 +319,44 @@ const CadastroUsuario =()=>{
               ...row,
             })),
           ];
-          setRows(changedRows);
-          cadastraUsuario(changedRows);
+          
+          for(let i = 0; i < changedRows.length; i++){
+            if(!(changedRows[i].ID_USUARIO)){
+            cadastraUsuario(changedRows[i]);
+            }
+          }
+
+
+
+
+          //setRows(changedRows);
+     
         }
-        if (changed) {
-            
-          changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-          setRows(changedRows);
-          cadastraUsuario(changedRows);
+        if (changed) {              
+         changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));         
+          for(let i = 0; i < rows.length; i++){
+            if(JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])){
+              cadastraUsuario(changedRows[i]);
+            }
+          }
+       
+       
         }
         if (deleted) {
+         
           const deletedSet = new Set(deleted);
-          changedRows = rows.filter(row => deletedSet.has(row.id));
+          changedRows = rows.filter(row => deletedSet.has(row.id));         
              deletarUsuario(changedRows.map(l => l.ID_USUARIO));
-             setRows(changedRows);
+            // setRows(changedRows);
         }
-      
+      //  setRows(changedRows);
       };
 
 
 
     return(
         <div>
+          <h3>Em Desenvolvimento</h3>
 
 <div className="card">
     <Paper>
@@ -381,6 +367,9 @@ const CadastroUsuario =()=>{
          >
            <CategoriaProvider
              for={booleanColumns}
+           />
+           <SenhaProvider
+           for={SenhaColumns}
            />
           
            <EditingState
@@ -396,8 +385,7 @@ const CadastroUsuario =()=>{
            <Table />
            <TableHeaderRow />
            <TableEditRow />
-           <TableEditColumn
-             showAddCommand
+           <TableEditColumn           
              showEditCommand
              showDeleteCommand
              showAddCommand={!addedRows.length}
@@ -417,4 +405,4 @@ const CadastroUsuario =()=>{
 
 }
 
-export default CadastroUsuario;
+export default ListarUsuario;

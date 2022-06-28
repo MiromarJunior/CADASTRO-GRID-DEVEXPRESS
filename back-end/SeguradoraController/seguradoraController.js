@@ -66,7 +66,7 @@ let idEstado;
             SGRA_RETORNO_SOLICITACAO,
             SGRA_RETORNO_NOTAS,
             SGRA_RUA)
-            VALUES(SQ_SEG.NEXTVAL, : CNPJ, :CODLEG, :TIPOP, :NOMEFAN, :RAZAOSOC, :OPTSIM,
+            VALUES(SEQ_SEGU.NEXTVAL, : CNPJ, :CODLEG, :TIPOP, :NOMEFAN, :RAZAOSOC, :OPTSIM,
                 :STATUSSEG, :IE, :IM, :CEP, :NOMECID, :UF, :NR, :COMPLE, :BAIRRO, :SMTPSIS,
                 :PORTASIST, :EMAILSIS, :SENHAEMAILSIS, :REMETE, :NOMEREME, :SMTPAUTH,
                 :SMTPSECURE, :SOAPSOL, :SOAPNOT, :LOGR
@@ -397,7 +397,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
                 ID_SEGURADORA
               )
               VALUES(
-                SQ_SEG_CONT.NEXTVAL,
+                SEQ_SECO.NEXTVAL,
                 '${l.SGCO_NOME}','${l.SGCO_FUNCAO}','${l.SGCO_DEPARTAMENTO}','${l.SGCO_EMAIL}','${l.SGCO_URL}','${apenasNr(l.SGCO_CELULAR_DDD)}',
                 '${apenasNr(l.SGCO_CELULAR_NUMERO)}','${l.SGCO_CELULAR_OPERADORA}','${apenasNr(l.SGCO_FONE_COMERCIAL_DDD)}','${apenasNr(l.SGCO_FONE_COMERCIAL_NUMERO)}',
                 '${apenasNr(l.SGCO_FONE_COMERCIAL_RAMAL)}','${idSeg}'

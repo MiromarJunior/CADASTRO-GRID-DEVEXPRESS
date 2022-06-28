@@ -30,15 +30,13 @@ const ListarSeguradora =()=> {
     const { logout } = useContext(AuthContext);      
 
    
-    useEffect(() => {        
-        
-        
+    useEffect(() => {          
         
         listarSeguradoras();        
     }, [logout,token]);
-    const listarSeguradoras =  ()=> {      
+    const listarSeguradoras  = async () => {      
         let dados = { token };
-        getSeguradora(dados)
+       await getSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
                     alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -98,6 +96,9 @@ const ListarSeguradora =()=> {
 
     };
  
+
+
+    //GRID
     const element = <AddCircleOutlinedIcon fontSize="large" style={{color : "blue"}} type="button" onClick={()=>navigate("/cadastroSeguradora/0")}/>
     const [columns] = useState([ 
        { name: 'SGRA_CNPJ', title: `CNPJ`},
@@ -115,9 +116,7 @@ const ListarSeguradora =()=> {
     // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
     // {columnName : "PRDT_VALOR",align: 'center'},
 
-   ])
-
-   
+   ])   
 
          const ValidCnpj = ({value})=>(       
         cnpj.format(value)

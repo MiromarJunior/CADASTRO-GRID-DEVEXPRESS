@@ -75,68 +75,114 @@ router.post("/listarUsu", async(req, res)=> {
 router.post("/cadastrarUsuario", async(req, res)=> {
   let ={lista} =req.body
   let connection = await oracledb.getConnection(dbConfig);
+  let idUsu = "", usuario = "",nomeUsu ="", 
+  senhaUsu = "", categoria = "", cnpjForn = "", 
+  cpfUsu = "", senhaSQL = "";
+  let senhaC =  "";
+
+
+  idUsu = lista.ID_USUARIO ;
+  usuario = lista.USRO_USUARIO;
+  nomeUsu = lista.USRO_NOME; 
+  senhaUsu = lista.SENHA;
+  categoria = lista.USRO_CATEGORIA;
+  cnpjForn = lista.USRO_CNPJ_FORNECEDOR; 
+  cpfUsu = lista.USRO_CPF;
+
+
 
   
- 
-
 
 try {
-  let senhaC = "";
-  let senhaSQL = "";
-  let senhaSQLV = "";
-  lista.map( async (l)=>{
 
-    try {
-      
-    if(!l.ID_USUARIO){      
-      console.log(l);
-      let  senhaC = bcrypt.hashSync(l.SENHA,saltRounds);       
+
+  if(idUsu){
     
-       let result = await connection.execute ( 
-    ` SELECT USRO_CPF FROM USUARIO 
-    WHERE USRO_CPF = '${l.USRO_CPF}' 
-    OR USRO_USUARIO = '${l.USRO_USUARIO}'`,
+    if(senhaUsu === null || senhaUsu === undefined || senhaUsu === ""){
+    senhaC = "";
+    senhaSQL = ""
+    }else{
+      senhaC = bcrypt.hashSync(senhaUsu,saltRounds);
+       senhaSQL = `,USRO_SENHA =  '${senhaC}'`
+    }
+  
+   
+          await connection.execute( 
+        ` UPDATE USUARIO 
+          SET USRO_NOME = '${nomeUsu}',
+          USRO_CPF = '${cpfUsu}',       
+          USRO_USUARIO = '${usuario}',          
+          USRO_CATEGORIA = '${categoria}',
+          USRO_CNPJ_FORNECEDOR = '${cnpjForn}'
+          ${senhaSQL}
+          WHERE  ID_USUARIO = '${idUsu}'    
+          
+         `
+    
+        ,[],
+        { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+          autoCommit : true
+        } 
+         );
+         res.send("sucesso").status(200).end();
+        
+       
 
-    [],
-    { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-      
-    } 
-     );
-     if(result.rows.length > 0){
-      res.send("duplicidade").status(200).end();
-     }else{
-        await connection.execute( 
-      ` INSERT INTO USUARIO(ID_USUARIO,
-        USRO_NOME,
-        USRO_CPF,       
-        USRO_USUARIO,
-        USRO_SENHA,
-        USRO_CATEGORIA,
-        USRO_CNPJ_FORNECEDOR       
-        )
-        VALUES(SEQ_USRO.NEXTVAL,'${l.USRO_NOME}', '${l.USRO_CPF}', '${l.USRO_USUARIO}', '${senhaC}', '${l.USRO_CATEGORIA}','${l.USRO_CNPJ_FORNECEDOR}') `,
+  }else{
+    
+
+    let result = await connection.execute ( 
+      ` SELECT USRO_CPF FROM USUARIO 
+      WHERE USRO_CPF = '${cpfUsu}' 
+      OR USRO_USUARIO = '${usuario}'`,
   
       [],
       { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-        autoCommit : true
+        
       } 
        );
-       res.send("sucesso").status(200).end();
+       if(result.rows.length > 0){
+        res.send("duplicidade").status(200).end();
+       }else{
+       
+        senhaC = bcrypt.hashSync(senhaUsu,saltRounds);
+          await connection.execute( 
+        ` INSERT INTO USUARIO(ID_USUARIO,
+          USRO_NOME,
+          USRO_CPF,       
+          USRO_USUARIO,
+          USRO_SENHA,
+          USRO_CATEGORIA,
+          USRO_CNPJ_FORNECEDOR       
+          )
+          VALUES(SEQ_USRO.NEXTVAL,'${nomeUsu}', '${cpfUsu}', '${usuario}', '${senhaUsu}', '${categoria}','${cnpjForn}') `,
+    
+        [],
+        { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+          autoCommit : true
+        } 
+         );
+         res.send("sucesso").status(200).end();
+        
+       }
+
+
+
+
+  }
+          
+    
+       
+
+
+
+
+
       
-     }
-
-
-
-
-
-    }
-      
-    } catch (error) {
-      
-    }
+    
 
    
-  })
+
  
     
 } catch (error) {
@@ -170,7 +216,7 @@ router.post("/loginUsuario", async(req, res)=> {
   let senhaLocal = "";
   let validaSenha = false;
   let token = "";
-  
+
 try {
 
   result = await connection.execute ( 
@@ -224,12 +270,11 @@ try {
 
 });
 
-router.post("/cadastrarUsuario", async(req, res)=> {
+router.post("/excluirUsuario", async(req, res)=> {
   let ={idUsu, token} =req.body
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let erroAcesso = "";
-
 
  
 
@@ -272,7 +317,6 @@ try {
 
 
 });
-
 
 
 

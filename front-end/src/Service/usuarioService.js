@@ -17,11 +17,13 @@ const loginUsuario = (data)=>{
 const getUsuarios = (data)=>{
     return axios.post(`${baseURL}listarUsu`,data);
 } 
-
+const deleteUsuario = (data)=>{
+    return axios.post(`${baseURL}excluirUsuario`,data);
+} 
 
 
 
 
 const api = axios.create({baseURL});
 
-module.exports = {api,saveUsuario,loginUsuario,getUsuarios};
+module.exports = {api,saveUsuario,loginUsuario,getUsuarios,deleteUsuario};

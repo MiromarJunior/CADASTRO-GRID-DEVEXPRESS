@@ -1,10 +1,15 @@
+/**
+
+Página Principal onde é carregado o MENU com os atalhos para as paginas
+
+
+ */
+
+
+
 import { useContext, useEffect, useState } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Autenticação/validacao";
-
-
-
 
 
 import { styled, useTheme } from '@mui/material/styles';
@@ -178,18 +183,11 @@ const HomePage = () => {
                 <ListItemIcon>
                   <ListIcon /> 
                 </ListItemIcon>
-                <ListItemText primary={"Listar Seguradora"} />
+                <ListItemText primary={"Seguradoras"} />
               </ListItemButton>
             </ListItem>
 
-            <ListItem  disablePadding>
-              <ListItemButton onClick={ ()=> navigate("/cadastroSeguradora/0")}>
-                <ListItemIcon>
-                  <AddBoxOutlinedIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Cadastrar Seguradora"}   />
-              </ListItemButton>
-            </ListItem>
+            
 
 
           
@@ -199,7 +197,7 @@ const HomePage = () => {
 
         <TreeItem nodeId="3" label="USUÁRIO">
         <ListItem  disablePadding>
-              <ListItemButton onClick={ ()=> navigate("/cadastroSeguradora/0")}>
+              <ListItemButton onClick={ ()=> navigate("/listarUsuario")}>
                 <ListItemIcon>
                   <AddBoxOutlinedIcon /> 
                 </ListItemIcon>

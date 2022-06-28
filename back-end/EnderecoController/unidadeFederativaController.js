@@ -41,6 +41,7 @@ router.post("/listarUnidadeFederativa", async(req, res)=> {
            
           } 
              );
+             
            
              res.send(result.rows).status(200).end();           
         }

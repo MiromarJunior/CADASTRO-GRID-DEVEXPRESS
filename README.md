@@ -31,13 +31,19 @@ react-router-dom<br/>
 axios<br/>
 cpf-cnpj-validator <br/>
 telefone <br/>
-react-bootstrap
+react-bootstrap<br/>
+Componentes DevExpress<br/>
+Componentes Material UI
+
+
+
+
+<h3>Home.jsx</h3>
+Página Principal onde é carregado o MENU com os atalhos para as paginas
 
 <h3>validacao.js</h3>
 Pagina para enviar dados para back-end e receber de volta criando uma sessão para acesso entre as páginas
 
-<h3>produtoService.js</h3>
-Página utiliza axios para fazer a ligação entre back-end e front-end das chamadas referente aos produtos
 
 <h3>usuarioService.js</h3>
 Pagina utiliza axios para fazer a ligação entre back-end e front-end das chamadas referente aos usuários
@@ -51,11 +57,10 @@ Página recebe dados da autenticação e faz a liberação e controle da navega�
 <h3>Login.jsx</h3>
 Envia dados para o login controller para efetuar a validação de acesso do usuário
 
-<h3>ListarProdutos.jsx</h3>
-Utilizando o sistema de GRID, listamos, editamos e cadastramos novos produtos.
 
-<h3>CadastroUsuario.jsx</h3>
-Envia os dados para o usuário controller cadastrar um novo usuário
-
-<h3>CadastrarUniEmp.jsx</h3>
+<h3>CadastroSeguradora.jsx</h3>
 Pagina em construção para cadastrar uma nova unidade empresarial
+
+
+<h3>ListarUsuário.jsx</h3>
+Lista de Usuários cadastrados no sistema, Podemos cadastrar ou atualizar os usuárioso
