@@ -319,10 +319,32 @@ const ListarUsuario =()=>{
               ...row,
             })),
           ];
+
           
           for(let i = 0; i < changedRows.length; i++){
             if(!(changedRows[i].ID_USUARIO)){
-            cadastraUsuario(changedRows[i]);
+              
+      
+              if(changedRows[i].USRO_USUARIO === ""){
+                window.alert("Favor Preencher campo Usuário");
+              }else if(changedRows[i].USRO_NOME === ""){
+                window.alert("Favor Preencher campo Nome");
+              }              
+              else if(changedRows[i].SENHA === ""){
+                window.alert("Favor Preencher campo Senha");
+              }else if(changedRows[i].USRO_CATEGORIA === ""){
+                window.alert("Favor Preencher campo Categoria");
+              }else if(changedRows[i].USRO_CNPJ_FORNECEDOR === ""){
+                window.alert("Favor Preencher campo CNPJ Fornecedor");
+              }else if(changedRows[i].USRO_CPF === ""){
+                window.alert("Favor Preencher campo CPF");
+              }else{
+                cadastraUsuario(changedRows[i])
+              }
+      
+
+     
+            //cadastraUsuario(changedRows[i]);
             }
           }
 
@@ -336,7 +358,23 @@ const ListarUsuario =()=>{
          changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));         
           for(let i = 0; i < rows.length; i++){
             if(JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])){
-              cadastraUsuario(changedRows[i]);
+           
+              if(changedRows[i].USRO_USUARIO === ""){
+                window.alert("Favor Preencher campo Usuário");
+              }else if(changedRows[i].USRO_NOME === ""){
+                window.alert("Favor Preencher campo Nome");
+              }              
+              else if(changedRows[i].SENHA === ""){
+                window.alert("Favor Preencher campo Senha");
+              }else if(changedRows[i].USRO_CATEGORIA === ""){
+                window.alert("Favor Preencher campo Categoria");
+              }else if(changedRows[i].USRO_CNPJ_FORNECEDOR === ""){
+                window.alert("Favor Preencher campo CNPJ Fornecedor");
+              }else if(changedRows[i].USRO_CPF === ""){
+                window.alert("Favor Preencher campo CPF");
+              }else{
+                cadastraUsuario(changedRows[i])
+              }
             }
           }
        
@@ -349,7 +387,7 @@ const ListarUsuario =()=>{
              deletarUsuario(changedRows.map(l => l.ID_USUARIO));
             // setRows(changedRows);
         }
-      //  setRows(changedRows);
+        setRows(changedRows);
       };
 
 

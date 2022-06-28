@@ -303,14 +303,14 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
       }
   })  
   try {
-  await connection.execute( deleteSql
+  await connection.execute( deleteSql1
     ,
      [],
      { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
        autoCommit : true
     
    });
-   await connection.execute( deleteSql1
+   await connection.execute( deleteSql
     ,
      [],
      { outFormat  :  oracledb.OUT_FORMAT_OBJECT,

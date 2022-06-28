@@ -199,7 +199,7 @@ const HomePage = () => {
         <ListItem  disablePadding>
               <ListItemButton onClick={ ()=> navigate("/listarUsuario")}>
                 <ListItemIcon>
-                  <AddBoxOutlinedIcon /> 
+                <ListIcon /> 
                 </ListItemIcon>
                 <ListItemText primary={"Usuários"}   />
               </ListItemButton>
