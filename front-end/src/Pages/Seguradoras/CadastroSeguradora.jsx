@@ -209,7 +209,7 @@
                              setSmtpSist(l.SGRA_SMTP);
                              setPortaSist(l.SGRA_PORTA);
                              setEmailSist(l.SGRA_USUARIO_EMAIL);
-                             setSenhaEmailSist(l.SRGA_SENHA);
+                             setSenhaEmailSist(l.SGRA_SENHA);
                              setRemetenteEmailSist(l.SGRA_REMETENTE);
                              setNomeRemetenteEmailSist(l.SGRA_NOME_REMETENTE);
                              setSmtpSistAuth(l.SGRA_SMTP_AUTH);

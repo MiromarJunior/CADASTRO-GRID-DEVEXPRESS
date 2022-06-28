@@ -63,4 +63,4 @@ Pagina em construção para cadastrar uma nova unidade empresarial
 
 
 <h3>ListarUsuário.jsx</h3>
-Lista de Usuários cadastrados no sistema, Podemos cadastrar ou atualizar os usuárioso
+Lista de Usuários cadastrados no sistema, Podemos cadastrar ou atualizar os usuários

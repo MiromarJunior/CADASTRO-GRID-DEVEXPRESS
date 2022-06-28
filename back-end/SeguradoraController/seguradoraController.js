@@ -3,6 +3,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 const oracledb = require("oracledb");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const dbConfig = require("../ConfigDB/configDB.js");
 const { formataArrayStr, apenasNr } = require("../Service/utilServiceBackEnd.js");
 const { route } = require("../UsuarioController/usuarioController.js");
@@ -23,6 +25,8 @@ let insertSql;
 let selectSql;
 let updateSql;
 let idEstado;
+
+const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
 
 
@@ -58,7 +62,7 @@ let idEstado;
             SGRA_SMTP,
             SGRA_PORTA,
             SGRA_USUARIO_EMAIL,
-            SRGA_SENHA,
+            SGRA_SENHA,
             SGRA_REMETENTE,
             SGRA_NOME_REMETENTE,
             SGRA_SMTP_AUTH,
@@ -95,7 +99,7 @@ let idEstado;
           SGRA_SMTP = :SS,
           SGRA_PORTA = :SST,
           SGRA_USUARIO_EMAIL = :USMAIL,
-          SRGA_SENHA = :SNEM,
+          SGRA_SENHA = :SNEM,
           SGRA_REMETENTE = :REM,
           SGRA_NOME_REMETENTE = :NMREM,
           SGRA_SMTP_AUTH = :SSMM,
@@ -136,7 +140,7 @@ let idEstado;
         ,
         [codLegado, tipoPessoa, nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
           cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
+          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
           smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
           logradouro,idSeg],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
@@ -151,7 +155,7 @@ let idEstado;
         [cnpjSeguradora,codLegado, tipoPessoa,
           nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
           cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaEmailSist,remetenteEmailSist, nomeRemetenteEmailSist, 
+          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
           smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
           logradouro  ],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
