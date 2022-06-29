@@ -393,7 +393,7 @@ const ListarUsuario =()=>{
 
 
     return(
-        <div>
+        <div className='container-fluid'>
           <h3>Em Desenvolvimento</h3>
 
 <div className="card">

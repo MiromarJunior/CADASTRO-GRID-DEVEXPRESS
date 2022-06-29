@@ -99,7 +99,7 @@ const ListarSeguradora =()=> {
 
 
     //GRID
-    const element = <AddCircleOutlinedIcon fontSize="large" style={{color : "blue"}} type="button" onClick={()=>navigate("/cadastroSeguradora/0")}/>
+    const element = <AddCircleOutlinedIcon titleAccess="Cadastrar novo" fontSize="large" style={{color : "blue"}} type="button" onClick={()=>navigate("/cadastroSeguradora/0")}/>
     const [columns] = useState([ 
        { name: 'SGRA_CNPJ', title: `CNPJ`},
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL"},
@@ -132,8 +132,8 @@ const ListarSeguradora =()=> {
  
       const EditSeguradoras = ({value})=>(
         <div>
- <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} className="margemRight" onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)} type="button"/>
-<DeleteForeverOutlinedIcon type="button" fontSize="medium"  style={{ color: "red" }} onClick={(e)=>deletarSeguradora(value)}/>
+ <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e)=>navigate(`/cadastroSeguradora/${value}`)} type="button"/>
+<DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium"  style={{ color: "red" }} onClick={(e)=>deletarSeguradora(value)}/>
         </div>       
        
        )    

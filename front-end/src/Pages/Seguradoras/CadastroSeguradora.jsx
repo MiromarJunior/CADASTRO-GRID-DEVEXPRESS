@@ -4,11 +4,7 @@
 
  import { useContext, useEffect,useState } from "react";
  import { Button, Form } from "react-bootstrap";
- // import apiUniEmpServ from "../../Services/UnidadeEmpresarialService"
- // import apiEmpresaService from "../../Services/GrupoEmpresarialService"
  import { useNavigate, useParams } from "react-router-dom";
- // import apiEnderecoService from "../../Services/EnderecoService";
- // import apiUsuarioService from "../../Services/usuarioService";
  import "./cad.css";
  import { cnpj } from 'cpf-cnpj-validator';
  import { AuthContext } from "../../Autenticação/validacao";
