@@ -27,8 +27,8 @@ app.use(express.json());
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
+const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 const SECRET = process.env.SECRET;
-
 
 router.post("/listarUsu", async(req, res)=> {
     let connection = await oracledb.getConnection(dbConfig);
@@ -71,30 +71,21 @@ router.post("/listarUsu", async(req, res)=> {
 
 });
 
-
 router.post("/cadastrarUsuario", async(req, res)=> {
   let ={lista} =req.body
   let connection = await oracledb.getConnection(dbConfig);
-  let idUsu = "", usuario = "",nomeUsu ="", 
-  senhaUsu = "", categoria = "", cnpjForn = "", 
-  cpfUsu = "", senhaSQL = "";
-  let senhaC =  "";
+  let senhaSQL = "", senhaC =  "";
+ 
 
-
-  idUsu = lista.ID_USUARIO ;
-  usuario = lista.USRO_USUARIO;
-  nomeUsu = lista.USRO_NOME; 
-  senhaUsu = lista.SENHA;
-  categoria = lista.USRO_CATEGORIA;
-  cnpjForn = lista.USRO_CNPJ_FORNECEDOR; 
-  cpfUsu = lista.USRO_CPF;
-
-
-
-  
+  let idUsu = lista.ID_USUARIO,
+  usuario = lista.USRO_USUARIO,
+  nomeUsu = lista.USRO_NOME, 
+  senhaUsu = lista.SENHA,
+  categoria = lista.USRO_CATEGORIA,
+  cnpjForn = apenasNr(lista.USRO_CNPJ_FORNECEDOR), 
+  cpfUsu = apenasNr(lista.USRO_CPF);  
 
 try {
-
 
   if(idUsu){
     
@@ -124,7 +115,7 @@ try {
           autoCommit : true
         } 
          );
-         res.send("sucesso").status(200).end();
+         res.send("sucessoU").status(200).end();
         
        
 
@@ -317,7 +308,6 @@ try {
 
 
 });
-
 
 
 

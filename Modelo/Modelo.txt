@@ -10,7 +10,7 @@ REACT_APP_API_URL=http://localhost:5000/
 #BACK END
 DB_USER=scp
 DB_PASSWORD=scp
-DB_CONSTRING=horus
+DB_CONSTRING=avvante
 SECRET=avvante
 
 URL_FRONT_END=http://localhost:3000

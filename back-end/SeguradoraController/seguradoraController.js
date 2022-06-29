@@ -340,15 +340,22 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
 
 router.post("/cadastrarContatoSeguradora", async(req, res)=> {
     const {
-      token,idSeg,contatos  
-  
-  
-  } =req.body;
-
-
-  
+      token,idSeg,contatos   } =req.body; 
       let connection = await oracledb.getConnection(dbConfig);
-      let result;  
+
+      let nomeCont = contatos.SGCO_NOME,
+          funcaoCont = contatos.SGCO_FUNCAO,
+          departCont = contatos.SGCO_DEPARTAMENTO,
+          emailCont = contatos.SGCO_EMAIL,
+          urlCont = contatos.SGCO_URL,
+          dddCelCont = contatos.SGCO_CELULAR_DDD,
+          nrCelCont = contatos.SGCO_CELULAR_NUMERO,
+          operaCont = contatos.SGCO_CELULAR_OPERADORA,
+          dddComCont = contatos.SGCO_FONE_COMERCIAL_DDD,
+          nrComCont = contatos.SGCO_FONE_COMERCIAL_NUMERO,
+          ramalCont = contatos.SGCO_FONE_COMERCIAL_RAMAL,
+          idCont = contatos.ID_SEGURADORA_CONTATO;
+     
     try {
   
       jwt.verify(token, SECRET, async (err, decoded) => {
@@ -357,34 +364,34 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
             erroAcesso = "erroLogin";
             res.send("erroLogin").end();
   
-        } else{  
-          contatos.map(async(l)=>{
-            
+        } else{              
 
-            if(l.ID_SEGURADORA_CONTATO){
+            if(idCont){
               await connection.execute(                `
                 UPDATE  SEGURADORA_CONTATO
-                 SET  SGCO_NOME = '${l.SGCO_NOME}',
-                  SGCO_FUNCAO = '${l.SGCO_FUNCAO}',
-                  SGCO_DEPARTAMENTO = '${l.SGCO_DEPARTAMENTO}',
-                  SGCO_EMAIL ='${l.SGCO_EMAIL}',
-                  SGCO_URL='${l.SGCO_URL}',
-                  SGCO_CELULAR_DDD ='${apenasNr(l.SGCO_CELULAR_DDD)}',
-                  SGCO_CELULAR_NUMERO ='${apenasNr(l.SGCO_CELULAR_NUMERO)}',
-                  SGCO_CELULAR_OPERADORA ='${l.SGCO_CELULAR_OPERADORA}',
-                  SGCO_FONE_COMERCIAL_DDD ='${apenasNr(l.SGCO_FONE_COMERCIAL_DDD)}',
-                  SGCO_FONE_COMERCIAL_NUMERO ='${ apenasNr(l.SGCO_FONE_COMERCIAL_NUMERO)}',
-                  SGCO_FONE_COMERCIAL_RAMAL ='${apenasNr(l.SGCO_FONE_COMERCIAL_RAMAL)}',
-                  ID_SEGURADORA ='${l.ID_SEGURADORA}'
-                  WHERE ID_SEGURADORA_CONTATO = '${l.ID_SEGURADORA_CONTATO}'                
+                 SET  SGCO_NOME = '${nomeCont}',
+                  SGCO_FUNCAO = '${funcaoCont}',
+                  SGCO_DEPARTAMENTO = '${departCont}',
+                  SGCO_EMAIL ='${emailCont}',
+                  SGCO_URL='${urlCont}',
+                  SGCO_CELULAR_DDD ='${apenasNr(dddCelCont)}',
+                  SGCO_CELULAR_NUMERO ='${apenasNr(nrCelCont)}',
+                  SGCO_CELULAR_OPERADORA ='${operaCont}',
+                  SGCO_FONE_COMERCIAL_DDD ='${apenasNr(dddComCont)}',
+                  SGCO_FONE_COMERCIAL_NUMERO ='${ apenasNr(nrComCont)}',
+                  SGCO_FONE_COMERCIAL_RAMAL ='${apenasNr(ramalCont)}',
+                  ID_SEGURADORA ='${idSeg}'
+                  WHERE ID_SEGURADORA_CONTATO = '${idCont}'                
                 `
 
               ,[],{outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-                autoCommit :  true})
+                autoCommit :  true});
+                res.send("sucesso").status(200).end();  
 
             }else{
           
-            await connection.execute (               ` 
+            await connection.execute (              
+               ` 
               INSERT INTO SEGURADORA_CONTATO(
                 ID_SEGURADORA_CONTATO,
                 SGCO_NOME,
@@ -402,9 +409,9 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
               )
               VALUES(
                 SEQ_SECO.NEXTVAL,
-                '${l.SGCO_NOME}','${l.SGCO_FUNCAO}','${l.SGCO_DEPARTAMENTO}','${l.SGCO_EMAIL}','${l.SGCO_URL}','${apenasNr(l.SGCO_CELULAR_DDD)}',
-                '${apenasNr(l.SGCO_CELULAR_NUMERO)}','${l.SGCO_CELULAR_OPERADORA}','${apenasNr(l.SGCO_FONE_COMERCIAL_DDD)}','${apenasNr(l.SGCO_FONE_COMERCIAL_NUMERO)}',
-                '${apenasNr(l.SGCO_FONE_COMERCIAL_RAMAL)}','${idSeg}'
+                '${nomeCont}','${funcaoCont}','${departCont}','${emailCont}','${urlCont}','${apenasNr(dddCelCont)}',
+                '${apenasNr(nrCelCont)}','${operaCont}','${apenasNr(dddComCont)}','${apenasNr(nrComCont)}',
+                '${apenasNr(ramalCont)}','${idSeg}'
               )           
               
               `,
@@ -412,11 +419,12 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
               { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
                 autoCommit :  true
             });
+            res.send("sucesso").status(200).end();  
           }
             
-          })          
+          
       
-             res.send("sucesso").status(200).end();           
+                      
         }
     })      
         
@@ -498,13 +506,12 @@ router.post("/listarContatoSeguradora", async(req, res)=> {
 router.post("/excluirContatoSeguradora", async(req, res)=> {
     const {token,  idCont
   } =req.body;
-  
+
   
       let connection = await oracledb.getConnection(dbConfig);
   
   
   let deleteSql = "";
-
   
       jwt.verify(token, SECRET, async (err, decoded) => {
         if (err) {

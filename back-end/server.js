@@ -17,8 +17,6 @@ app.listen(port, ()=>{
   let usuarioRotas = require("./UsuarioController/usuarioController");
   app.use("/",usuarioRotas)  ;
  
-  let produtoRotas = require("./ProdutoController/produtoController");
-  app.use("/",produtoRotas) ;
 
   let seguradoraRotas = require("./SeguradoraController/seguradoraController");
   app.use("/",seguradoraRotas) ;

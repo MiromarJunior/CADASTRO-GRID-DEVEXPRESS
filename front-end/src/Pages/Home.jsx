@@ -116,8 +116,8 @@ const HomePage = () => {
 
 <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar style={{backgroundColor : "black"}}>
+      <AppBar position="fixed" open={open} style={{color : "black"}}>
+        <Toolbar style={{backgroundColor: "rgb(171, 239, 191)"}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -127,15 +127,19 @@ const HomePage = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6"  noWrap component="div">
+          <Typography variant="h6" style={{color : "black"}} >
             SISTEMA DE COTAÇÕES
           
           </Typography>
           
                  
-
+          <Typography marginLeft={"60%"} style={{color : "black"}} >
+           Usuário(a)  {nomeUser()}
+          
+          </Typography>
            
         </Toolbar>
+       
         
       </AppBar>
       <Drawer
