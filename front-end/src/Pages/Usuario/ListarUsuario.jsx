@@ -417,13 +417,8 @@ const ListarUsuario = () => {
 
   return (
     <div className='container-fluid'>
-<<<<<<< HEAD
-      <h3 id='titulos'>Usuários</h3>
-      <h3> Beiramar </h3> {/*Comentario*/}
-=======
       <h3 id='titulos'>🙋‍♂️​Usuários🙋‍♀️​</h3>
-
->>>>>>> aea653ce01b318e51ad872797d3d22fcf63cd96b
+      <h3> Beiramar </h3> {/*Comentario*/}
       <div className="card">
         <Paper>
           <Grid
