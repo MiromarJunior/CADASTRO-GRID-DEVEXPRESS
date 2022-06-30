@@ -173,7 +173,7 @@ const ListarSeguradora = () => {
     return (
         <div className="container-fluid">
 
-<h3 id='titulos'>Seguradoras</h3>
+<h3 id='titulos'>Seguradoras 🚗 ​​</h3> 
 
             <div className="card">
                 <Grid
