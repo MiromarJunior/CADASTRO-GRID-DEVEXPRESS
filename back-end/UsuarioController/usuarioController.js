@@ -146,7 +146,7 @@ try {
           USRO_CATEGORIA,
           USRO_CNPJ_FORNECEDOR       
           )
-          VALUES(SEQ_USRO.NEXTVAL,'${nomeUsu}', '${cpfUsu}', '${usuario}', '${senhaUsu}', '${categoria}','${cnpjForn}') `,
+          VALUES(SEQ_USRO.NEXTVAL,'${nomeUsu}', '${cpfUsu}', '${usuario}', '${senhaC}', '${categoria}','${cnpjForn}') `,
     
         [],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
