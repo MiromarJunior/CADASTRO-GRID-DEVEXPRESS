@@ -20,10 +20,12 @@ const getUsuarios = (data)=>{
 const deleteUsuario = (data)=>{
     return axios.post(`${baseURL}excluirUsuario`,data);
 } 
-
+const getGrupoAcesso = (data)=>{
+    return axios.post(`${baseURL}listarGrupoAcesso`,data);
+} 
 
 
 
 const api = axios.create({baseURL});
 
-module.exports = {api,saveUsuario,loginUsuario,getUsuarios,deleteUsuario};
+module.exports = {getGrupoAcesso,api,saveUsuario,loginUsuario,getUsuarios,deleteUsuario};

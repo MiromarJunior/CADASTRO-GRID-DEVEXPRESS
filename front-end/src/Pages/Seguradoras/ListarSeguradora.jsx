@@ -22,14 +22,14 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 
 
-const TableComponent = ({ ...restProps }) => (
-    <Table.Table
-        {...restProps}
-    />
-);
+// const TableComponent = ({ ...restProps }) => (
+//     <Table.Table
+//         {...restProps}
+//     />
+// );
 
 const TableComponentTitle = ({ style, ...restProps }) => (
-    <Table.TableHead
+    <TableHeaderRow.Content
         {...restProps}
         style={{
             color: 'black',
@@ -200,7 +200,7 @@ const ListarSeguradora = () => {
                     />
 
                     <Table
-                        tableComponent={TableComponent}
+                      //  tableComponent={TableComponent}
                     />
                     <TableHeaderRow
                         contentComponent={TableComponentTitle}
