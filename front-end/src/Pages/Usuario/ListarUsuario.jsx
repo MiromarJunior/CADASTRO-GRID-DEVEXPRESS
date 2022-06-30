@@ -52,16 +52,16 @@ const CategoriaEditor = ({ value, onValueChange }) => (
     style={{ width: '100%' }}
   >
     <MenuItem value="Gestor">
-      Gestor
+      Gestor 0
     </MenuItem>
     <MenuItem value="Oficina">
-      Oficina
+      Oficina 1 
     </MenuItem>
     <MenuItem value="Vendedor">
-      Vendedor
+      Vendedor 2 
     </MenuItem>
     <MenuItem value="Regulador">
-      Regulador
+      Regulador 3
     </MenuItem>
   </Select>
 );
