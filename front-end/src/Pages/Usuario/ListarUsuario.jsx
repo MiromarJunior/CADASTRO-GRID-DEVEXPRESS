@@ -55,7 +55,7 @@ const CategoriaEditor = ({ value, onValueChange }) => (
       Gestor
     </MenuItem>
     <MenuItem value="Oficina">
-      Oficina 
+      Oficina
     </MenuItem>
     <MenuItem value="Vendedor">
       Vendedor
