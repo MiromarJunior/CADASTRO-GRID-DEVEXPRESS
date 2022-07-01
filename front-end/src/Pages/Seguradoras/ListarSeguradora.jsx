@@ -169,7 +169,6 @@ const ListarSeguradora = () => {
 
 
 
-
     return (
         <div className="container-fluid">
 

@@ -71,6 +71,12 @@ margin-top: 10px;
       margin-bottom: 1em;
     } 
 
+    #centralDiv{
+      background-color: blue;
+      width: 100px;
+      height: 100px;
+    }
+
    
    
 

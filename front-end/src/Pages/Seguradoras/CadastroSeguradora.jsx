@@ -18,7 +18,7 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
-import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaGRID, } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -594,7 +594,6 @@ const CadastroSeguradora = () => {
     )
     const [validaNumber] = useState(["SGCO_CELULAR_DDD", "SGCO_CELULAR_NUMERO",
         "SGCO_FONE_COMERCIAL_DDD", "SGCO_FONE_COMERCIAL_NUMERO", "SGCO_FONE_COMERCIAL_RAMAL", "ID_SEGURADORA"]);
-
 
 
     return (

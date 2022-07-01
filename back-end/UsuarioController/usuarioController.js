@@ -108,6 +108,7 @@ router.post("/cadastrarUsuario", async(req, res)=> {
   cnpjForn = apenasNr(lista.USRO_CNPJ_FORNECEDOR), 
   cpfUsu = apenasNr(lista.USRO_CPF),
   grupoAcesso = lista.GRUPO_ACE;  
+  
 
 
   jwt.verify(token, SECRET, async (err, decoded) => {
@@ -149,6 +150,7 @@ router.post("/cadastrarUsuario", async(req, res)=> {
               });
 
               if(grupoAcesso){ 
+                
               let saveUpdateSql = "";  
               let resultGR =  await connection.execute( 
                   `
@@ -185,6 +187,19 @@ router.post("/cadastrarUsuario", async(req, res)=> {
                         WHERE GA.GRAC_DESCRICAO = '${grupoAcesso}'
                       ))        
                     `  
+                  }
+                  if(grupoAcesso==="semAcesso"){
+                    await connection.execute ( 
+                      ` DELETE FROM USRO_GRAC
+                      WHERE ID_USUARIO = ${idUsu}
+                      
+                      `
+                      ,
+                  
+                      [],
+                      { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+                        autoCommit : true
+                      });
                   }
 
                   await connection.execute(
@@ -453,7 +468,7 @@ router.post("/listarGrupoAcesso", async(req, res)=> {
   const {token} =req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
-  
+
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -494,6 +509,360 @@ router.post("/listarGrupoAcesso", async(req, res)=> {
 })  
 
 });
+
+router.post("/cadastrarGrupoAcesso", async(req, res)=> {
+  const {token, lista} =req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+  let idGa = lista.GRAC_CODIGO,
+  grupoAcesso = (lista.GRAC_DESCRICAO).toUpperCase(),
+  statusGA = lista.GRAC_DESCRICAO;
+
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+    } else{  
+      try {
+
+        if(idGa){
+          result = await connection.execute (       
+            `     
+            UPDATE GRUPO_ACESSO 
+            SET GRAC_DESCRICAO = '${grupoAcesso}'
+            WHERE GRAC_CODIGO = '${idGa}'
+          
+            
+            `,
+            [],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+            autoCommit : true} 
+             );
+             result.rowsAffected > 0 ? res.send("sucessoU").status(200).end() : res.send("erro").status(200).end();
+
+        }else{
+          result = await connection.execute (       
+            `     
+            INSERT INTO GRUPO_ACESSO
+            (GRAC_CODIGO, GRAC_DESCRICAO,STATUS)
+            VALUES(SEQ_GRAC.NEXTVAL,'${grupoAcesso}','Ativo')  
+            
+            `,
+            [],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+            autoCommit : true} 
+             );
+             result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end();
+
+        }
+
+       
+                  
+        
+          
+      } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+          
+      }finally {
+          if(connection){
+              try {
+                  await connection.close();
+                 
+              } catch (error) {
+                console.error(error);              
+              }
+          }
+      }
+                    
+    }
+})  
+
+});
+
+router.post("/excluirGrupoAcesso", async(req, res)=> {
+  const {token, idGa} =req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+
+ 
+
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+    } else{  
+      try {
+
+        if(idGa){
+          result = await connection.execute (       
+            `     
+            DELETE FROM  GRUPO_ACESSO 
+            WHERE GRAC_CODIGO = '${idGa}'          
+            
+            `,
+            [],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+            autoCommit : true} 
+             );
+             result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end();
+
+        }
+
+       
+                  
+        
+          
+      } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+          
+      }finally {
+          if(connection){
+              try {
+                  await connection.close();
+                 
+              } catch (error) {
+                console.error(error);              
+              }
+          }
+      }
+                    
+    }
+})  
+
+});
+
+
+router.post("/listarAcesso", async(req, res)=> {
+  const {token,idGa} =req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+  
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+    } else{  
+      try {
+
+        result = await connection.execute (       
+            `     
+            SELECT ACES.ACES_DESCRICAO, COUNT(DISTINCT ACGR.GRAC_CODIGO) AS TOTAL,GRAC.GRAC_CODIGO,ACES.ACES_CODIGO  
+            FROM ACESSO ACES ,ACES_GRAC ACGR, GRUPO_ACESSO GRAC
+            WHERE ACGR.ACES_CODIGO(+) = ACES.ACES_CODIGO 
+            AND GRAC.GRAC_CODIGO(+) = ACGR.GRAC_CODIGO
+            AND ACGR.GRAC_CODIGO(+) = ${idGa}
+            GROUP BY ACES.ACES_DESCRICAO,GRAC.GRAC_CODIGO,ACES.ACES_CODIGO   
+            ORDER BY ACES.ACES_DESCRICAO 
+            
+            `,
+            [],
+            { outFormat  :  oracledb.OUT_FORMAT_OBJECT} 
+             );
+             res.send(result.rows).status(200).end();            
+        
+          
+      } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+          
+      }finally {
+          if(connection){
+              try {
+                  await connection.close();
+                 
+              } catch (error) {
+                console.error(error);              
+              }
+          }
+      }
+                    
+    }
+})  
+
+});
+
+router.post("/cadastrarAcesso", async(req, res)=> {
+  const {token,idGa,idAc} =req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+  
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+    } else{  
+      try {
+
+       let resultAce = await connection.execute (       
+          `     
+          SELECT * FROM ACES_GRAC AG
+          WHERE AG.GRAC_CODIGO = ${idGa}
+          AND AG.ACES_CODIGO = ${idAc}
+          
+          `,
+          [],
+          { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+            autoCommit : true
+          
+            } 
+           );
+          
+           if(resultAce.rows.length > 0 ){
+            result = await connection.execute (       
+              `
+              DELETE FROM ACES_GRAC
+              WHERE GRAC_CODIGO = ${idGa}
+              AND ACES_CODIGO =  ${idAc}     
+              
+              
+              `,
+              [],
+              { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+                autoCommit : true
+              
+                } 
+               );
+               result.rowsAffected > 0 ? res.send("sucessoD").status(200).end() : res.send("erro").status(200).end(); 
+
+           }else{
+            result = await connection.execute (       
+              `     
+              INSERT INTO ACES_GRAC(
+                GRAC_CODIGO, ACES_CODIGO)
+                VALUES(${idGa},${idAc})
+              
+              `,
+              [],
+              { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+                autoCommit : true
+              
+                } 
+               );
+               result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end(); 
+
+
+           }
+
+
+
+        
+
+
+
+
+
+
+
+
+
+                
+        
+          
+      } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+          
+      }finally {
+          if(connection){
+              try {
+                  await connection.close();
+                 
+              } catch (error) {
+                console.error(error);              
+              }
+          }
+      }
+                    
+    }
+})  
+
+});
+
+router.post("/acessoMenuUsuario", async(req, res)=> {
+  const {token,usuario} =req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+    } else{  
+      try {
+
+       let result = await connection.execute (       
+          `     
+          SELECT USRO.USRO_NOME,
+          USRO.USRO_CPF,     
+          USRO.USRO_USUARIO,      
+          ACES.ACES_DESCRICAO,ACGR.*
+     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES
+    WHERE USRO_GRAC.ID_USUARIO = USRO.ID_USUARIO
+    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO
+    AND ACES.ACES_CODIGO = ACGR.ACES_CODIGO
+      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO              
+      AND USRO.USRO_USUARIO = '${usuario}'
+          
+          `,
+          [],
+          { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
+           
+          
+            } 
+           );
+           res.send(result.rows).status(200).end();
+          
+                 
+        
+          
+      } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+          
+      }finally {
+          if(connection){
+              try {
+                  await connection.close();
+                 
+              } catch (error) {
+                console.error(error);              
+              }
+          }
+      }
+                    
+    }
+})  
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = router;

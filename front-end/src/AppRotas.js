@@ -9,6 +9,8 @@ import LoginPage from "./Login/Login";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
 import ListarUsuario from "./Pages/Usuario/ListarUsuario";
 import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
+import GrupoDeAcesso from "./Pages/Usuario/GrupoDeAcesso";
+import Acesso from "./Pages/Usuario/Acesso";
 
 
 
@@ -41,7 +43,9 @@ const AppRotas = () => {
       
             <Routes>
                 <Route exact path="/" element={<LoginPage/>} />    
-                            
+                
+                <Route exact path="/acessoUsuario/:idGa/:grAce" element={ <Private><Acesso /></Private> } />     
+                <Route exact path="/gruposDeAcesso" element={ <Private><GrupoDeAcesso /></Private> } />            
                 <Route exact path="/listarSeguradora" element={ <Private><ListarSeguradora /></Private> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={<Private> <CadastroSeguradora /> </Private>} />
                 <Route exact path="/listarUsuario" element={ <Private><ListarUsuario /> </Private>} />

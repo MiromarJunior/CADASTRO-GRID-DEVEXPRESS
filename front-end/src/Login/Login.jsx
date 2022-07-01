@@ -1,102 +1,112 @@
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { borderRadius } from '@mui/system';
+
 const { useContext, useState } = require("react");
 const { useNavigate } = require("react-router-dom");
 const { AuthContext } = require("../Autenticação/validacao");
 const avvante = require("../img/avvante60.png");
 
+
 require("./Login.css");
 
 
 
-function LoginPage(){
-    
-
-    const [usuario,setUsuario] = useState("");
-    const [senha,setSenha] = useState(""); 
-    const navigate = useNavigate();
-    const {login} =useContext(AuthContext);
-
-    function acessoLogin(e){
-        e.preventDefault();
-       login(usuario,senha);
-    }
-    
+function LoginPage() {
 
 
+	const [usuario, setUsuario] = useState("");
+	const [senha, setSenha] = useState("");
+	const navigate = useNavigate();
+	const { login } = useContext(AuthContext);
 
-
-    return(
-        <div>
-            
+	function acessoLogin(e) {
+		e.preventDefault();
+		login(usuario, senha);
+	}
 
 
 
 
 
-                <div className="container-fluid">
-		<div className="row main-content bg-success text-center">
-			<div className="col-md-4 text-center company__info">
-				<span className="company__logo"><h2><span className="fa fa-android"></span></h2></span>
-				<h4 className="company_title"></h4>
-                <img src={avvante}/>
-			</div>
-			<div className="col-md-8 col-xs-12 col-sm-12 login_form ">
+	return (
+		<div>
 
 
 
 
 
 
-                
-				<div className="container-fluid">
-					<div className="row">
-						<h2>Acesso ao Sistema</h2>
+			<div className="container-fluid">
+				<div className="row main-content bg-success text-center">
+					<div className="col-md-4 text-center company__info">
+						<span className="company__logo"><h2><span className="fa fa-android"></span></h2></span>
+						<h4 className="company_title"></h4>
+						<img src={avvante} />
 					</div>
-					<div className="row">
-						<form control="" className="form-group">
-							<div className="col" >    
-                            <label id="label_Login"><b>Usuário</b> </label>                         
-								<input onChange={(e)=> setUsuario(e.target.value)} type="text" name="username" id="username" className="form__input" placeholder="Usuário"/>
-							</div>
-                          
+					<div className="col-md-8 col-xs-12 col-sm-12 login_form ">
 
-							<div className="col">
-                            <label style={{marginRight : "30px"}}><b>Senha</b> </label>  
-								<input onChange={(e)=> setSenha(e.target.value)} type="password" name="password" id="password" className="form__input" placeholder="Senha"/>
-							</div>
-                          
-                            
-							
+
+
+
+
+
+
+						<div className="container-fluid">
 							<div className="row">
-                            <button style={{marginLeft : "20%"}} className="btnL" onClick={(e)=>acessoLogin(e)}>Login</button>
+								<h2>Acesso ao Sistema</h2>
 							</div>
-						</form>
+							<div className="row">
+								<form control="" className="form-group">
+									<div className="col" >
+										<Box
+											component=""
+											sx={{
+												'& > :not(style)': { m: 1, width: '100%' },
+											}}
+											noValidate
+											autoComplete="off"
+										>
+											<TextField id="user" label="Usuário" variant="outlined" onChange={(e) => setUsuario(e.target.value)} type="text" />
+											<TextField id="senha" label="Senha " variant="outlined" onChange={(e) => setSenha(e.target.value)} type="password" />
+
+										</Box>
+									</div>
+
+
+
+
+									<div className="row">
+										<button style={{ marginLeft: "20%", padding: "2%" }} className="btnL" onClick={(e) => acessoLogin(e)}>Login</button>
+									</div>
+								</form>
+							</div>
+
+
+						</div>
 					</div>
-					
-					
 				</div>
 			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		</div>
-	</div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                
-            </div>
-
-    
-    )
+	)
 }
 export default LoginPage;
 
@@ -113,46 +123,46 @@ export default LoginPage;
 						</p></div>
 
   <div className="col">
-                            <label style={{marginRight : "35px"}}><b>CNPJ</b> </label>  
+							<label style={{marginRight : "35px"}}><b>CNPJ</b> </label>  
 								<input onChange={(e)=> setSenha(e.target.value)} type="text" name="" id="" className="form__input" placeholder="CNPJ"/>
 							</div>
-                            <div className="col">
-                            <label id="label_Login" ><b>Grupo</b> </label> 
+							<div className="col">
+							<label id="label_Login" ><b>Grupo</b> </label> 
 								<select className="form__input"  >
-                                    <option>Matriz</option>
-                                    <option>Regional</option>
-                                    <option>Fonecedor</option>
-                                    <option>Bate-Pronto</option>
-                                    <option>Central</option>
+									<option>Matriz</option>
+									<option>Regional</option>
+									<option>Fonecedor</option>
+									<option>Bate-Pronto</option>
+									<option>Central</option>
 
-                                </select>
+								</select>
 							</div>
-                            <div className="col">
-                            <label style={{marginLeft : "-20px", marginRight : "20px"}}><b>Categoria</b> </label> 
+							<div className="col">
+							<label style={{marginLeft : "-20px", marginRight : "20px"}}><b>Categoria</b> </label> 
 								<select className="form__input"  >
-                                    <option>Admin Sistemas</option>
-                                    <option>Admin</option>
-                                    <option>Gestor</option>
-                                    <option>Operacional</option>
-                                   
+									<option>Admin Sistemas</option>
+									<option>Admin</option>
+									<option>Gestor</option>
+									<option>Operacional</option>
+								   
 
-                                </select>
+								</select>
 							</div>
 
 
 
 
  <h1> Pagina de Login</h1>
-            <div className="centralizarInput">
-                <form>
-                    <label>Usuário</label><br/>
-                    <input type={"text"} onChange={(e)=> setUsuario(e.target.value)} placeholder={"Nome o usuário"}/><br/>
-                    <label>Senha</label><br/>
-                    <input type={"password"} onChange={(e)=> setSenha(e.target.value)} placeholder={"Senha"} />
-                </form>
-                <br/>
-                <button onClick={(e)=>acessoLogin(e)}>Login</button>
-                <button onClick={(e)=>navigate("/cadastroUsuario")}>Cadastrar novo Usuário</button>
+			<div className="centralizarInput">
+				<form>
+					<label>Usuário</label><br/>
+					<input type={"text"} onChange={(e)=> setUsuario(e.target.value)} placeholder={"Nome o usuário"}/><br/>
+					<label>Senha</label><br/>
+					<input type={"password"} onChange={(e)=> setSenha(e.target.value)} placeholder={"Senha"} />
+				</form>
+				<br/>
+				<button onClick={(e)=>acessoLogin(e)}>Login</button>
+				<button onClick={(e)=>navigate("/cadastroUsuario")}>Cadastrar novo Usuário</button>
 
 <head>
 	<meta charset="UTF-8">

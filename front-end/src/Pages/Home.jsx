@@ -209,6 +209,24 @@ const HomePage = () => {
               </ListItemButton>
             </ListItem>
 
+            <ListItem  disablePadding>
+              <ListItemButton onClick={ ()=> navigate("/gruposDeAcesso")}>
+                <ListItemIcon>
+                <ListIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Grupos de Acesso"}   />
+              </ListItemButton>
+            </ListItem>
+
+
+            
+
+
+
+
+
+            
+
         </TreeItem>
         
 

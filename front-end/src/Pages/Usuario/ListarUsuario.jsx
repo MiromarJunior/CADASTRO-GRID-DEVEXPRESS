@@ -230,7 +230,7 @@ const ListarUsuario = () => {
   useEffect(() => {
     listaUsuarios();
     listaGrupoAcesso();
-  }, []);
+  }, []); 
 
   const cadastraUsuario = (lista) => {
     let dados = { lista, token };
@@ -361,6 +361,10 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
   >
     <MenuItem value="null" >      
       </MenuItem>
+      {value ? <MenuItem value="semAcesso" >   
+        Acesso Nulo   
+      </MenuItem> : ""}
+      
     {listaAcess.map((l, index)=>
     <MenuItem key={index} value={l.GRAC_DESCRICAO ? l.GRAC_DESCRICAO : "Sem Acesso"}>
       {l.GRAC_DESCRICAO}
