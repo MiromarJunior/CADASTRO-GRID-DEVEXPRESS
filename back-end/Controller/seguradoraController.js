@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const dbConfig = require("../ConfigDB/configDB.js");
 const { formataArrayStr, apenasNr } = require("../Service/utilServiceBackEnd.js");
-const { route } = require("../UsuarioController/usuarioController.js");
+const { route } = require("./usuarioController.js");
 const app = express();
 app.use(express.json());
 // let connection = await oracledb.getConnection(dbConfig);
