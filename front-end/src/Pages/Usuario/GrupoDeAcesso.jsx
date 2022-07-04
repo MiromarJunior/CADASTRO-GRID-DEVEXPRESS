@@ -246,11 +246,16 @@ const GrupoDeAcesso = ()=>{
              // window.alert("Grupo de Acesso cadastrado com sucesso !!");   
               listaGrupoAcesso();         
              
-            }
+            }else if (res.data === "usuVinc") {
+               window.alert("Não foi possivel excluir Grupo, pois existem usuário(s) vinculado(s) !!");   
+               listaGrupoAcesso();         
+              
+             }
     
            
              else {
               window.alert(" erro ao tentar excluir Grupo de Acesso");
+              listaGrupoAcesso();        
             }
     
           })

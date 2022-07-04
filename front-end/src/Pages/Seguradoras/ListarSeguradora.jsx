@@ -20,6 +20,8 @@ import { cnpj } from "cpf-cnpj-validator";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 
 // const TableComponent = ({ ...restProps }) => (
@@ -58,12 +60,59 @@ const ListarSeguradora = () => {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
-    const { logout } = useContext(AuthContext);
+    const { logout, nomeUser } = useContext(AuthContext);
     const [validCNPJ] = useState(["SGRA_CNPJ"]);
     const [editSeg] = useState(["ALTERACAO"]);
+    const [acessoGeral, setAcessoGeral] = useState(false);
+    const [acessoCAD, setAcessoCAD] = useState(false);
+
+    const [displayAcesso, setDisplayAcesso] = useState("none");
 
 
     useEffect(() => {
+      
+            const acessoMenuUser = async ()=>{
+              let dados = { token, usuario :nomeUser() };
+              await getAcessoUserMenu(dados)
+                .then((res) => {
+                  if (res.data === "erroLogin") {
+                    window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                  }
+                  else if (res.data === "semAcesso") {
+                    window.alert("Usuário sem permissão !!!");
+          
+                  } else {
+                    (res.data).map((l)=>{
+                  
+                      if(process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO){
+                        setAcessoGeral(true);
+                        setAcessoCAD(true);
+                        setDisplayAcesso("");
+                  
+                      }
+                     
+      
+      
+                    })
+                    
+                  }
+          
+          
+                })
+                .catch((err) => {
+                  console.error(err);
+                  window.alert("Erro ao cadastrar !!")
+                })
+          
+            }
+      
+      
+            acessoMenuUser();
+      
+           
+        
 
         listarSeguradoras();
     }, [logout, token]);
@@ -132,13 +181,14 @@ const ListarSeguradora = () => {
 
 
     //GRID
+    console.log(acessoCAD);
     const element = <AddCircleOutlinedIcon titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />
     const [columns] = useState([
         { name: 'SGRA_CNPJ', title: `CNPJ` },
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
         { name: 'SGRA_CIDADE', title: "CIDADE" },
         {
-            name: "ALTERACAO", title: element,
+            name: "ALTERACAO", title: (acessoGeral ? element : "VISUALIZAR SEGURADORA"),
             getCellValue: row => (row.ID_SEGURADORA)
 
         },
@@ -152,11 +202,21 @@ const ListarSeguradora = () => {
 
     ])
 
+    const acessoSGRA =(valor)=>{ 
+    if(acessoGeral || acessoCAD){
+        return(    
+            <div>  
+        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />,
+        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(valor)} />
+        </div> 
+        )
+    } else{
+      return  <VisibilityIcon titleAccess="Visualizar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />
+
+    }
+}
     const EditSeguradoras = ({ value }) => (
-        <div>
-            <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />
-            <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(value)} />
-        </div>
+       acessoSGRA(value)    
     
     )
     const EditSeguradorasProv = props => (

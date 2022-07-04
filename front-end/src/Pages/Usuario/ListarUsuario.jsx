@@ -29,10 +29,11 @@ import {
   TableColumnResizing,
   TableColumnReordering,
   DragDropProvider,
+  TableColumnVisibility,
 } from "@devexpress/dx-react-grid-material-ui";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Autenticação/validacao";
-import { deleteUsuario, getGrupoAcesso, getUsuarios, saveUsuario } from "../../Service/usuarioService";
+import { deleteUsuario, getAcessoUserMenu, getGrupoAcesso, getUsuarios, saveUsuario } from "../../Service/usuarioService";
 
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -42,42 +43,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 
-const CategoriaFormatter = ({ value }) => <Chip label={value} />;
 
-const CategoriaEditor = ({ value, onValueChange }) => (
-  <Select
-    input={<Input />}
-    value={value}
-    onChange={event => onValueChange(event.target.value)}
-    style={{ width: '100%' }}
-  >
-  
-    <MenuItem value="">
-      
-    </MenuItem>
-    
-    <MenuItem value="Gestor">
-      Gestor
-    </MenuItem>
-    <MenuItem value="Oficina">
-      Oficina
-    </MenuItem>
-    <MenuItem value="Vendedor">
-      Vendedor
-    </MenuItem>
-    <MenuItem value="Regulador">
-      Regulador
-    </MenuItem>
-  </Select>
-);
-
-const CategoriaProvider = props => (
-  <DataTypeProvider
-    formatterComponent={CategoriaFormatter}
-    editorComponent={CategoriaEditor}
-    {...props}
-  />
-);
 
 const SenhaFormatter = ({ value }) => <Chip label={"****"}  />;
 
@@ -209,11 +175,11 @@ const FormatCPFProv = (props) => (
 )
 
 
-
+let acessoGeral = false;
 const ListarUsuario = () => {
 
 
-  const { logout } = useContext(AuthContext);
+  const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
   const [listaAcess, setListaAcess] = useState([""]);
@@ -227,10 +193,61 @@ const ListarUsuario = () => {
   const [editingRowIds, getEditingRowIds] = useState([]);
 
 
-  useEffect(() => {
-    listaUsuarios();
-    listaGrupoAcesso();
-  }, []); 
+
+
+  useEffect( () => {
+    const acessoMenuUser = async ()=>{
+      let dados = { token, usuario :nomeUser() };
+      await getAcessoUserMenu(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            window.alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          }
+          else if (res.data === "semAcesso") {
+            window.alert("Usuário sem permissão !!!");
+  
+          } else {
+            (res.data).map((l)=>{          
+              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){              
+                
+                acessoGeral = true;
+                
+                listaGrupoAcesso();   
+                               
+             
+              }
+             
+
+
+            })
+            
+            
+          }
+  
+  
+        })
+        .catch((err) => {
+          console.error(err);
+          window.alert("Erro ao buscar Usuário !!")
+        })
+  
+    }
+
+
+    acessoMenuUser();
+    listaUsuarios();  
+   
+
+   
+ 
+    }, [logout,token,acessoGeral]); 
+
+
+
+   
+ 
 
   const cadastraUsuario = (lista) => {
     let dados = { lista, token };
@@ -298,7 +315,7 @@ const ListarUsuario = () => {
   }
 
   const listaUsuarios = async () => {
-    let dados = { token };
+    let dados = { token, acessoGeral, usuario : nomeUser() };
     await getUsuarios(dados)
       .then((res) => {
 
@@ -319,7 +336,7 @@ const ListarUsuario = () => {
       })
       .catch((err) => {
         console.error(err);
-        window.alert("Erro ao cadastrar !!")
+        window.alert("Erro ao Listar usuários !!")
       })
   }
 
@@ -375,14 +392,56 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
   </Select>
 );
 
+
+
 const GrupoAcessoProvider = props => (
+  acessoGeral ?
   <DataTypeProvider
-    formatterComponent={GrupoAcessoFormatter}
-    editorComponent={GrupoAcessoEditor}
-    {...props}
-  />
+  formatterComponent={GrupoAcessoFormatter}
+  editorComponent={GrupoAcessoEditor}
+  {...props} 
+/> : ""
+ 
+  
 );
 
+const CategoriaFormatter = ({ value }) => <Chip label={value} />;
+
+const CategoriaEditor = ({ value, onValueChange }) => (
+  <Select
+    input={<Input />}
+    value={value}
+    onChange={event => onValueChange(event.target.value)}
+    style={{ width: '100%' }}
+  >
+  
+    <MenuItem value="">
+      
+    </MenuItem>
+    
+    <MenuItem value="Gestor">
+      Gestor
+    </MenuItem>
+    <MenuItem value="Oficina">
+      Oficina
+    </MenuItem>
+    <MenuItem value="Vendedor">
+      Vendedor
+    </MenuItem>
+    <MenuItem value="Regulador">
+      Regulador
+    </MenuItem>
+  </Select>
+);
+
+const CategoriaProvider = props => (
+  acessoGeral ? 
+  <DataTypeProvider
+    formatterComponent={CategoriaFormatter}
+    editorComponent={CategoriaEditor}
+    {...props}
+  /> : ""
+);
 
   
 
@@ -498,7 +557,10 @@ const GrupoAcessoProvider = props => (
     setRows(changedRows);
   };
   const [editingStateColumnExtensions] = useState([
-  //  { columnName: 'GRUPO_ACE', editingEnabled: false },
+  { columnName: 'GRUPO_ACE', editingEnabled:(acessoGeral ? true :false) } ,
+   { columnName: 'USRO_CATEGORIA', editingEnabled:  (acessoGeral ? true :false) },
+   { columnName: 'USRO_CNPJ_FORNECEDOR', editingEnabled:  (acessoGeral ? true :false) },
+   { columnName: 'USRO_CPF', editingEnabled:  (acessoGeral ? true :false) },
   ]);
 
 
@@ -528,7 +590,10 @@ const GrupoAcessoProvider = props => (
             <SenhaProvider
               for={SenhaColumns}
             />
-            <SortingState />
+            <SortingState   
+           
+            
+            />
             <FilteringState 
             defaultFilters={[{ columnName : "USRO_CATEGORIA", value : ""}]} />
             <IntegratedFiltering />
@@ -551,6 +616,8 @@ const GrupoAcessoProvider = props => (
               // tableComponent={TableComponent}
 
             />
+
+            
           <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
             <TableHeaderRow
               showSortingControls
@@ -558,17 +625,26 @@ const GrupoAcessoProvider = props => (
 
 
             />
+
+            
+
+
+
+
+
             <TableColumnReordering
           order={columnOrder}
           onOrderChange={setColumnOrder}
-        />
+        /> 
             <TableEditRow />
-            <TableEditColumn
-              showEditCommand
-              showDeleteCommand
-              showAddCommand={!addedRows.length}
-              commandComponent={Command}
-            />
+           
+            <TableEditColumn 
+      showEditCommand
+      showDeleteCommand
+      showAddCommand={!addedRows.length}
+      commandComponent={Command}
+    />
+          
              <TableFilterRow />
 
           </Grid>
@@ -589,7 +665,10 @@ export default ListarUsuario;
 // const [tableColumnExtensions] = useState([
 //   { columnName: 'USRO_CPF', align: 'right' },
 // ]);
-
+//<TableColumnVisibility
+            defaultHiddenColumnNames={["GRUPO_ACE"]}
+            
+            />
 
 // const TableComponentDA = ({ ...restProps }) => (
 //   <Table.TableBody

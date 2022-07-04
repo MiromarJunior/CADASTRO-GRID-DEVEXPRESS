@@ -37,6 +37,7 @@ import ExitToAppTwoToneIcon from '@mui/icons-material/ExitToAppTwoTone';
 import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
+import { getAcessoUserMenu } from "../Service/usuarioService";
 
 
 
@@ -96,6 +97,45 @@ const HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
+  const [acessoGeral, setAcessoGeral] = useState(false);
+  const [displayAcesso, setDisplayAcesso] = useState("none")
+
+
+  useEffect(() => {
+    const acessoMenuUser = async ()=>{
+      let dados = { token, usuario :nomeUser() };
+      await getAcessoUserMenu(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            window.alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          }
+          else if (res.data === "semAcesso") {
+            window.alert("Usuário sem permissão !!!");
+  
+          } else {
+            (res.data).map((l)=>{
+          
+              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
+                setAcessoGeral(true);
+                setDisplayAcesso("");       
+              } 
+            })            
+          } 
+  
+        })
+        .catch((err) => {
+          console.error(err);
+          window.alert("Erro ao buscar Usuário !!")
+        })  
+    }
+    acessoMenuUser();   
+    }, [logout,token]); 
+
+
+
+
 
 
 
@@ -209,7 +249,7 @@ const HomePage = () => {
               </ListItemButton>
             </ListItem>
 
-            <ListItem  disablePadding>
+            <ListItem  disablePadding style={{display : displayAcesso}}>
               <ListItemButton onClick={ ()=> navigate("/gruposDeAcesso")}>
                 <ListItemIcon>
                 <ListIcon /> 

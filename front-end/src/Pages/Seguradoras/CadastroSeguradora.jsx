@@ -26,6 +26,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 //const { format } = require('telefone');
 const emailV = /\S+@\S+\.\S+/;
@@ -97,7 +98,7 @@ const Command = ({ id, onExecute }) => {
 
 
 const CadastroSeguradora = () => {
-    const { logout } = useContext(AuthContext);
+    const { logout,nomeUser } = useContext(AuthContext);
     const [cnpjSeguradora, setCnpjSeguradora] = useState("");
     const [codLegado, setCodLegado] = useState("");
     const [tipoPessoa, setTipoPessoa] = useState("");
@@ -133,11 +134,56 @@ const CadastroSeguradora = () => {
     const [listaUF, setListaUF] = useState([]);
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [rowChanges, setRowChanges] = useState({});
+    const [acessoGeral, setAcessoGeral] = useState(false);
+    const [acessoCAD, setAcessoCAD] = useState(false);
+    const [displayAcesso, setDisplayAcesso] = useState("none");
 
 
 
 
     useEffect(() => {
+        const acessoMenuUser = async ()=>{
+            let dados = { token, usuario :nomeUser() };
+            await getAcessoUserMenu(dados)
+              .then((res) => {
+                if (res.data === "erroLogin") {
+                  window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                  logout();
+                  window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                  window.alert("Usuário sem permissão !!!");
+        
+                } else {
+                  (res.data).map((l)=>{          
+                    if(process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO){              
+                      
+                      setAcessoGeral(true);
+                      setDisplayAcesso("");
+                      setAcessoCAD(true);                   
+                    }
+                   
+      
+      
+                  })
+                  
+                  
+                }
+        
+        
+              })
+              .catch((err) => {
+                console.error(err);
+                window.alert("Erro ao buscar Usuário !!")
+              })
+        
+          }
+      
+      
+          acessoMenuUser();
+
+
+
         buscarSeguradoras();
         buscarContatos(idSegN);
         buscaUnidadeFederativa();
@@ -261,7 +307,7 @@ const CadastroSeguradora = () => {
             logradouro, complemento, bairro, estadoUF, nrLogradouro, cep: apenasNr(cep),
             nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
             remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
-            soapRetSol, soapRetNotas, token, idSeg: idSegN
+            soapRetSol, soapRetNotas, token, idSeg: idSegN, acessoCAD, acessoGeral
         };
 
 
@@ -609,31 +655,31 @@ const CadastroSeguradora = () => {
                     <div className="form-group col-md-12"></div>
                     <div className="form-group col-md-6 margemRight">
                         <Form.Label   >RAZÃO SOCIAL</Form.Label>
-                        <Form.Control maxLength={128} id="razaoSoc" className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="razaoSoc" className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
                     </div>
 
 
                     <div className="form-group col-md-5 ">
                         <Form.Label   >NOME FANTASIA</Form.Label>
-                        <Form.Control maxLength={64} id="nomeFant" className="form__input1" type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia} style={{ width: "102%" }} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="nomeFant" className="form__input1" type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia} style={{ width: "102%" }} placeholder="" />
 
                     </div>
 
 
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >CNPJ</Form.Label>
-                        <Form.Control id="txtCnpj" className="  form__input1 " maxLength={20} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="txtCnpj" className="  form__input1 " maxLength={20} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
 
                     </div>
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >CODIGO LEGADO</Form.Label>
-                        <Form.Control maxLength={64} id="codLeg" className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="codLeg" className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} placeholder="" />
 
                     </div>
 
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >TIPO PESSOA</Form.Label>
-                        <Form.Select id="tipoP" value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} id="tipoP" value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Juridica"} >Jurídica</option>
                             <option value={"Fisica"}>Física</option>
@@ -643,7 +689,7 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-2 margemRight" >
                         <Form.Label  >OPTANTE SIMPLES</Form.Label>
-                        <Form.Select id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Sim"} >Sim</option>
                             <option value={"Nao"}>Não</option>
@@ -654,7 +700,7 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-1.1 margemRight" >
                         <Form.Label  >STATUS SEGURADORA</Form.Label>
-                        <Form.Select id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"Ativo"}>Ativo</option>
                             <option value={"Inativo"}>Inativo</option>
@@ -663,19 +709,19 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
                         <Form.Label   >INSCRIÇÃO ESTADUAL</Form.Label>
-                        <Form.Control maxLength={20} className="form__input1" type="text" onChange={(e) => setIE(e.target.value)} value={ie} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={20} className="form__input1" type="text" onChange={(e) => setIE(e.target.value)} value={ie} placeholder="" />
 
                     </div>
                     <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
                         <Form.Label   >INSCRIÇÃO MUNICIPAL</Form.Label>
-                        <Form.Control maxLength={20} className="form__input1" type="text" onChange={(e) => setIM(e.target.value)} value={im} style={{ maxWidth: "100%" }} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={20} className="form__input1" type="text" onChange={(e) => setIM(e.target.value)} value={im} style={{ maxWidth: "100%" }} placeholder="" />
 
                     </div>
 
 
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label  >CEP</Form.Label>
-                        <Form.Control id="cep" className="form__input1" type="text" onChange={(e) => setCep(e.target.value)} value={cep} placeholder=" " />
+                        <Form.Control disabled={!acessoCAD} id="cep" className="form__input1" type="text" onChange={(e) => setCep(e.target.value)} value={cep} placeholder=" " />
 
                     </div>
 
@@ -690,7 +736,7 @@ const CadastroSeguradora = () => {
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label  >UF</Form.Label>
 
-                        <Form.Select id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF} className="  form__input1 " style={{ paddingBottom: "13px" }}>
 
                             {listaUF.map((l) =>
                                 <option key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</option>
@@ -707,29 +753,32 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-3 margemRight ">
                         <Form.Label  >CIDADE</Form.Label>
-                        <Form.Control maxLength={64} id="cidade" className="form__input1" type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} style={{ width: "280PX" }} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="cidade" className="form__input1" type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} style={{ width: "280PX" }} placeholder="" />
                     </div>
 
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >BAIRRO</Form.Label>
-                        <Form.Control maxLength={64} id="bairro" className="form__input1" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro} style={{ width: "92%" }} placeholder=" " />
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="bairro" className="form__input1" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro} style={{ width: "92%" }} placeholder=" " />
                     </div>
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >LOGRADOURO</Form.Label>
-                        <Form.Control maxLength={128} id="lograd" className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="lograd" className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >NR</Form.Label>
-                        <Form.Control maxLength={10} id="nrLograd" className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
+                        <Form.Control  disabled={!acessoCAD} maxLength={10} id="nrLograd" className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
                     </div>
 
 
 
                     <div className="form-group col-md-4 margemRight">
                         <Form.Label   >COMPLEMENTO</Form.Label>
-                        <Form.Control maxLength={64} id="compl" className="form__input1" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="compl" className="form__input1" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} placeholder="" />
                     </div>
 
+                  
+                    </div>
+                    <div  className="form-inline" id="" style={{ fontSize: "9", display : displayAcesso }}>
                     <hr style={{ width: "100%" }} />
                     <div className="form-group col-md-7">
                         <h3 id="titulo" >Dados do Sistema</h3>
@@ -739,31 +788,31 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >SMTP</Form.Label>
-                        <Form.Control id="smtp" maxLength={256} value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="smtp" maxLength={256} value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >PORTA</Form.Label>
-                        <Form.Control id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
+                        <Form.Control  disabled={!acessoCAD} id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Usuário(E-MAIL)</Form.Label>
-                        <Form.Control maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-3" style={{ width: "270px" }}>
                         <Form.Label   >Senha(E-MAIL)</Form.Label>
-                        <Form.Control id="semail" maxLength={128} value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="semail" maxLength={128} value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Remetente</Form.Label>
-                        <Form.Control id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-3 margemRight">
                         <Form.Label   >Nome Remetente</Form.Label>
-                        <Form.Control id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label   >SMTP Auth</Form.Label>
-                        <Form.Select value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"True"}>True</option>
                             <option value={"False"}>False</option>
@@ -771,7 +820,7 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-1 margemRight">
                         <Form.Label style={{ width: "100px" }}  >SMTP Secure</Form.Label>
-                        <Form.Select value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)} className="  form__input1 " style={{ width: "120px", paddingBottom: "13px" }}>
+                        <Form.Select disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)} className="  form__input1 " style={{ width: "120px", paddingBottom: "13px" }}>
                             <option value={""} >Selecione</option>
                             <option value={"TLS"}>TLS</option>
                             <option value={"SSL"}>SSL</option>
@@ -779,18 +828,19 @@ const CadastroSeguradora = () => {
                     </div>
                     <div className="form-group col-md-5 margemRight">
                         <Form.Label   >SOAP Retorno de Solicitação</Form.Label>
-                        <Form.Control id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
                     <div className="form-group col-md-5 margemRight">
                         <Form.Label   >SOAP Retorno de Notas</Form.Label>
-                        <Form.Control id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)} className="form__input1" type="text" placeholder="" />
+                        <Form.Control disabled={!acessoCAD} id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)} className="form__input1" type="text" placeholder="" />
                     </div>
 
-
+                  </div>
+                  <div className="form-inline" id="" style={{ fontSize: "9" }}>
 
                     <hr style={{ width: "100%" }} />
                     <div className="form-group col-md-7" style={{ display: displayCont }}   >
-                        <h3 id="titulo" >Cadastrar Contato</h3>
+                        <h3 id="titulo" >{acessoGeral || acessoCAD ?"Cadastrar Contato": "Visualizar Contato" } </h3>
                     </div>
 
                     <div style={{ display: displayCont }} className="form-group col-md-12"    >
@@ -826,12 +876,13 @@ const CadastroSeguradora = () => {
                                 <Table />
                                 <TableHeaderRow />
                                 <TableEditRow />
-                                <TableEditColumn
+                                {acessoGeral || acessoCAD ?  <TableEditColumn
                                     showEditCommand
                                     showAddCommand={!addedRows.length}
                                     showDeleteCommand
                                     commandComponent={Command}
-                                />
+                                /> : "" }
+                               
                             </Grid>
                         </div>
                     </div>
@@ -843,7 +894,7 @@ const CadastroSeguradora = () => {
 
                     <div className="form-group col-md-10">
                         {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
-                        <Button className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
+                        <Button style={{display : displayAcesso}}className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
                         <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
 
                     </div>
