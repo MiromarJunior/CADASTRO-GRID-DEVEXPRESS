@@ -21,13 +21,14 @@ e responde com os dados de autenticação
 const router = require("express").Router();
 const express = require("express");
 const oracledb = require("oracledb");
-const dbConfig = require("../ConfigDB/configDB.js");
+const dbConfig = require("../ConfigDB/configDB");
 const app = express();
 app.use(express.json());
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 const { apenasNr } = require("../Service/utilServiceBackEnd.js");
+
 const SECRET = process.env.SECRET;
 
 router.post("/listarUsu", async(req, res)=> {

@@ -4,8 +4,7 @@ const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET;
 const oracledb = require("oracledb");
 const dbConfig = require("../ConfigDB/configDB.js");
-const { formataArrayStr } = require("../Service/utilServiceBackEnd.js");
-const { route } = require("../UsuarioController/usuarioController.js");
+
 const app = express();
 app.use(express.json());
 

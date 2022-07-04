@@ -14,14 +14,14 @@ app.use(express.urlencoded({
 
 app.listen(port, ()=>{ 
 
-  let usuarioRotas = require("./UsuarioController/usuarioController");
+  let usuarioRotas = require("./Controller/usuarioController");
   app.use("/",usuarioRotas)  ;
  
 
-  let seguradoraRotas = require("./SeguradoraController/seguradoraController");
+  let seguradoraRotas = require("./Controller/seguradoraController");
   app.use("/",seguradoraRotas) ;
 
-  let unidadeFederativaRotas = require("./EnderecoController/unidadeFederativaController");
+  let unidadeFederativaRotas = require("./Controller/unidadeFederativaController");
   app.use("/",unidadeFederativaRotas) ;
 
 
