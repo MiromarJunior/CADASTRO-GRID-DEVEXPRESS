@@ -86,6 +86,8 @@ const Acesso = ()=>{
                   setAcessoGeral(true);
                   setDisplayAcesso("");
                   listaAcesso();
+                  
+
                 }
                
 

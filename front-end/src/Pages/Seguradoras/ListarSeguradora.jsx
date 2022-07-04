@@ -22,6 +22,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
+import { display } from "@mui/system";
 
 
 // const TableComponent = ({ ...restProps }) => (
@@ -90,6 +91,7 @@ const ListarSeguradora = () => {
                         setAcessoGeral(true);
                         setAcessoCAD(true);
                         setDisplayAcesso("");
+                        
                   
                       }
                      
@@ -181,14 +183,16 @@ const ListarSeguradora = () => {
 
 
     //GRID
-    console.log(acessoCAD);
-    const element = <AddCircleOutlinedIcon titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />
-    const [columns] = useState([
+ 
+ 
+  
+  
+        const [columns] = useState([
         { name: 'SGRA_CNPJ', title: `CNPJ` },
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
         { name: 'SGRA_CIDADE', title: "CIDADE" },
         {
-            name: "ALTERACAO", title: (acessoGeral ? element : "VISUALIZAR SEGURADORA"),
+            name: "ALTERACAO", title: " ",
             getCellValue: row => (row.ID_SEGURADORA)
 
         },
@@ -206,6 +210,7 @@ const ListarSeguradora = () => {
     if(acessoGeral || acessoCAD){
         return(    
             <div>  
+         < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />       
         <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />,
         <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(valor)} />
         </div> 

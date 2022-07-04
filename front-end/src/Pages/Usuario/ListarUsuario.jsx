@@ -45,7 +45,7 @@ import { cnpj, cpf } from 'cpf-cnpj-validator';
 
 
 
-const SenhaFormatter = ({ value }) => <Chip label={"****"}  />;
+const SenhaFormatter = ({ value }) =>  "****";
 
 const SenhaEditor = ({ value, onValueChange }) => (
   <Input
@@ -67,6 +67,49 @@ const SenhaProvider = props => (
   />
 );
 
+const FormatCnpj = ({ value }) => value ?  cnpj.format(value) : "" ; 
+const CnpjEditor = ({ value, onValueChange }) => (
+  <Input
+    input={<Input />}
+    value={value}
+    type={"text"}
+    onChange={event => onValueChange(event.target.value)}
+  >
+  </Input>    
+);
+
+const FormatCnpjProv = (props) => (
+ 
+  <DataTypeProvider
+    formatterComponent={FormatCnpj}
+    editorComponent={CnpjEditor}
+    {...props}
+
+  />
+  
+)
+
+const FormatCPF = ({ value }) => value ? cpf.format(value) : "" ;
+const CPfEditor = ({ value, onValueChange }) => (
+  <Input
+    input={<Input />}
+    value={value}
+    type={"text"}
+    onChange={event => onValueChange(event.target.value)}
+  >
+  </Input>    
+);
+const FormatCPFProv = (props) => (
+  <DataTypeProvider
+    formatterComponent={FormatCPF}
+    editorComponent={CPfEditor}
+    {...props}
+
+  />
+)
+
+
+
 
 const DeleteButton = ({ onExecute }) => (
   <IconButton
@@ -76,7 +119,7 @@ const DeleteButton = ({ onExecute }) => (
         onExecute();
       }
     }}
-    title="Excluir contato"
+    title="Excluir Usuário"
     size="large"
   >
     <DeleteForeverOutlinedIcon style={{ color: "red" }} />
@@ -88,7 +131,7 @@ const AddButton = ({ onExecute }) => (
     <IconButton size="large"
       color="primary"
       onClick={onExecute}
-      title="Novo Contato"
+      title="Novo Usuário"
     >
       <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
     </IconButton>
@@ -97,7 +140,7 @@ const AddButton = ({ onExecute }) => (
 
 
 const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Contato" size="large" >
+  <IconButton onClick={onExecute} title="Alterar Usuário" size="large" >
     <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
   </IconButton>
 );
@@ -150,34 +193,52 @@ const TableComponentTitle = ({ style, ...restProps }) => (
   />
 );
 
-const FormatCnpj = ({ value }) => (
-  cnpj.format(value)
 
-)
-const FormatCnpjProv = (props) => (
+
+
+const CategoriaFormatter = ({ value }) => value ? value : "";
+
+const CategoriaEditor = ({ value, onValueChange }) => (
+  <Select
+    input={<Input />}
+    value={value}
+    onChange={event => onValueChange(event.target.value)}
+    style={{ width: '100%' }}
+  >
+  
+    <MenuItem value="">
+      
+    </MenuItem>
+    
+    <MenuItem value="Gestor">
+      Gestor
+    </MenuItem>
+    <MenuItem value="Oficina">
+      Oficina
+    </MenuItem>
+    <MenuItem value="Vendedor">
+      Vendedor
+    </MenuItem>
+    <MenuItem value="Regulador">
+      Regulador
+    </MenuItem>
+  </Select>
+);
+
+const CategoriaProvider = props => (
+ 
   <DataTypeProvider
-    formatterComponent={FormatCnpj}
+    formatterComponent={CategoriaFormatter}
+    editorComponent={CategoriaEditor}
     {...props}
+  /> 
+);
 
-  />
-)
 
-const FormatCPF = ({ value }) => (
-
-  cpf.format(value)
-)
-const FormatCPFProv = (props) => (
-  <DataTypeProvider
-    formatterComponent={FormatCPF}
-    {...props}
-
-  />
-)
 
 
 let acessoGeral = false;
 const ListarUsuario = () => {
-
 
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
@@ -195,7 +256,8 @@ const ListarUsuario = () => {
 
 
 
-  useEffect( () => {
+
+  useEffect( () => { 
     const acessoMenuUser = async ()=>{
       let dados = { token, usuario :nomeUser() };
       await getAcessoUserMenu(dados)
@@ -209,13 +271,11 @@ const ListarUsuario = () => {
             window.alert("Usuário sem permissão !!!");
   
           } else {
-            (res.data).map((l)=>{          
-              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){              
-                
-                acessoGeral = true;
-                
-                listaGrupoAcesso();   
-                               
+             
+            (res.data).forEach((l)=>{          
+              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){                 
+              acessoGeral = true;                  
+                listaGrupoAcesso();                            
              
               }
              
@@ -234,16 +294,10 @@ const ListarUsuario = () => {
         })
   
     }
-
-
     acessoMenuUser();
-    listaUsuarios();  
-   
-
-   
+    listaUsuarios();   
  
     }, [logout,token,acessoGeral]); 
-
 
 
    
@@ -367,7 +421,7 @@ const ListarUsuario = () => {
   }
 
 
-  const GrupoAcessoFormatter = ({ value }) => <Chip label={value ? value : "Sem Acesso"} />;
+const GrupoAcessoFormatter = ({ value }) => value ? value : "Sem Acesso";
 
 const GrupoAcessoEditor = ({ value, onValueChange }) => (
   <Select
@@ -392,8 +446,6 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
   </Select>
 );
 
-
-
 const GrupoAcessoProvider = props => (
   acessoGeral ?
   <DataTypeProvider
@@ -403,44 +455,6 @@ const GrupoAcessoProvider = props => (
 /> : ""
  
   
-);
-
-const CategoriaFormatter = ({ value }) => <Chip label={value} />;
-
-const CategoriaEditor = ({ value, onValueChange }) => (
-  <Select
-    input={<Input />}
-    value={value}
-    onChange={event => onValueChange(event.target.value)}
-    style={{ width: '100%' }}
-  >
-  
-    <MenuItem value="">
-      
-    </MenuItem>
-    
-    <MenuItem value="Gestor">
-      Gestor
-    </MenuItem>
-    <MenuItem value="Oficina">
-      Oficina
-    </MenuItem>
-    <MenuItem value="Vendedor">
-      Vendedor
-    </MenuItem>
-    <MenuItem value="Regulador">
-      Regulador
-    </MenuItem>
-  </Select>
-);
-
-const CategoriaProvider = props => (
-  acessoGeral ? 
-  <DataTypeProvider
-    formatterComponent={CategoriaFormatter}
-    editorComponent={CategoriaEditor}
-    {...props}
-  /> : ""
 );
 
   
@@ -564,6 +578,7 @@ const CategoriaProvider = props => (
   ]);
 
 
+
   return (
     <div className='container-fluid'>
       <h3 id='titulos'>🙋‍♂️​Usuários🙋‍♀️​</h3>
@@ -574,19 +589,26 @@ const CategoriaProvider = props => (
             rows={rows}
             columns={columns}
 
-          >
+          > {acessoGeral ?
             <CategoriaProvider
               for={booleanColumns}
-            />
+            />          
+           : ""}
+            
             <GrupoAcessoProvider
             for={columnsGrupoAcess}
             />
-            <FormatCnpjProv
-              for={formatCNPJ}
-            />
+            {acessoGeral ? <FormatCnpjProv
+              for={formatCNPJ} 
+            /> : ""
+            }
+            {acessoGeral ?
             <FormatCPFProv
-              for={formatCPF}
-            />
+            for={formatCPF}
+          />         
+           : ""}
+            
+            
             <SenhaProvider
               for={SenhaColumns}
             />
@@ -637,13 +659,22 @@ const CategoriaProvider = props => (
           onOrderChange={setColumnOrder}
         /> 
             <TableEditRow />
-           
-            <TableEditColumn 
-      showEditCommand
-      showDeleteCommand
-      showAddCommand={!addedRows.length}
-      commandComponent={Command}
-    />
+           {acessoGeral ?
+           <TableEditColumn 
+           showEditCommand
+           showDeleteCommand      
+           showAddCommand={!addedRows.length}
+           commandComponent={Command}
+           />           
+          : 
+          <TableEditColumn 
+            showEditCommand           
+            commandComponent={Command}
+            />
+          
+          
+          }
+            
           
              <TableFilterRow />
 

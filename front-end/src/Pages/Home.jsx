@@ -136,9 +136,6 @@ const HomePage = () => {
 
 
 
-
-
-
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -174,7 +171,8 @@ const HomePage = () => {
           
                  
           <Typography marginLeft={"60%"} style={{color : "black"}} >
-           Usuário(a)  {nomeUser()}
+            <button  style={{backgroundColor: "rgb(171, 239, 191)", border : 0}} onClick={ ()=> navigate("/listarUsuario")} > Usuário(a)  {nomeUser()}</button>
+           
           
           </Typography>
            
