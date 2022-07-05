@@ -644,19 +644,11 @@ const CadastroSeguradora = () => {
     const [validaNumber] = useState(["SGCO_CELULAR_DDD", "SGCO_CELULAR_NUMERO",
         "SGCO_FONE_COMERCIAL_DDD", "SGCO_FONE_COMERCIAL_NUMERO", "SGCO_FONE_COMERCIAL_RAMAL", "ID_SEGURADORA"]);
 
-function mostrar(){
- var ll = document.getElementById("opSimp");
 
-    alert(ll.value)
-}
 
     return (
         <div>
-            <button onClick={mostrar}>mostar</button>
-
-
-
-          
+                  
 
             <div className="container-fluid" style={{ marginBottom: "10px", marginTop: "10px" }}>
 
