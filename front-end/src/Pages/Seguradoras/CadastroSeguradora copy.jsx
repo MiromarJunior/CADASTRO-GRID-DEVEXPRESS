@@ -18,7 +18,7 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
-import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -27,7 +27,7 @@ import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { Box, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 
 //const { format } = require('telefone');
 const emailV = /\S+@\S+\.\S+/;
@@ -99,7 +99,7 @@ const Command = ({ id, onExecute }) => {
 
 
 const CadastroSeguradora = () => {
-    const { logout, nomeUser } = useContext(AuthContext);
+    const { logout,nomeUser } = useContext(AuthContext);
     const [cnpjSeguradora, setCnpjSeguradora] = useState("");
     const [codLegado, setCodLegado] = useState("");
     const [tipoPessoa, setTipoPessoa] = useState("");
@@ -143,45 +143,45 @@ const CadastroSeguradora = () => {
 
 
     useEffect(() => {
-        const acessoMenuUser = async () => {
-            let dados = { token, usuario: nomeUser() };
+        const acessoMenuUser = async ()=>{
+            let dados = { token, usuario :nomeUser() };
             await getAcessoUserMenu(dados)
-                .then((res) => {
-                    if (res.data === "erroLogin") {
-                        window.alert("Sessão expirada, Favor efetuar um novo login !!");
-                        logout();
-                        window.location.reload();
+              .then((res) => {
+                if (res.data === "erroLogin") {
+                  window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                  logout();
+                  window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                  window.alert("Usuário sem permissão !!!");
+        
+                } else {
+                  (res.data).map((l)=>{          
+                    if(process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO){              
+                      
+                      setAcessoGeral(true);
+                      setDisplayAcesso("");
+                      setAcessoCAD(true);                   
                     }
-                    else if (res.data === "semAcesso") {
-                        window.alert("Usuário sem permissão !!!");
-
-                    } else {
-                        (res.data).map((l) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO) {
-
-                                setAcessoGeral(true);
-                                setDisplayAcesso("");
-                                setAcessoCAD(true);
-                            }
-
-
-
-                        })
-
-
-                    }
-
-
-                })
-                .catch((err) => {
-                    console.error(err);
-                    window.alert("Erro ao buscar Usuário !!")
-                })
-
-        }
-
-
-        acessoMenuUser();
+                   
+      
+      
+                  })
+                  
+                  
+                }
+        
+        
+              })
+              .catch((err) => {
+                console.error(err);
+                window.alert("Erro ao buscar Usuário !!")
+              })
+        
+          }
+      
+      
+          acessoMenuUser();
 
 
 
@@ -251,8 +251,8 @@ const CadastroSeguradora = () => {
                             setNrLogradouro(l.SGRA_NUMERO);
                             setSmtpSist(l.SGRA_SMTP);
                             setPortaSist(l.SGRA_PORTA);
-                            setSenhaEmailSist("null")
                             setEmailSist(l.SGRA_USUARIO_EMAIL);
+                            setSenhaEmailSist(l.SGRA_SENHA);
                             setRemetenteEmailSist(l.SGRA_REMETENTE);
                             setNomeRemetenteEmailSist(l.SGRA_NOME_REMETENTE);
                             setSmtpSistAuth(l.SGRA_SMTP_AUTH);
@@ -317,11 +317,11 @@ const CadastroSeguradora = () => {
             validaNomeFANT() &&
             validaCNPJ(cnpjSeguradora) &&
             validaCodLEG() &&
-            validaTipoPESSOA(tipoPessoa) &&
-            validaOpSIMPLES(optSimples) &&
-            validaStatusSEG(statusSeg) &&
+            validaTipoPESSOA() &&
+            validaOpSIMPLES() &&
+            validaStatusSEG() &&
             validaCEP() &&
-            validaUF(estadoUF) &&
+            validaUF() &&
             validaCIDADE() &&
             validaBAIRRO() &&
             validaLOGRAD() &&
@@ -334,9 +334,7 @@ const CadastroSeguradora = () => {
             validaREMET() &&
             validaNREMET() &&
             validaSOAPRET() &&
-            validaSOAPNOT() &&
-            validaSMTPAuth(smtpSistAuth) &&
-            validaSMTPSecure(smtpSistSecure)
+            validaSOAPNOT()
 
         ) {
             saveSeguradora(dados)
@@ -404,7 +402,7 @@ const CadastroSeguradora = () => {
     }
 
     const deletarContato = (idCont) => {
-        let dados = { token, idCont: parseInt(idCont) };
+        let dados = { token, idCont : parseInt(idCont) };
         deleteContatoSegID(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -618,11 +616,11 @@ const CadastroSeguradora = () => {
         if (deleted) {
 
             const deletedSet = new Set(deleted);
-            changedRows = rows.filter(row => !deletedSet.has(row.id));
+             changedRows = rows.filter(row => !deletedSet.has(row.id)); 
             let changedRowsDel = rows.filter(row => deletedSet.has(row.id));
-            let idCont = parseInt(changedRowsDel.map(l => l.ID_SEGURADORA_CONTATO));
+            let idCont =parseInt(changedRowsDel.map(l => l.ID_SEGURADORA_CONTATO));
             deletarContato(idCont);
-            // deletarContato( changedRowsDel.map(l => l.ID_SEGURADORA_CONTATO));
+           // deletarContato( changedRowsDel.map(l => l.ID_SEGURADORA_CONTATO));
 
         }
         setRows(changedRows);
@@ -644,204 +642,289 @@ const CadastroSeguradora = () => {
     const [validaNumber] = useState(["SGCO_CELULAR_DDD", "SGCO_CELULAR_NUMERO",
         "SGCO_FONE_COMERCIAL_DDD", "SGCO_FONE_COMERCIAL_NUMERO", "SGCO_FONE_COMERCIAL_RAMAL", "ID_SEGURADORA"]);
 
-function mostrar(){
- var ll = document.getElementById("opSimp");
-
-    alert(ll.value)
-}
 
     return (
         <div>
-            <button onClick={mostrar}>mostar</button>
-
-
-
-          
-
+            <div className="form-group col-md-6 margemRight">
+            <TextField id="outlined-basic" label="Razão Social" variant="outlined" disabled={!acessoCAD} maxLength={128} id="razaoSoc" className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} />
+            </div>
             <div className="container-fluid" style={{ marginBottom: "10px", marginTop: "10px" }}>
 
 
-
-          
-                    <h3 id="titulos">CADASTRO DE SEGURADORAS </h3>
-             
-               
-                <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                   
-                >
-
-            <div style={{marginLeft : "-40px"}} >                 
-                    <TextField required label="Razão Social" error={razaoSocial.length < 1  || razaoSocial.length > 127 ? true : false}  variant="outlined" disabled={!acessoCAD} maxLength={128} id="razaoSoc"  type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{width : "48%"}}/>
-                    <TextField required label="Nome Fantasia" error={nomeFantasia.length < 1  || nomeFantasia.length > 63 ? true : false} disabled={!acessoCAD} maxLength={64} id="nomeFant"  type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia}  style={{width : "48%"}} />
-                    <TextField required label="CNPJ" error={cnpjSeguradora.length < 1  || cnpjSeguradora.length > 20 ? true : false}   disabled={!acessoCAD} id="txtCnpj"  maxLength={20}  onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} />
-                    <TextField required label="Codigo Legado" error={codLegado.length < 1  || codLegado.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="codLeg"  type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} style={{maxWidth : "15%"}} />
-                     <TextField required id="tipoP" error={tipoPessoa.length < 1 ? true : false} label="Tipo de Pessoa" select  disabled={!acessoCAD}  value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)}  style={{maxWidth : "18%"}}  >
-                      
-                        <MenuItem  value={"Juridica"}>Juridica</MenuItem>
-                        <MenuItem  value={"Fisica"}>Fisica</MenuItem>
-                    </TextField>
-                    <TextField  required select error={optSimples.length < 1  ? true : false} label="Optante Simples" disabled={!acessoCAD} id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)}  style={{ maxWidth : "20%" }}>
-                        
-                        <MenuItem value={"Sim"} >Sim</MenuItem>
-                        <MenuItem value={"Nao"}>Não</MenuItem>
-                    </TextField>
-                    <TextField required select error={statusSeg.length < 1  ? true : false} label={"Status"} disabled={!acessoCAD} id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)}  style={{ maxWidth : "15%"}}>
-                       
-                        <MenuItem value={"Ativo"}>Ativo</MenuItem>
-                        <MenuItem value={"Inativo"}>Inativo</MenuItem>
-                    </TextField>
-
-                    <TextField required label="Inscrição Estadual" error={ ie.length > 20 ? true : false}  disabled={!acessoCAD} maxLength={20}  type="text" onChange={(e) => setIE(e.target.value)} value={ie} />
-                    <TextField required label="Inscrição Municipal" error={ im.length > 20 ? true : false}  disabled={!acessoCAD} maxLength={20}  type="text" onChange={(e) => setIM(e.target.value)} value={im}  />
-                    <TextField required select error={estadoUF.length < 1  ? true : false} label={"UF"} disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF}  style={{ maxWidth : "10%"}} >
-                    {listaUF.map((l) =>
-                        <MenuItem key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</MenuItem>
-                    )}
-                    </TextField>                    
-                    <TextField required label="CEP" error={cep.length < 1 || cep.length > 10 ? true : false} disabled={!acessoCAD} id="cep" type="text" onChange={(e) => setCep(e.target.value)} value={cep}  style={{ maxWidth : "20%"}}/>
-              
-                   <Button onClick={(e) => buscaCepOnline(e)} style={{padding : "13px", marginTop : "11px", marginLeft : "2%"}} > BUSCAR CEP  </Button>
-                   <TextField required label="Cidade" error={nomeCidade.length < 1 || nomeCidade.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="cidade"  type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} />
-                   <TextField required label="Bairro" error={bairro.length < 1 || bairro.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="bairro" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro}  />
-                   <TextField required label="Logradouro" error={logradouro.length < 1 || logradouro.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="lograd"  type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} style={{ width : "48%"}} />
-                   <TextField required label="Complemento" error={complemento.length < 1 || complemento.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="compl" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} style={{ width : "48%"}}   />
-                   <TextField required label="NR" error={nrLogradouro.length < 1 || nrLogradouro.length > 10 ? true : false} disabled={!acessoCAD} maxLength={10} id="nrLograd"  type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro}   />
-                              
-            </div>
-
-                </Box>
-
-               
-
-            </div>
-          
-                <hr style={{ width: "100%" }} />
-      
-                
-
-                <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                   
-                >
-
-             <div style={{marginLeft : "-30px", display: displayAcesso}}>
-             <h3 id="titulos" >Dados do Sistema</h3>       
-
-             <TextField required label="SMTP" error={smtpSist.length < 1 || smtpSist.length > 255 ? true : false} disabled={!acessoCAD} id="smtp" maxLength={256} value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)}  type="text"  />
-             <TextField required label="Porta" error={portaSist.length < 1 || portaSist.length > 5 ? true : false}  disabled={!acessoCAD} id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} type="number"  style={{ width : "8%"}}/>
-             <TextField required label="Usuário (E-Mail)" error={emailSist.length < 1 || emailSist.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)}  type="text" style={{ width : "41%"}}  />
-             <TextField required label="Senha(E-MAIL)" error={senhaEmailSist.length < 1 || senhaEmailSist.length > 128 ? true : false}disabled={!acessoCAD} id="semail" maxLength={128} value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)}  type="password"  />
-             <TextField required label="Remetente" error={remetenteEmailSist.length < 1 || remetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)}  type="text" style={{ width : "30%"}} />
-             <TextField required label="Nome Remetente" error={nomeRemetenteEmailSist.length < 1 || nomeRemetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)}  type="text" style={{ width : "30%"}} />
-             <TextField select required label="SMTP Auth" error={smtpSistAuth.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} style={{ maxWidth : "13%"}} >
-                        <MenuItem value={"True"}>True</MenuItem>
-                        <MenuItem value={"False"}>False</MenuItem>
-             </TextField>
-             <TextField select required label="SMTP Secure"  error={smtpSistSecure.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)}style={{ maxWidth : "12%"}}  >
-                        <MenuItem value={"TLS"}>TLS</MenuItem>
-                        <MenuItem value={"SSL"}>SSL</MenuItem>
-             </TextField>
-             <TextField required label="SOAP Retorno de Solicitação"  error={soapRetSol.length < 1 || soapRetSol.length > 256 ? true : false} disabled={!acessoCAD} id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)}  type="text" style={{ width : "48%"}}/>
-             <TextField required label="SOAP Retorno de Notas" error={soapRetNotas.length < 1 || soapRetNotas.length > 256 ? true : false} disabled={!acessoCAD} id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)}  type="text" style={{ width : "48%"}} />
- 
-
-                
-             </div>
-                </Box>   
+                <div className="form-inline" id="" style={{ fontSize: "9" }}>
+                    
 
 
-               
-
-           
-
-             <div className="form-inline" id="" style={{ fontSize: "9" }}>
-
-                <hr style={{ width: "100%" }} />
-                <div className="form-group col-md-7" style={{ display: displayCont }}   >
-                    <h3 id="titulo" >{acessoGeral || acessoCAD ? "Cadastrar Contato" : "Visualizar Contato"} </h3>
-                </div>
-
-                <div style={{ display: displayCont }} className="form-group col-md-12"    >
 
 
-                    <div className="card" >
-                        <Grid
-                            rows={rows}
-                            columns={columns}
 
-                        >
-                            <ValidaNumberProv
-                                for={validaNumber}
-
-                            />
-
-                            <EditingState
-                                addedRows={addedRows}
-                                onAddedRowsChange={changeAddedRows}
-                                editingRowIds={editingRowIds}
-                                onEditingRowIdsChange={getEditingRowIds}
-                                rowChanges={rowChanges}
-                                onRowChangesChange={setRowChanges}
-                                onCommitChanges={commitChanges}
-                            />
-
-                            <PagingState
-                                defaultCurrentPage={0}
-                                pageSize={5}
-                            />
-                            <IntegratedPaging />
-                            <PagingPanel />
-                            <Table />
-                            <TableHeaderRow />
-                            <TableEditRow />
-                            {acessoGeral || acessoCAD ? <TableEditColumn
-                                showEditCommand
-                                showAddCommand={!addedRows.length}
-                                showDeleteCommand
-                                commandComponent={Command}
-                            /> : ""}
-
-                        </Grid>
+                    <div className="form-group col-md-8">
+                        <h3 id="titulo">CADASTRO DE SEGURADORAS </h3>
                     </div>
+                    <div className="form-group col-md-12"></div>
+
+
+                    
+                    <div className="form-group col-md-6 margemRight">
+                        <Form.Label   >RAZÃO SOCIAL</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="razaoSoc" className="" type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ width: "100%" }} placeholder="" />
+                    </div>
+
+
+                    <div className="form-group col-md-5 ">
+                        <Form.Label   >NOME FANTASIA</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="nomeFant" className="form__input1" type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia} style={{ width: "102%" }} placeholder="" />
+
+                    </div>
+
+
+                    <div className="form-group col-md-2 margemRight" >
+                        <Form.Label  >CNPJ</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="txtCnpj" className="  form__input1 " maxLength={20} type="text" onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} placeholder="" />
+
+                    </div>
+                    <div className="form-group col-md-2 margemRight" >
+                        <Form.Label  >CODIGO LEGADO</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="codLeg" className="  form__input1 " type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} placeholder="" />
+
+                    </div>
+
+                    <div className="form-group col-md-2 margemRight" >
+                        <Form.Label  >TIPO PESSOA</Form.Label>
+                        <Form.Select disabled={!acessoCAD} id="tipoP" value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                            <option value={""} >Selecione</option>
+                            <option value={"Juridica"} >Jurídica</option>
+                            <option value={"Fisica"}>Física</option>
+                        </Form.Select>
+
+
+                    </div>
+                    <div className="form-group col-md-2 margemRight" >
+                        <Form.Label  >OPTANTE SIMPLES</Form.Label>
+                        <Form.Select disabled={!acessoCAD} id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                            <option value={""} >Selecione</option>
+                            <option value={"Sim"} >Sim</option>
+                            <option value={"Nao"}>Não</option>
+                        </Form.Select>
+
+                    </div>
+
+
+                    <div className="form-group col-md-1.1 margemRight" >
+                        <Form.Label  >STATUS SEGURADORA</Form.Label>
+                        <Form.Select disabled={!acessoCAD} id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                            <option value={""} >Selecione</option>
+                            <option value={"Ativo"}>Ativo</option>
+                            <option value={"Inativo"}>Inativo</option>
+                        </Form.Select>
+
+                    </div>
+                    <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
+                        <Form.Label   >INSCRIÇÃO ESTADUAL</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={20} className="form__input1" type="text" onChange={(e) => setIE(e.target.value)} value={ie} placeholder="" />
+
+                    </div>
+                    <div className="form-group col-md-2 margemRight" style={{ width: "190px" }}>
+                        <Form.Label   >INSCRIÇÃO MUNICIPAL</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={20} className="form__input1" type="text" onChange={(e) => setIM(e.target.value)} value={im} style={{ maxWidth: "100%" }} placeholder="" />
+
+                    </div>
+
+
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label  >CEP</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="cep" className="form__input1" type="text" onChange={(e) => setCep(e.target.value)} value={cep} placeholder=" " />
+
+                    </div>
+
+
+                    <div className="form-group col-md-2">
+                        <div style={{ marginTop: "35px" }}>
+                            <Button onClick={(e) => buscaCepOnline(e)} > BUSCAR CEP  </Button>
+                        </div>
+                    </div>
+
+
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label  >UF</Form.Label>
+
+                        <Form.Select disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+
+                            {listaUF.map((l) =>
+                                <option key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</option>
+                            )}
+
+
+                        </Form.Select>
+
+
+                    </div>
+
+
+
+
+                    <div className="form-group col-md-3 margemRight ">
+                        <Form.Label  >CIDADE</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="cidade" className="form__input1" type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} style={{ width: "280PX" }} placeholder="" />
+                    </div>
+
+                    <div className="form-group col-md-4 margemRight">
+                        <Form.Label   >BAIRRO</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="bairro" className="form__input1" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro} style={{ width: "92%" }} placeholder=" " />
+                    </div>
+                    <div className="form-group col-md-4 margemRight">
+                        <Form.Label   >LOGRADOURO</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="lograd" className="form__input1" type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} placeholder="" />
+                    </div>
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label   >NR</Form.Label>
+                        <Form.Control  disabled={!acessoCAD} maxLength={10} id="nrLograd" className="form__input1" type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro} style={{ width: "100%" }} placeholder="" />
+                    </div>
+
+
+
+                    <div className="form-group col-md-4 margemRight">
+                        <Form.Label   >COMPLEMENTO</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={64} id="compl" className="form__input1" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} placeholder="" />
+                    </div>
+
+                  
+                    </div>
+                    <div  className="form-inline" id="" style={{ fontSize: "9", display : displayAcesso }}>
+                    <hr style={{ width: "100%" }} />
+                    <div className="form-group col-md-7">
+                        <h3 id="titulo" >Dados do Sistema</h3>
+                    </div>
+                    <div className="form-group col-md-4"></div>
+
+
+                    <div className="form-group col-md-3 margemRight">
+                        <Form.Label   >SMTP</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="smtp" maxLength={256} value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label   >PORTA</Form.Label>
+                        <Form.Control  disabled={!acessoCAD} id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} className="form__input1" type="number" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-3 margemRight">
+                        <Form.Label   >Usuário(E-MAIL)</Form.Label>
+                        <Form.Control disabled={!acessoCAD} maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-3" style={{ width: "270px" }}>
+                        <Form.Label   >Senha(E-MAIL)</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="semail" maxLength={128} value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)} className="form__input1" type="password" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-3 margemRight">
+                        <Form.Label   >Remetente</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-3 margemRight">
+                        <Form.Label   >Nome Remetente</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label   >SMTP Auth</Form.Label>
+                        <Form.Select disabled={!acessoCAD} value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} className="  form__input1 " style={{ paddingBottom: "13px" }}>
+                            <option value={""} >Selecione</option>
+                            <option value={"True"}>True</option>
+                            <option value={"False"}>False</option>
+                        </Form.Select>
+                    </div>
+                    <div className="form-group col-md-1 margemRight">
+                        <Form.Label style={{ width: "100px" }}  >SMTP Secure</Form.Label>
+                        <Form.Select disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)} className="  form__input1 " style={{ width: "120px", paddingBottom: "13px" }}>
+                            <option value={""} >Selecione</option>
+                            <option value={"TLS"}>TLS</option>
+                            <option value={"SSL"}>SSL</option>
+                        </Form.Select>
+                    </div>
+                    <div className="form-group col-md-5 margemRight">
+                        <Form.Label   >SOAP Retorno de Solicitação</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+                    <div className="form-group col-md-5 margemRight">
+                        <Form.Label   >SOAP Retorno de Notas</Form.Label>
+                        <Form.Control disabled={!acessoCAD} id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)} className="form__input1" type="text" placeholder="" />
+                    </div>
+
+                  </div>
+                  <div className="form-inline" id="" style={{ fontSize: "9" }}>
+
+                    <hr style={{ width: "100%" }} />
+                    <div className="form-group col-md-7" style={{ display: displayCont }}   >
+                        <h3 id="titulo" >{acessoGeral || acessoCAD ?"Cadastrar Contato": "Visualizar Contato" } </h3>
+                    </div>
+
+                    <div style={{ display: displayCont }} className="form-group col-md-12"    >
+
+
+                        <div className="card" >
+                            <Grid
+                                rows={rows}
+                                columns={columns}
+
+                            >
+                                <ValidaNumberProv
+                                    for={validaNumber}
+
+                                />
+
+                                <EditingState
+                                    addedRows={addedRows}
+                                    onAddedRowsChange={changeAddedRows}
+                                    editingRowIds={editingRowIds}
+                                    onEditingRowIdsChange={getEditingRowIds}
+                                    rowChanges={rowChanges}
+                                    onRowChangesChange={setRowChanges}
+                                    onCommitChanges={commitChanges}
+                                />
+
+                                <PagingState
+                                    defaultCurrentPage={0}
+                                    pageSize={5}
+                                />
+                                <IntegratedPaging />
+                                <PagingPanel />
+                                <Table />
+                                <TableHeaderRow />
+                                <TableEditRow />
+                                {acessoGeral || acessoCAD ?  <TableEditColumn
+                                    showEditCommand
+                                    showAddCommand={!addedRows.length}
+                                    showDeleteCommand
+                                    commandComponent={Command}
+                                /> : "" }
+                               
+                            </Grid>
+                        </div>
+                    </div>
+
+
+
+                    <div className="form-group col-md-12"></div><br /><br /><br />
+
+
+                    <div className="form-group col-md-10">
+                        {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
+                        <Button style={{display : displayAcesso}}className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
+                        <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
+
+                    </div>
+
+                    <div className="form-group col-md-4"></div>
+
+
+
                 </div>
-
-
-
-            
-
-
-                <div className="form-group col-md-10">
-                    {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
-                    <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
-                    <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
-
-                </div>
-
-               
-
-
-
-                </div>
-
-
-
-
-
 
 
 
             </div>
+
+
+
+
+        </div>
 
 
     )

@@ -2,38 +2,10 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import ListIcon from '@mui/icons-material/List';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import ExitToAppTwoToneIcon from '@mui/icons-material/ExitToAppTwoTone';
-import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import TreeItem from '@mui/lab/TreeItem';
 import { AuthContext } from "../../Autenticação/validacao";
-import Modal from '@mui/material/Modal';
-import {  Paper, TextField } from "@mui/material";
+import {  Paper } from "@mui/material";
 import { deleteGrupoAcesso, getGrupoAcesso, saveGrupoAcesso } from "../../Service/usuarioService";
-import ListarUsuario from "./ListarUsuario";
 import { Grid, Table, TableColumnResizing, TableEditColumn, TableEditRow, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -41,22 +13,22 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering, IntegratedSorting, SortingState } from "@devexpress/dx-react-grid";
-import Acesso from "./Acesso";
 
 
 
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+
+// const style = {
+//   position: 'absolute',
+//   top: '50%',
+//   left: '50%',
+//   transform: 'translate(-50%, -50%)',
+//   width: 400,
+//   bgcolor: 'background.paper',
+//   border: '2px solid #000',
+//   boxShadow: 24,
+//   p: 4,
+// };
 
 
 const TableComponentTitle = ({ style, ...restProps }) => (
@@ -158,9 +130,7 @@ const GrupoDeAcesso = ()=>{
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [botaoAcessoColumn] = useState(["ALTERACAO"]);
 
-    useEffect(() => {
-       listaGrupoAcesso();
-      }, []); 
+    
 
     const cadastraGrupoAcesso = (lista) => {
         
@@ -226,6 +196,13 @@ const GrupoDeAcesso = ()=>{
           })
     
       }
+
+      useEffect( () => {
+         listaGrupoAcesso();
+       }, []); 
+
+
+
 
       const excluirGrupoAcesso = (idGa) => {
         
@@ -352,17 +329,12 @@ const [columns] = useState([
   }
   const [filteringStateColumnExtensions] = useState([
      { columnName: 'ALTERACAO', filteringEnabled: false,editingEnabled : false },
-    ]);
-
-
-  
+    ]); 
 
 
     const BotaoAcesso = ({ value }) => (
         <div>
-              <button className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>ACESSOS SISTEMA</button>
-             
-
+          <button className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>ACESSOS SISTEMA</button>
         </div>
       
            
@@ -370,6 +342,7 @@ const [columns] = useState([
           const BotaoAcessoProv = (props) => (
             <DataTypeProvider
               formatterComponent={BotaoAcesso}
+              editorComponent={"acessos"}
               {...props}
           
             />

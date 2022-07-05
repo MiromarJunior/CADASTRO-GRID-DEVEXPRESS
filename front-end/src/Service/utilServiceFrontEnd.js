@@ -73,8 +73,7 @@ export const apenasNr = (nr)=>{
 export const validaCNPJ = (cnpjSeguradora,emailSist )=>{
     if(cnpj.isValid(apenasNr(cnpjSeguradora))){
         return true
-    }else {window.alert("CNPJ inválido");       
-    document.getElementById('txtCnpj').style.borderColor = "red";  
+    }else {window.alert("CNPJ inválido");  
     return false   
     }  
 }
@@ -84,7 +83,7 @@ export const validaEMAIL = (emailSist )=>{
         return true
     }else{
         window.alert("Email Sistema inválido");       
-    document.getElementById("txtEmailU").style.borderColor = "red";     
+    
     return false
     }
 }
@@ -93,8 +92,8 @@ export const validaRAZAO = (razaoSoc )=>{
     if(document.getElementById("razaoSoc").value.length > 1){
         return true;
     }else{
-        window.alert("Favor Preencher campo Razão Social");       
-    document.getElementById("razaoSoc").style.borderColor = "red";     
+        window.alert("Favor Preencher campo Razão Social");  
+        
     return false
     }
 
@@ -105,7 +104,7 @@ export const validaNomeFANT = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher campo Nome Fantasia");       
-    document.getElementById("nomeFant").style.borderColor = "red";     
+  
     return false
     }
 
@@ -116,41 +115,42 @@ export const validaCodLEG = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher campo Código Legado");       
-    document.getElementById("codLeg").style.borderColor = "red";     
+   
     return false
     }
 
 }
 
 
-export const validaTipoPESSOA = ()=>{
-    if(document.getElementById("tipoP").value.length > 0){
+
+
+export const validaTipoPESSOA = (valor)=>{
+    if(valor.length > 0){
         return true;
     }else{
-        window.alert("Favor Preencher campo Tipo Pessoa");       
-    document.getElementById("tipoP").style.borderColor = "red";     
+    window.alert("Favor Preencher campo Tipo Pessoa");     
     return false
     }
 
 }
 
-export const validaOpSIMPLES = ()=>{
-    if(document.getElementById("opSimp").value.length > 0){
+export const validaOpSIMPLES = (valor)=>{
+    if(valor.length > 0){
         return true;
     }else{
         window.alert("Favor Preencher campo Optante Simples");       
-    document.getElementById("opSimp").style.borderColor = "red";     
+     
     return false
     }
 
 }
 
-export const validaStatusSEG = ()=>{
-    if(document.getElementById("statusSEG").value.length > 0){
+export const validaStatusSEG = (valor)=>{
+    if( valor.length > 0){
         return true;
     }else{
         window.alert("Favor Preencher campo Status Seguradora");       
-    document.getElementById("statusSEG").style.borderColor = "red";     
+ 
     return false
     }
 
@@ -161,18 +161,18 @@ export const validaCEP = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o CEP");       
-    document.getElementById("cep").style.borderColor = "red";     
+    
     return false
     }
 
 }
 
-export const validaUF = ()=>{
-    if(document.getElementById("uf").value.length > 0){
+export const validaUF = (valor)=>{
+    if(valor.length > 0){
         return true;
     }else{
         window.alert("Favor Preencher o UF");       
-    document.getElementById("uf").style.borderColor = "red";     
+       
     return false
     }
 
@@ -183,7 +183,7 @@ export const validaCIDADE = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Cidade");       
-    document.getElementById("cidade").style.borderColor = "red";     
+  
     return false
     }
 
@@ -196,7 +196,7 @@ export const validaBAIRRO = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Bairro");       
-    document.getElementById("bairro").style.borderColor = "red";     
+  
     return false
     }
 
@@ -207,7 +207,7 @@ export const validaLOGRAD = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Logradouro");       
-    document.getElementById("lograd").style.borderColor = "red";     
+     
     return false
     }
 
@@ -218,7 +218,7 @@ export const validaNRLOGRAD = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo NR");       
-    document.getElementById("nrLograd").style.borderColor = "red";     
+  
     return false
     }
 
@@ -229,7 +229,7 @@ export const validaCOMPL = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Complemento");       
-    document.getElementById("compl").style.borderColor = "red";     
+  
     return false
     }
 
@@ -239,7 +239,7 @@ export const validaSMTP = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo SMTP");       
-    document.getElementById("smtp").style.borderColor = "red";     
+    
     return false
     }
 
@@ -250,7 +250,7 @@ export const validaPORTA = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo PORTA");       
-    document.getElementById("porta").style.borderColor = "red";     
+  
     return false
     }
 
@@ -260,7 +260,7 @@ export const validaSEMAIL = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Senha Usuário Email");       
-    document.getElementById("semail").style.borderColor = "red";     
+  
     return false
     }
 
@@ -271,7 +271,7 @@ export const validaREMET = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Remetente");       
-    document.getElementById("remet").style.borderColor = "red";     
+
     return false
     }
 
@@ -283,7 +283,7 @@ export const validaNREMET = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo Nome Remetente");       
-    document.getElementById("nremet").style.borderColor = "red";     
+   
     return false
     }
 
@@ -294,7 +294,7 @@ export const validaSOAPRET = ()=>{
         return true;
     }else{
         window.alert("Favor Preencher o campo SOAP Retorno");       
-    document.getElementById("soapret").style.borderColor = "red";     
+ 
     return false
     }
 
@@ -308,11 +308,34 @@ export const validaSOAPNOT = ()=>{
         
     }else{
         window.alert("Favor Preencher o campo SOAP Notas");       
-    document.getElementById("soapNo").style.borderColor = "red";     
+  
     return false
     }
 
 }
+export const validaSMTPAuth = (valor)=>{
+    if(valor.length > 0){     
+        return true        
+    }else{
+        window.alert("Favor Preencher o campo SMTP Auth"); 
+    return false
+    }
+
+}
+export const validaSMTPSecure = (valor)=>{
+    if(valor.length > 0){     
+        return true        
+    }else{
+        window.alert("Favor Preencher o campo SMTP Secure"); 
+    return false
+    }
+
+}
+
+
+
+
+
 
 export const validaGRID =(valor,val,changedRows,setRows,msg)=>{
    

@@ -91,17 +91,19 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 
 
+const usuarioExt = localStorage.getItem("Usuario");
 
 
-const HomePage = () => {
+
+const  HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
   const [acessoGeral, setAcessoGeral] = useState(false);
   const [displayAcesso, setDisplayAcesso] = useState("none")
 
-
   useEffect(() => {
+    if(nomeUser()){
     const acessoMenuUser = async ()=>{
       let dados = { token, usuario :nomeUser() };
       await getAcessoUserMenu(dados)
@@ -127,10 +129,14 @@ const HomePage = () => {
         })
         .catch((err) => {
           console.error(err);
-          window.alert("Erro ao buscar Usuário !!")
+          window.alert("Erro ao buscar Usuário aaa!!")
         })  
     }
     acessoMenuUser();   
+
+  }
+
+  
     }, [logout,token]); 
 
 
@@ -147,7 +153,7 @@ const HomePage = () => {
     setOpen(false);
   };
 
-  
+ 
   return (
     <div style={{ display: nomeUser() ? "" : "none" }} >
 
@@ -339,12 +345,6 @@ const HomePage = () => {
 }
 
 export default HomePage;
-
-
-
-
-
-
 
 
 
