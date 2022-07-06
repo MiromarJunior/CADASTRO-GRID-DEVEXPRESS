@@ -36,8 +36,8 @@ router.post("/listarUsu", async (req, res) => {
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let acessoUsuSql = "";
-  
-  if(acessoGeral == false){
+
+  if(acessoGeral === false){
     acessoUsuSql = ` WHERE U.USRO_USUARIO = '${usuario}' `
     
   }
@@ -103,7 +103,7 @@ router.post("/listarUsu", async (req, res) => {
 });
 
 router.post("/cadastrarUsuario", async (req, res) => {
-  const { lista, token } = req.body
+  const { lista, token, acessoGeral } = req.body
   let connection = await oracledb.getConnection(dbConfig);
   let senhaSQL = "", senhaC = "";
   let idUsu = lista.ID_USUARIO,
@@ -114,8 +114,9 @@ router.post("/cadastrarUsuario", async (req, res) => {
     cnpjForn = apenasNr(lista.USRO_CNPJ_FORNECEDOR),
     cpfUsu = apenasNr(lista.USRO_CPF),
     grupoAcesso = lista.GRUPO_ACE;
+ 
 
-
+if(acessoGeral){
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -342,6 +343,9 @@ router.post("/cadastrarUsuario", async (req, res) => {
 
     }
   });
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 });
 
@@ -410,14 +414,13 @@ router.post("/loginUsuario", async (req, res) => {
 });
 
 router.post("/excluirUsuario", async (req, res) => {
-  let = { idUsu, token } = req.body
+  let = { idUsu, token, usuario,acessoGeral } = req.body
   let connection = await oracledb.getConnection(dbConfig);
-  let result;
-  let erroAcesso = "";
+  
 
+ if(acessoGeral){
 
-
-
+ 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
       console.error(err, "err");
@@ -427,6 +430,25 @@ router.post("/excluirUsuario", async (req, res) => {
     } else {
       try {
 
+
+        let resultADM  = await connection.execute(
+          ` SELECT USRO_USUARIO FROM USUARIO
+            WHERE USRO_USUARIO = '${usuario}'          
+          `
+          ,
+
+          [],
+          {
+            outFormat: oracledb.OUT_FORMAT_ARRAY,
+          
+          });
+          let adm = resultADM.rows.toString();
+          console.log(adm);
+          if(adm === "adm" ){
+            res.send("adm").status(200).end();
+          }else{
+
+       
 
         await connection.execute(
           ` DELETE FROM USRO_GRAC
@@ -454,7 +476,7 @@ router.post("/excluirUsuario", async (req, res) => {
 
         resExcl.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end();
 
-
+      }
 
 
 
@@ -478,6 +500,9 @@ router.post("/excluirUsuario", async (req, res) => {
 
     }
   });
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 
 });
@@ -486,7 +511,6 @@ router.post("/listarGrupoAcesso", async (req, res) => {
   const { token } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
-
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -526,16 +550,17 @@ router.post("/listarGrupoAcesso", async (req, res) => {
     }
   })
 
+
 });
 
 router.post("/cadastrarGrupoAcesso", async (req, res) => {
-  const { token, lista } = req.body;
+  const { token, lista, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let idGa = lista.GRAC_CODIGO,
     grupoAcesso = (lista.GRAC_DESCRICAO).toUpperCase(),
     statusGA = lista.GRAC_DESCRICAO;
-
+if(acessoGeral){
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -602,16 +627,19 @@ router.post("/cadastrarGrupoAcesso", async (req, res) => {
 
     }
   })
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 });
 
 router.post("/excluirGrupoAcesso", async (req, res) => {
-  const { token, idGa } = req.body;
+  const { token, idGa, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
 
 
-
+if(acessoGeral){
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -695,6 +723,9 @@ router.post("/excluirGrupoAcesso", async (req, res) => {
 
     }
   })
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 });
 
@@ -749,13 +780,15 @@ router.post("/listarAcesso", async (req, res) => {
     }
   })
 
+
 });
 
 router.post("/cadastrarAcesso", async (req, res) => {
-  const { token, idGa, idAc } = req.body;
+  const { token, idGa, idAc, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
 
+if(acessoGeral){
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -851,13 +884,14 @@ router.post("/cadastrarAcesso", async (req, res) => {
 
     }
   })
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 });
 
 router.post("/acessoMenuUsuario", async (req, res) => {
-  const { token, usuario } = req.body;
-  
-  let result;
+  const { token, usuario } = req.body; 
   
 if(usuario){
   let connection = await oracledb.getConnection(dbConfig);
@@ -873,17 +907,20 @@ if(usuario){
       try {
 
         let result = await connection.execute(
-          `     
+          ` 
           SELECT USRO.USRO_NOME,
           USRO.USRO_CPF,     
           USRO.USRO_USUARIO,      
-          ACES.ACES_DESCRICAO,ACGR.*
+          ACES.ACES_DESCRICAO,ACGR.*,GACE.GRAC_DESCRICAO
      FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES
-    WHERE USRO_GRAC.ID_USUARIO = USRO.ID_USUARIO
-    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO
-    AND ACES.ACES_CODIGO = ACGR.ACES_CODIGO
-      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO              
-      AND USRO.USRO_USUARIO = '${usuario}'
+    WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
+    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO(+)
+    AND ACES.ACES_CODIGO(+) = ACGR.ACES_CODIGO
+      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO
+      AND USRO.USRO_USUARIO = '${usuario}' 
+
+                    
+     
           
           `,
           [],
@@ -893,7 +930,13 @@ if(usuario){
     
           }
         );
-        res.send(result.rows).status(200).end();
+   
+        if(result.rows.length > 0){
+          res.send(result.rows).status(200).end();
+        }else{
+          res.send("semAcesso").status(200).end();
+        }
+        
     
     
     
@@ -956,6 +999,16 @@ module.exports = router;
  * 
  * 
  * 
+ * 
+ * SELECT USRO.USRO_NOME,
+          USRO.USRO_CPF,     
+          USRO.USRO_USUARIO,      
+          ACES.ACES_DESCRICAO,ACGR.*
+     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES
+    WHERE USRO_GRAC.ID_USUARIO = USRO.ID_USUARIO
+    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO
+    AND ACES.ACES_CODIGO = ACGR.ACES_CODIGO
+      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO    
  
 SELECT DISTINCT U.ID_USUARIO,
                 U.USRO_USUARIO,

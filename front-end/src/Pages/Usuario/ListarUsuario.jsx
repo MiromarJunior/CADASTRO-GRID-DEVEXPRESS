@@ -14,7 +14,9 @@ import {
   EditingState,
   FilteringState,
   IntegratedFiltering,
+  IntegratedPaging,
   IntegratedSorting,
+  PagingState,
   SortingState,
 } from '@devexpress/dx-react-grid';
 
@@ -30,6 +32,8 @@ import {
   TableColumnReordering,
   DragDropProvider,
   TableColumnVisibility,
+  PagingPanel,
+
 } from "@devexpress/dx-react-grid-material-ui";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Autenticação/validacao";
@@ -237,7 +241,8 @@ const CategoriaProvider = props => (
 
 
 
-let acessoGeral = false;
+let acessoGeral=false;
+let acessoCAD =false;
 const ListarUsuario = () => {
 
   const { logout, nomeUser } = useContext(AuthContext);
@@ -252,39 +257,33 @@ const ListarUsuario = () => {
   const [rowChanges, setRowChanges] = useState({});
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
+  const [pageSizes] = useState([5, 10, 15,20, 0]);   
+  const [displayAcesso, setDisplayAcesso] = useState("none");
 
 
 
 
 
   useEffect( () => { 
-    const acessoMenuUser = async ()=>{
-      let dados = { token, usuario :nomeUser() };
-      await getAcessoUserMenu(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            window.alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          }
-          else if (res.data === "semAcesso") {
-            window.alert("Usuário sem permissão !!!");
-  
-          } else {
-             
-            (res.data).forEach((l)=>{          
-              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){                 
-              acessoGeral = true;                  
-                listaGrupoAcesso();                            
-             
-              }
-             
-
-
-            })
+    const acessoMenuUser = ()=>{
+      let dados = { token, usuario :nomeUser() }; 
+       getAcessoUserMenu(dados)
+        .then((res) => {    
+        if(typeof(res.data) === "string"){
+          window.alert("Erro ao buscar");
+         }else{
+        
+          (res.data).forEach((l)=>{            
+            if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO || process.env.REACT_APP_API_CAD_USU === l.ACES_DESCRICAO){                 
+            acessoGeral = true;
+            listaUsuarios();              
+         }                             
+        })                
+              }  
+           
             
             
-          }
+   
   
   
         })
@@ -294,18 +293,18 @@ const ListarUsuario = () => {
         })
   
     }
-    acessoMenuUser();
-    listaUsuarios();   
+    acessoMenuUser();    
+    listaGrupoAcesso();  
+    listaUsuarios();  
  
-    }, [logout,token,acessoGeral]); 
+    }, [logout,token]); 
 
 
    
  
 
   const cadastraUsuario = (lista) => {
-    let dados = { lista, token };
-  
+    let dados = { lista, token, acessoGeral, acessoCAD }; 
 
     saveUsuario(dados)
       .then((res) => {
@@ -324,7 +323,6 @@ const ListarUsuario = () => {
           window.alert("Usuário atualizado com sucesso !!");
           listaUsuarios();
         }
-
         else if (res.data === "duplicidade") {
           window.alert("Usuário ou CPF já cadastrados !\nFavor verificar!!");
 
@@ -339,9 +337,9 @@ const ListarUsuario = () => {
       })
   }
 
-  const deletarUsuario = (idUsu) => {
+  const deletarUsuario = (idUsu, usuario) => {
 
-    let dados = { token, idUsu: parseInt(idUsu) };
+    let dados = { token, idUsu: parseInt(idUsu) , usuario, acessoGeral, acessoCAD};
     deleteUsuario(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -351,13 +349,17 @@ const ListarUsuario = () => {
         }
         else if (res.data === "semAcesso") {
           window.alert("Usuário sem permissão !!!");
-
+          listaUsuarios();
         } else if (res.data === "sucesso") {
           window.alert("Usuário excluído com sucesso !!");
           listaUsuarios();
         } else if(res.data === "erro") {
           window.alert(" erro ao tentar excluír usuário");
+        }else if(res.data === "adm") {
+          window.alert(" Não é possivel excluir usuário principal");
         }
+
+
         else  {
           window.alert(" erro ao tentar excluír usuário");
         }
@@ -369,7 +371,7 @@ const ListarUsuario = () => {
   }
 
   const listaUsuarios = async () => {
-    let dados = { token, acessoGeral, usuario : nomeUser() };
+    let dados = { token, usuario : nomeUser(), acessoGeral };
     await getUsuarios(dados)
       .then((res) => {
 
@@ -565,7 +567,8 @@ const GrupoAcessoProvider = props => (
       changedRows = rows.filter(row => !deletedSet.has(row.id));
       let changedRowsDel = rows.filter(row => deletedSet.has(row.id));
       let idUsu = parseInt(changedRowsDel.map(l => l.ID_USUARIO));
-      deletarUsuario(idUsu);
+      let usuario = changedRowsDel.map(l => l.USRO_USUARIO);
+      deletarUsuario(idUsu,usuario);
       // setRows(changedRows);
     }
     setRows(changedRows);
@@ -576,7 +579,6 @@ const GrupoAcessoProvider = props => (
    { columnName: 'USRO_CNPJ_FORNECEDOR', editingEnabled:  (acessoGeral ? true :false) },
    { columnName: 'USRO_CPF', editingEnabled:  (acessoGeral ? true :false) },
   ]);
-
 
 
   return (
@@ -633,6 +635,11 @@ const GrupoAcessoProvider = props => (
             // defaultEditingRowIds={}
             />
             <DragDropProvider />
+            <PagingState
+          defaultCurrentPage={0}
+          defaultPageSize={5}
+        />
+        <IntegratedPaging />
             <Table
               //columnExtensions={tableColumnExtensions}
               // tableComponent={TableComponent}
@@ -647,6 +654,9 @@ const GrupoAcessoProvider = props => (
 
 
             />
+            <PagingPanel
+          pageSizes={pageSizes}
+        />
 
             
 

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import IconButton from '@mui/material/IconButton';
 import { AuthContext } from "../../Autenticação/validacao";
 import {  Paper } from "@mui/material";
-import { deleteGrupoAcesso, getGrupoAcesso, saveGrupoAcesso } from "../../Service/usuarioService";
+import { deleteGrupoAcesso, getAcessoUserMenu, getGrupoAcesso, saveGrupoAcesso } from "../../Service/usuarioService";
 import { Grid, Table, TableColumnResizing, TableEditColumn, TableEditRow, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -128,13 +128,15 @@ const GrupoDeAcesso = ()=>{
     const [rowChanges, setRowChanges] = useState({});
     const [addedRows, setAddedRows] = useState([]);
     const [editingRowIds, getEditingRowIds] = useState([]);
-    const [botaoAcessoColumn] = useState(["ALTERACAO"]);
-
+    const [botaoAcessoColumn] = useState(["ACESSOUSU"]);
+    const [botaoAcessoSGRA] = useState(["ACESSOSGRA"]);
     
+    const [acessoGeral, setAcessoGeral] = useState(false);
+    const [displayAcesso, setDisplayAcesso] = useState("none");
 
     const cadastraGrupoAcesso = (lista) => {
         
-        let dados = { lista, token };
+        let dados = { lista, token,acessoGeral };
       
     
         saveGrupoAcesso(dados)
@@ -197,16 +199,56 @@ const GrupoDeAcesso = ()=>{
     
       }
 
-      useEffect( () => {
-         listaGrupoAcesso();
-       }, []); 
 
 
-
+       useEffect(() => {
+        const acessoMenuUser = async ()=>{
+          let dados = { token, usuario :nomeUser() };
+          await getAcessoUserMenu(dados)
+            .then((res) => {
+              if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              }
+              else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");
+      
+              } else {
+                (res.data).forEach((l)=>{
+              
+                  if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
+                    setAcessoGeral(true);
+                    setDisplayAcesso("");
+                    listaGrupoAcesso();
+                    
+  
+                  }               
+  
+  
+                })
+                
+              }
+      
+      
+            })
+            .catch((err) => {
+              console.error(err);
+              window.alert("Erro ao buscar Usuário !!")
+            })
+      
+        }
+  
+  
+        acessoMenuUser();
+  
+       
+     
+        }, [logout,token,nomeUser]); 
 
       const excluirGrupoAcesso = (idGa) => {
         
-        let dados = { idGa, token };
+        let dados = { idGa, token, acessoGeral };
       
     
         deleteGrupoAcesso(dados)
@@ -246,16 +288,22 @@ const GrupoDeAcesso = ()=>{
 const [columns] = useState([
   
     { name: 'GRAC_DESCRICAO', title: "Grupo de Acesso" },   
-    { name: 'ALTERACAO', title: "PERMISSÕES",
+    { name: 'ACESSOUSU', title: "USUÁRIO",
     getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO,row.GRAC_DESCRICAO] : undefined),
-}   
+    },
+    { name: "ACESSOSGRA", title: "SEGURADORAS",
+    getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO,row.GRAC_DESCRICAO] : undefined),
+},      
+
 
   ])
 
 
   const [defaultColumnWidths] = useState([
-    { columnName: 'GRAC_DESCRICAO', width: 220 },
-    { columnName: 'ALTERACAO', width: 220  },
+    { columnName: 'GRAC_DESCRICAO', width: 200 },
+    { columnName: 'ACESSOUSU', width: 110  },
+    { columnName: 'ACESSOSGRA', width: 150  },
+
 ])
 
 
@@ -328,18 +376,19 @@ const [columns] = useState([
   
   }
   const [filteringStateColumnExtensions] = useState([
-     { columnName: 'ALTERACAO', filteringEnabled: false,editingEnabled : false },
+     { columnName: 'ACESSOUSU', filteringEnabled: false,editingEnabled : false },
     ]); 
 
 
     const BotaoAcesso = ({ value }) => (
         <div>
-          <button className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>ACESSOS SISTEMA</button>
+          <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>USUÁRIO</button>
+                  
         </div>
       
            
           )
-          const BotaoAcessoProv = (props) => (
+   const BotaoAcessoProv = (props) => (
             <DataTypeProvider
               formatterComponent={BotaoAcesso}
               editorComponent={"acessos"}
@@ -348,11 +397,28 @@ const [columns] = useState([
             />
           )
 
+   const BotaoAcessoSGRA = ({ value }) => (
+            <div>
+              <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoSeguradora/${value[0]}/${value[1]}`)}>SEGURADORAS</button>
+                      
+            </div>
+          
+               
+              )
+   const BotaoAcessoSGRAProv = (props) => (
+                <DataTypeProvider
+                  formatterComponent={BotaoAcessoSGRA}
+                  editorComponent={"acessos"}
+                  {...props}
+              
+                />
+              )
+
     return(
         <div className="container-fluid">
             <h3 id="titulos"> Grupos de Acesso</h3>   
            
-            <div className="card ">
+            <div className="card " style={{display : displayAcesso}}>
             <Paper>
                 <Grid
                  rows={rows}
@@ -361,6 +427,9 @@ const [columns] = useState([
                 >
                     <BotaoAcessoProv
                         for={botaoAcessoColumn}
+                    />
+                    <BotaoAcessoSGRAProv
+                     for={botaoAcessoSGRA}
                     />
 
 

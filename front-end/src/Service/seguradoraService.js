@@ -30,11 +30,13 @@ const getContatoSeguradora = data=>{
 const deleteContatoSegID = data=>{
     return axios.post(`${baseURL}excluirContatoSeguradora`,data);
 }
+const getAcessoSeguradora = data=>{
+    return axios.post(`${baseURL}listarAcessoSeguradora`,data);
+}
 
 
 
 
 
 
-
-module.exports = {deleteContatoSegID,deleteSeguradoraID,getContatoSeguradora,getSeguradora,saveSeguradora,saveContatoSeguradora};
+module.exports = {getAcessoSeguradora,deleteContatoSegID,deleteSeguradoraID,getContatoSeguradora,getSeguradora,saveSeguradora,saveContatoSeguradora};

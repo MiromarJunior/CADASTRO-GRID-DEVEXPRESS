@@ -22,7 +22,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { display } from "@mui/system";
+
 
 
 // const TableComponent = ({ ...restProps }) => (
@@ -31,61 +31,91 @@ import { display } from "@mui/system";
 //     />
 // );
 
+const TableComponentTitle = ({ style, ...restProps }) => (
+    <TableHeaderRow.Content
+        {...restProps}
+        style={{
+            color: 'black',
+            fontWeight: "bold",
+            ...style,
+        }}
+    />
+);
+const ValidCnpj = ({ value }) => (
+    cnpj.format(value)
+)
+const ValidCnpjProv = (props) => (
+    <DataTypeProvider
+        formatterComponent={ValidCnpj}
+        {...props}
+
+    />
+)
 
 
 
 
-
-
-
-
-
-
+let acessoGeral = false;
 const getRowId = row => row.id;
 const ListarSeguradora = () => {
     const [rows, setRows] = useState([]);
-    const navigate = useNavigate();     
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
     const { logout, nomeUser } = useContext(AuthContext);
     const [validCNPJ] = useState(["SGRA_CNPJ"]);
-    const [editSeg] = useState(["ALTERACAO"]); 
-    let token = localStorage.getItem("token");  
-    const [acessoGeral, setAcessoGeral] = useState(false);
-    const [acessoCAD, setAcessoCAD] = useState(false);
-    const [displayAcesso, setDisplayAcesso] = useState("none");
+    const [editSeg] = useState(["ALTERACAO"]);
+    // const [acessoGeral, setAcessoGeral] = useState(false);
+     const [acessoCAD, setAcessoCAD] = useState(false);    
 
 
-    useEffect(() => {     
-        const acessoMenuUser = async ()=>{          
-            let dados = { token, usuario : nomeUser() };
-            await getAcessoUserMenu(dados)
-              .then((res) => {                 
-                  (res.data).forEach((l)=>{                
-                    if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
-                     setAcessoGeral(true);
-                     setAcessoCAD(true); 
-                     listarSeguradoras();                       
-                    }   
+    useEffect(() => {      
+            const acessoMenuUser =  ()=>{
+              let dados = { token, usuario :nomeUser() };
+               getAcessoUserMenu(dados)
+                .then((res) => {
+                  if (res.data === "erroLogin") {
+                    window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                  }
+                  else if (res.data === "semAcesso") {
+                    window.alert("Usuário sem permissão !!!");          
+                  } else {
+                    (res.data).forEach((l)=>{
+                  
+                      if(process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO){
+                        acessoGeral = true;
+                        setAcessoCAD(true); 
+                        console.log(l);
+                                                
+                  
+                      }         
+      
+                    })
+                    
+                  }
+          
+          
+                })
+                .catch((err) => {
+                  console.error(err);
+                  window.alert("Erro ao cadastrar !!")
+                })
+          
+            }
+      
+      
+            acessoMenuUser();             
         
-                  })                   
-        
-        
-              })
-              .catch((err) => {
-                console.error(err);
-                window.alert("Erro ao Listar Seguradoras !!")
-              })
-        
-          }
-        
-        
-          acessoMenuUser();   
-        
+
        
-    }, [logout, token]);
+    }, [logout, token,nomeUser]);
 
-    const listarSeguradoras = async () => {
-        let dados = { token };
-        await getSeguradora(dados)
+useEffect(()=>{
+    
+    const listarSeguradoras =  (acessoGeral) => {
+        let dados = { token, acessoGeral };
+         getSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
                     alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -94,7 +124,6 @@ const ListarSeguradora = () => {
                 }
                 else if (res.data === "semAcesso") {
                     alert("Usuário sem permissão !!!");
-                    navigate("/home");
 
                 } else if (res.data === "campoNulo") {
                     alert("Preencha todos os Campos obrigatorios!!!");
@@ -111,9 +140,14 @@ const ListarSeguradora = () => {
                 return console.error(res);
             })
     };
+listarSeguradoras();
+
+},[])
+
+
 
     const deletarSeguradora = (idSeg) => {
-        let dados = { idSeg, token };
+        let dados = { idSeg, token,acessoGeral };
         if (window.confirm("deseja excluir o item ?")) {
             deleteSeguradoraID(dados)
                 .then((res) => {
@@ -133,7 +167,7 @@ const ListarSeguradora = () => {
                     }
                     else if (res.data === "sucesso") {
                         window.alert("Seguradora Excluída com Sucesso!!!");
-                        listarSeguradoras();
+                      
                     }
 
                 })
@@ -152,7 +186,7 @@ const ListarSeguradora = () => {
  
   
   
-        const [columns] =  useState([
+        const [columns] = useState([
         { name: 'SGRA_CNPJ', title: `CNPJ` },
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
         { name: 'SGRA_CIDADE', title: "CIDADE" },
@@ -174,10 +208,10 @@ const ListarSeguradora = () => {
     ])
 
     const acessoSGRA =(valor)=>{ 
-    if(acessoGeral){
+    if(acessoGeral || acessoCAD){
         return(    
             <div>  
-        < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />         
+         < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />       
         <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />
         <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(valor)} />
         </div> 
@@ -238,7 +272,6 @@ const ListarSeguradora = () => {
                         showSortingControls />
                     <TableEditRow />
                     <TableFilterRow />
-                    
 
                 </Grid>
             </div>
@@ -249,26 +282,5 @@ const ListarSeguradora = () => {
     )
 
 }
-const TableComponentTitle = ({ style, ...restProps }) => (
-    <TableHeaderRow.Content
-        {...restProps}
-        style={{
-            color: 'black',
-            fontWeight: "bold",
-            ...style,
-        }}
-    />
-);
-const ValidCnpj = ({ value }) => (
-    cnpj.format(value)
-)
-const ValidCnpjProv = (props) => (
-    <DataTypeProvider
-        formatterComponent={ValidCnpj}
-        {...props}
-
-    />
-)
-
 
 export default ListarSeguradora;

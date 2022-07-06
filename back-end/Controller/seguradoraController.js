@@ -21,7 +21,7 @@ router.post("/cadastrarSeguradora", async(req, res)=> {
     logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
     nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
     remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth ,smtpSistSecure,
-    soapRetSol, soapRetNotas,idSeg, token} =req.body;
+    soapRetSol, soapRetNotas,idSeg, token, acessoGeral} =req.body;
 let insertSql;
 let selectSql;
 let updateSql;
@@ -29,11 +29,9 @@ let idEstado;
 
 const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
-
-
     let connection = await oracledb.getConnection(dbConfig);  
 
-
+    if(acessoGeral){    
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
@@ -191,16 +189,16 @@ const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
       }
   }
 
-
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 
 });
 
 router.post("/listarSeguradora", async(req, res)=> {
-  const {token,idSeg  
+  const {token,idSeg,   
 } =req.body;
-
-
 
     let connection = await oracledb.getConnection(dbConfig);
     let result;
@@ -208,6 +206,8 @@ router.post("/listarSeguradora", async(req, res)=> {
     if(idSeg > 0){
      selectSql =  `AND ID_SEGURADORA = ${idSeg}`
     }
+
+
 
   try {
 
@@ -256,7 +256,7 @@ router.post("/listarSeguradora", async(req, res)=> {
 });
 
 router.post("/excluirSeguradora", async(req, res)=> {
-  const {token,idSeg  
+  const {token,idSeg, acessoGeral  
 } =req.body;
 
 
@@ -265,6 +265,8 @@ router.post("/excluirSeguradora", async(req, res)=> {
 
 let deleteSql = "";
 let deleteSql1 = "";
+
+if(acessoGeral){
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
@@ -334,14 +336,16 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
       }
   }
 
-
+}else{
+  res.send("semAcesso").status(200).end();
+}
 
 
 });
 
 router.post("/cadastrarContatoSeguradora", async(req, res)=> {
     const {
-      token,idSeg,contatos   } =req.body; 
+      token,idSeg,contatos, acessoGeral   } =req.body; 
       let connection = await oracledb.getConnection(dbConfig);
 
       let nomeCont = contatos.SGCO_NOME,
@@ -357,6 +361,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
           ramalCont = contatos.SGCO_FONE_COMERCIAL_RAMAL,
           idCont = contatos.ID_SEGURADORA_CONTATO;
      
+          if(acessoGeral){
     try {
   
       jwt.verify(token, SECRET, async (err, decoded) => {
@@ -444,8 +449,9 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
         }
     }
   
-  
-  
+  }else{
+    res.send("semAcesso").status(200).end();
+  }
   
   }); 
 
@@ -456,6 +462,7 @@ router.post("/listarContatoSeguradora", async(req, res)=> {
 
       let connection = await oracledb.getConnection(dbConfig);
       let result;
+  
   
     try {
   
@@ -505,7 +512,7 @@ router.post("/listarContatoSeguradora", async(req, res)=> {
   });
   
 router.post("/excluirContatoSeguradora", async(req, res)=> {
-    const {token,  idCont
+    const {token,  idCont, acessoGeral
   } =req.body;
 
   
@@ -513,7 +520,7 @@ router.post("/excluirContatoSeguradora", async(req, res)=> {
   
   
   let deleteSql = "";
-  
+  if(acessoGeral){
       jwt.verify(token, SECRET, async (err, decoded) => {
         if (err) {
             console.error(err, "err");
@@ -557,12 +564,68 @@ router.post("/excluirContatoSeguradora", async(req, res)=> {
         }
     }
   
-  
+  }else{
+    res.send("semAcesso").status(200).end();
+  }
   
   
   });
   
 
+  router.post("/listarAcessoSeguradora", async (req, res) => {
+    const { token, idGa } = req.body;
+    let connection = await oracledb.getConnection(dbConfig);
+    let result;
+  
+  
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+  
+      } else {
+        try {
+  
+          result = await connection.execute(
+            `     
+            SELECT ACES.ACES_SGRA_DESCRICAO, COUNT(DISTINCT ACGR.GRAC_CODIGO) AS TOTAL,GRAC.GRAC_CODIGO,ACES.ACES_SGRA_CODIGO  
+            FROM ACESSO_SGRA ACES ,ACES_SGRA_GRAC ACGR, GRUPO_ACESSO GRAC
+            WHERE ACGR.ACES_SGRA_CODIGO(+) = ACES.ACES_SGRA_CODIGO 
+            AND GRAC.GRAC_CODIGO(+) = ACGR.GRAC_CODIGO
+            AND ACGR.GRAC_CODIGO(+) = ${idGa}
+            GROUP BY ACES.ACES_SGRA_DESCRICAO,GRAC.GRAC_CODIGO,ACES.ACES_SGRA_CODIGO   
+            ORDER BY ACES.ACES_SGRA_DESCRICAO
+              
+              `,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+          );
+          res.send(result.rows).status(200).end();
+  
+  
+        } catch (error) {
+          console.error("Erro ao listar acesso Seguradora",error);
+          res.send("erro de conexao").status(500).end();
+  
+        } finally {
+          if (connection) {
+            try {
+              await connection.close();
+  
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+  
+      }
+    })
+  
+  
+  });
+  
+  
 
 
  

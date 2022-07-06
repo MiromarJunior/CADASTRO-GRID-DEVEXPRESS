@@ -3,7 +3,7 @@
  */
 
 import { useContext, useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./cad.css";
 import { cnpj } from 'cpf-cnpj-validator';
@@ -16,6 +16,7 @@ import {
     TableEditRow,
     TableEditColumn,
     PagingPanel,
+    TableColumnResizing,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoSegID, getContatoSeguradora, getSeguradora, saveContatoSeguradora, saveSeguradora } from "../../Service/seguradoraService";
 import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure } from "../../Service/utilServiceFrontEnd";
@@ -27,7 +28,7 @@ import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { Box, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Box,  MenuItem,  TextField } from "@mui/material";
 
 //const { format } = require('telefone');
 const emailV = /\S+@\S+\.\S+/;
@@ -141,7 +142,6 @@ const CadastroSeguradora = () => {
 
 
 
-
     useEffect(() => {
         const acessoMenuUser = async () => {
             let dados = { token, usuario: nomeUser() };
@@ -156,12 +156,14 @@ const CadastroSeguradora = () => {
                         window.alert("Usuário sem permissão !!!");
 
                     } else {
-                        (res.data).map((l) => {
+                        (res.data).forEach((l) => {
                             if (process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO) {
-
                                 setAcessoGeral(true);
                                 setDisplayAcesso("");
                                 setAcessoCAD(true);
+
+
+                                
                             }
 
 
@@ -181,37 +183,36 @@ const CadastroSeguradora = () => {
         }
 
 
-        acessoMenuUser();
+        acessoMenuUser();       
+        buscarContatos(idSegN);  
 
+    }, [idSeg,idSegN,logout,nomeUser,token]);
 
+    useEffect(()=>{
+        const buscaUnidadeFederativa = async () => {
+            const dados = { token };
+            await getUnidadeFederativa(dados)
+                .then((res) => {
+                    if (res.data === "erroLogin") {
+                        alert("Sessão expirada, Favor efetuar um novo login !!");
+                        logout();
+                        window.location.reload();
+                    }
+                    else {
+                        setListaUF(res.data);
+                    }
+    
+                }).catch((res) => {
+                    console.error(res);
+    
+                })
+        }
 
-        buscarSeguradoras();
-        buscarContatos(idSegN);
         buscaUnidadeFederativa();
+    },[logout,token]);
 
-
-    }, [idSeg]);
-
-    const buscaUnidadeFederativa = async () => {
-        const dados = { token };
-        await getUnidadeFederativa(dados)
-            .then((res) => {
-                if (res.data === "erroLogin") {
-                    alert("Sessão expirada, Favor efetuar um novo login !!");
-                    logout();
-                    window.location.reload();
-                }
-                else {
-                    setListaUF(res.data);
-                }
-
-            }).catch((res) => {
-                console.error(res);
-
-            })
-    }
-
-
+   
+useEffect(()=>{
     const buscarSeguradoras = async () => {
         if (idSeg > 0) {
             let dados = { token, idSeg };
@@ -269,9 +270,16 @@ const CadastroSeguradora = () => {
                 })
         }
     }
+    buscarSeguradoras();
+
+
+
+},[idSeg,logout,token])
+
+    
 
     const buscarContatos = async (idSegN) => {
-        const dados = { token, idSeg: idSegN }
+        const dados = { token, idSeg: idSegN , acessoGeral}
         await getContatoSeguradora(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -308,7 +316,7 @@ const CadastroSeguradora = () => {
             logradouro, complemento, bairro, estadoUF, nrLogradouro, cep: apenasNr(cep),
             nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
             remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
-            soapRetSol, soapRetNotas, token, idSeg: idSegN, acessoCAD, acessoGeral
+            soapRetSol, soapRetNotas, token, idSeg: idSegN,  acessoGeral
         };
 
 
@@ -374,7 +382,7 @@ const CadastroSeguradora = () => {
     }
 
     const salvarContato = (contatos) => {
-        const dadosContato = { contatos, token, idSeg: idSegN }
+        const dadosContato = { contatos, token, idSeg: idSegN, acessoGeral }
         saveContatoSeguradora(dadosContato)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -404,7 +412,7 @@ const CadastroSeguradora = () => {
     }
 
     const deletarContato = (idCont) => {
-        let dados = { token, idCont: parseInt(idCont) };
+        let dados = { token, idCont: parseInt(idCont), acessoGeral };
         deleteContatoSegID(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -433,7 +441,6 @@ const CadastroSeguradora = () => {
     };
     const buscaCepOnline = async () => {
 
-
         var cepSONr = (isNaN(cep)) ? cep.replace(/\D/g, '') : cep;
 
         var validacep = /^[0-9]{8}$/;
@@ -461,28 +468,40 @@ const CadastroSeguradora = () => {
 
     }
 
-
-
-
     //grid 
 
     const [columns] = useState([
         { name: 'SGCO_NOME', title: "Nome Contato" },
-        { name: 'SGCO_FUNCAO', title: "FUNÇÃO" },
-        { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO", },
         { name: 'SGCO_EMAIL', title: "EMAIL" },
+        { name: 'SGCO_FONE_COMERCIAL_DDD', title: " DDD" },
+        { name: 'SGCO_FONE_COMERCIAL_NUMERO', title: " NR COMERCIAL" },
+        { name: 'SGCO_FONE_COMERCIAL_RAMAL', title: " RAMAL" },
+        { name: 'SGCO_FUNCAO', title: "FUNÇÃO" },
+        { name: 'SGCO_DEPARTAMENTO', title: "DEPARTAMENTO", },      
         { name: 'SGCO_URL', title: "URL" },
         { name: 'SGCO_CELULAR_DDD', title: " DDD" },
         { name: 'SGCO_CELULAR_NUMERO', title: " NR CELULAR" },
         { name: 'SGCO_CELULAR_OPERADORA', title: " OPERADORA" },
-        { name: 'SGCO_FONE_COMERCIAL_DDD', title: " DDD" },
-        { name: 'SGCO_FONE_COMERCIAL_NUMERO', title: " NR COMERCIAL" },
-        { name: 'SGCO_FONE_COMERCIAL_RAMAL', title: " RAMAL" },
+        
 
     ]);
+    const [tableColumnExtensions] = useState([
+        { columnName: 'SGCO_NOME', width: 200 },      
+        { columnName: 'SGCO_EMAIL', width: 330 },
+        { columnName: 'SGCO_FONE_COMERCIAL_DDD', width: 80 },
+        { columnName: 'SGCO_FONE_COMERCIAL_NUMERO', width: 150 },
+        { columnName: 'SGCO_FONE_COMERCIAL_RAMAL',width: 80 },
+        { columnName: 'SGCO_FUNCAO', width: 150 },
+        { columnName: 'SGCO_DEPARTAMENTO', width: 150 },      
+        { columnName: 'SGCO_URL', width: 330 },
+        { columnName: 'SGCO_CELULAR_DDD', width: 80 },
+        { columnName: 'SGCO_CELULAR_NUMERO', width: 150 },
+        { columnName: 'SGCO_CELULAR_OPERADORA', width: 150 },
+      ]);
 
 
     const [addedRows, setAddedRows] = useState([]);
+    const [pageSizes] = useState([5, 10, 15, 0]);
 
 
     const changeAddedRows = value => setAddedRows(
@@ -757,7 +776,7 @@ const CadastroSeguradora = () => {
 
            
 
-             <div className="form-inline" id="" style={{ fontSize: "9" }}>
+             <div className="form-inline" id="" style={{ fontSize: "9", marginBottom :"10px" ,marginLeft : "10px" }}>
 
                 <hr style={{ width: "100%" }} />
                 <div className="form-group col-md-7" style={{ display: displayCont }}   >
@@ -793,9 +812,21 @@ const CadastroSeguradora = () => {
                                 pageSize={5}
                             />
                             <IntegratedPaging />
-                            <PagingPanel />
-                            <Table />
+                            
+                            <PagingPanel
+                             pageSizes={pageSizes}
+                              />
+                            <Table 
+                            columnExtensions={tableColumnExtensions}
+                            />
+                            <TableColumnResizing defaultColumnWidths={tableColumnExtensions} />
                             <TableHeaderRow />
+                          
+                           
+
+
+
+
                             <TableEditRow />
                             {acessoGeral || acessoCAD ? <TableEditColumn
                                 showEditCommand
@@ -813,7 +844,7 @@ const CadastroSeguradora = () => {
             
 
 
-                <div className="form-group col-md-10">
+                <div className="form-group col-md-10" style={{marginBottom :"10px" ,marginLeft : "10px"}}>
                     {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
                     <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
                     <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />

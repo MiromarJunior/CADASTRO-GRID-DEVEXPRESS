@@ -2,8 +2,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-
-
 import { AuthContext } from "../../Autenticação/validacao";
 
 import {  Paper } from "@mui/material";
@@ -12,8 +10,7 @@ import { getAcesso, getAcessoUserMenu,saveAcesso } from "../../Service/usuarioSe
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering,  IntegratedSorting,  SortingState } from "@devexpress/dx-react-grid";
-
-
+import { getAcessoSeguradora } from "../../Service/seguradoraService";
 
 
 
@@ -31,20 +28,9 @@ const TableComponentTitle = ({ style, ...restProps }) => (
 
 
 
- 
-
-
-
-
-
-
-
-
-
-
 
 const getRowId = row => row.id;
-const Acesso = ()=>{
+const AcessoSGRA = ()=>{
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout, nomeUser } = useContext(AuthContext);
@@ -144,7 +130,7 @@ const Acesso = ()=>{
       }
       const listaAcesso = async ()=>{
          let dados = { token,idGa, acessoGeral };    
-        await getAcesso(dados)
+        await getAcessoSeguradora(dados)
           .then((res) => {
             if (res.data === "erroLogin") {
               window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -155,6 +141,7 @@ const Acesso = ()=>{
               window.alert("Usuário sem permissão !!!");
     
             } else {
+              console.log(res.data);
                 (res.data).forEach((item, index) => (item.id = index));
               return setRows(res.data);
             }
@@ -167,29 +154,21 @@ const Acesso = ()=>{
           })
         }
       
-
-   
-
-
-
+ 
 
 const alteraAcesso =(valor)=>{
-  if(valor === "ACESSO_MASTER"){
-    return "ACESSO GERAL"
-  }else if(valor === "CADASTRO_SGRA"){
-    return "CADASTRO SEGURADORAS"
-  }else if(valor === "CADASTRO_USRO"){
-    return "CADASTRO USUÁRIOS"
-  }else if(valor === "ACESSO_CAD_GERAL"){
-    return "CADASTROS GERAIS"
-  }   
+  if(valor === "ACESSO_ADM_SGRA"){
+    return "ADM SEGURADORA"
+  }else if(valor === "ACESSO_LISTA_SGRA"){
+    return "LISTAR SEGURADORAS"
+  }  
   else{return valor}
 
 } 
 const [columns] = useState([
   
-    { name: 'ACES_DESCRICAO', title: "ACESSO" ,
-    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),
+    { name: 'ACES_SGRA_DESCRICAO', title: "ACESSO" ,
+    getCellValue: row => (alteraAcesso(row.ACES_SGRA_DESCRICAO)),
   
   
   },   
@@ -200,7 +179,7 @@ const [columns] = useState([
   ])
 
   const [defaultColumnWidths] = useState([
-    { columnName: 'ACES_DESCRICAO', width: 400 },
+    { columnName: 'ACES_SGRA_DESCRICAO', width: 400 },
     { columnName: 'ALTERACAO', width: 200 ,
   },
    
@@ -249,7 +228,7 @@ const [columns] = useState([
     return(
    
         <div className="container-fluid " style={{display :  displayAcesso}} >
-            <h3 id="titulos"> Controle de Acessos grupo {grAce}</h3>   
+            <h3 id="titulos"> Controle de Acessos Seguradora grupo {grAce}</h3>   
            <button style={{marginBottom : "5px"}} className="btn btn-outline-primary" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
             <div className="card  "    >
             <Paper>
@@ -274,7 +253,7 @@ const [columns] = useState([
             // defaultEditingRowIds={}
             />
             <SortingState
-              defaultSorting={[{ columnName: 'ACES_DESCRICAO', direction: 'asc' }]}   
+              defaultSorting={[{ columnName: 'ACES_SGRA_DESCRICAO', direction: 'asc' }]}   
              />
             <FilteringState 
             columnExtensions={filteringStateColumnExtensions}
@@ -314,7 +293,7 @@ const [columns] = useState([
 
 }
 
-export default Acesso;
+export default AcessoSGRA;
 
 
 

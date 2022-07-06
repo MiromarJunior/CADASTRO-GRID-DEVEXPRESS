@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.setItem("diplayU","none");
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setUser(loggedUser);
-      navigate("/listarSeguradora");
+      navigate("/home");
     
      
      

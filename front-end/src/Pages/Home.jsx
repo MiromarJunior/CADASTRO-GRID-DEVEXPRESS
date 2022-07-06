@@ -18,7 +18,6 @@ import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -29,16 +28,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import ListIcon from '@mui/icons-material/List';
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import ExitToAppTwoToneIcon from '@mui/icons-material/ExitToAppTwoTone';
 import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import { getAcessoUserMenu } from "../Service/usuarioService";
-
 
 
 
@@ -91,7 +86,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 
 
-const usuarioExt = localStorage.getItem("Usuario");
+
 
 
 
@@ -99,8 +94,8 @@ const  HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
-  const [acessoGeral, setAcessoGeral] = useState(false);
-  const [displayAcesso, setDisplayAcesso] = useState("none")
+  const [displayAcessoGeral, setDisplayAcessoGeral] = useState("none")
+  const [displayAcessoSGRA, setDisplayAcessoSGRA] = useState("none")
 
   useEffect(() => {
     if(nomeUser()){
@@ -117,11 +112,10 @@ const  HomePage = () => {
             window.alert("Usuário sem permissão !!!");
   
           } else {
-            (res.data).map((l)=>{
+            (res.data).forEach((l)=>{
           
-              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
-                setAcessoGeral(true);
-                setDisplayAcesso("");       
+              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){               
+                setDisplayAcessoGeral("");       
               } 
             })            
           } 
@@ -129,7 +123,7 @@ const  HomePage = () => {
         })
         .catch((err) => {
           console.error(err);
-          window.alert("Erro ao buscar Usuário aaa!!")
+          window.alert("Erro ao buscar Usuário!!")
         })  
     }
     acessoMenuUser();   
@@ -137,8 +131,7 @@ const  HomePage = () => {
   }
 
   
-    }, [logout,token]); 
-
+    }, [logout,token,nomeUser]); 
 
 
 
@@ -226,7 +219,7 @@ const  HomePage = () => {
        
 
         <TreeItem nodeId="2" label="BÁSICO">
-        <ListItem  disablePadding>
+        <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
               <ListItemButton onClick={ ()=> navigate("/listarSeguradora") }>
                 <ListItemIcon>
                   <ListIcon /> 
@@ -253,7 +246,7 @@ const  HomePage = () => {
               </ListItemButton>
             </ListItem>
 
-            <ListItem  disablePadding style={{display : displayAcesso}}>
+            <ListItem  disablePadding style={{display : displayAcessoGeral}}>
               <ListItemButton onClick={ ()=> navigate("/gruposDeAcesso")}>
                 <ListItemIcon>
                 <ListIcon /> 
