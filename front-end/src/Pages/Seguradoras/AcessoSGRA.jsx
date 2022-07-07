@@ -5,12 +5,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
 
 import {  Paper } from "@mui/material";
-import { getAcesso, getAcessoUserMenu,saveAcesso } from "../../Service/usuarioService";
+import { getAcessoUserMenu,saveAcesso } from "../../Service/usuarioService";
 
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering,  IntegratedSorting,  SortingState } from "@devexpress/dx-react-grid";
-import { getAcessoSeguradora } from "../../Service/seguradoraService";
+import { getAcessoSeguradora, saveAcessoSeguradora } from "../../Service/seguradoraService";
 
 
 
@@ -91,7 +91,7 @@ const AcessoSGRA = ()=>{
         let dados = { idGa,idAc, token,acessoGeral };
         if(acessoGeral){
     
-        saveAcesso(dados)
+          saveAcessoSeguradora(dados)
           .then((res) => {
             if (res.data === "erroLogin") {
               window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -141,7 +141,7 @@ const AcessoSGRA = ()=>{
               window.alert("Usuário sem permissão !!!");
     
             } else {
-              console.log(res.data);
+             
                 (res.data).forEach((item, index) => (item.id = index));
               return setRows(res.data);
             }
@@ -173,7 +173,7 @@ const [columns] = useState([
   
   },   
     { name: 'ALTERACAO', title: "STATUS",
-    getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
+    getCellValue: row => ([row.TOTAL, row.ACES_SGRA_CODIGO]),
   },   
 
   ])
@@ -200,7 +200,7 @@ const [columns] = useState([
 
           const BotaoStatus = ({ value }) => (
      
-     <button style={{width : "120px"}} onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger" : "btn btn-outline-primary"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
+     <button id="btnAcessoGr" onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
             
                  
                 )
@@ -215,21 +215,11 @@ const [columns] = useState([
 
 
 
-
-
-
-
-
-
-
-
-
-
     return(
    
         <div className="container-fluid " style={{display :  displayAcesso}} >
             <h3 id="titulos"> Controle de Acessos Seguradora grupo {grAce}</h3>   
-           <button style={{marginBottom : "5px"}} className="btn btn-outline-primary" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
+           <button style={{marginBottom : "5px"}} className="btn btn-outline-primary btnAcessoGr" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
             <div className="card  "    >
             <Paper>
                 <Grid

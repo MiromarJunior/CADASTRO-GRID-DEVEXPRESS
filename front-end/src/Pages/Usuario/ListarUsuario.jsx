@@ -304,7 +304,7 @@ const ListarUsuario = () => {
  
 
   const cadastraUsuario = (lista) => {
-    let dados = { lista, token, acessoGeral, acessoCAD }; 
+    let dados = { lista, token, acessoGeral, acessoCAD, usuLogado : nomeUser() }; 
 
     saveUsuario(dados)
       .then((res) => {

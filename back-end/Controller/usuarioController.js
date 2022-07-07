@@ -37,9 +37,11 @@ router.post("/listarUsu", async (req, res) => {
   let result;
   let acessoUsuSql = "";
 
-  if(acessoGeral === false){
+  if(acessoGeral){
+    acessoUsuSql = "";    
+  }else{
     acessoUsuSql = ` WHERE U.USRO_USUARIO = '${usuario}' `
-    
+
   }
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -103,7 +105,7 @@ router.post("/listarUsu", async (req, res) => {
 });
 
 router.post("/cadastrarUsuario", async (req, res) => {
-  const { lista, token, acessoGeral } = req.body
+  const { lista, token, acessoGeral, usuLogado } = req.body
   let connection = await oracledb.getConnection(dbConfig);
   let senhaSQL = "", senhaC = "";
   let idUsu = lista.ID_USUARIO,
@@ -116,7 +118,7 @@ router.post("/cadastrarUsuario", async (req, res) => {
     grupoAcesso = lista.GRUPO_ACE;
  
 
-if(acessoGeral){
+
 
   jwt.verify(token, SECRET, async (err, decoded) => {
     if (err) {
@@ -138,26 +140,30 @@ if(acessoGeral){
             senhaSQL = `,USRO_SENHA =  '${senhaC}'`
           }
 
+          if(usuLogado === usuario || acessoGeral){
+           let resUp = await connection.execute(
+              ` UPDATE USUARIO 
+                  SET USRO_NOME = '${nomeUsu}',
+                  USRO_CPF = '${cpfUsu}',       
+                  USRO_USUARIO = '${usuario}',          
+                  USRO_CATEGORIA = '${categoria}',
+                  USRO_CNPJ_FORNECEDOR = '${cnpjForn}'
+                  ${senhaSQL}
+                  WHERE  ID_USUARIO = '${idUsu}'   
+                  
+                 `
+  
+              , [],
+              {
+                outFormat: oracledb.OUT_FORMAT_OBJECT,
+                autoCommit: true
+              });              
+          
+          }
+         
+         
 
-          await connection.execute(
-            ` UPDATE USUARIO 
-                SET USRO_NOME = '${nomeUsu}',
-                USRO_CPF = '${cpfUsu}',       
-                USRO_USUARIO = '${usuario}',          
-                USRO_CATEGORIA = '${categoria}',
-                USRO_CNPJ_FORNECEDOR = '${cnpjForn}'
-                ${senhaSQL}
-                WHERE  ID_USUARIO = '${idUsu}'   
-                
-               `
-
-            , [],
-            {
-              outFormat: oracledb.OUT_FORMAT_OBJECT,
-              autoCommit: true
-            });
-
-          if (grupoAcesso) {
+          if (grupoAcesso && acessoGeral) {
 
             let saveUpdateSql = "";
             let resultGR = await connection.execute(
@@ -185,6 +191,7 @@ if(acessoGeral){
 
 
             } else {
+              
               saveUpdateSql =
                 `
                     INSERT INTO USRO_GRAC(
@@ -197,7 +204,8 @@ if(acessoGeral){
                       ))        
                     `
             }
-            if (grupoAcesso === "semAcesso") {
+            if (grupoAcesso === "semAcesso" && acessoGeral) {
+              
               await connection.execute(
                 ` DELETE FROM USRO_GRAC
                       WHERE ID_USUARIO = ${idUsu}
@@ -219,25 +227,15 @@ if(acessoGeral){
                 outFormat: oracledb.OUT_FORMAT_OBJECT,
                 autoCommit: true
               });
-
-
-
-
+              
 
           }
-
-
-
-
-
-
-
 
           res.send("sucessoU").status(200).end();
 
 
 
-        } else {
+        } else if(acessoGeral) {
 
 
           let result = await connection.execute(
@@ -325,6 +323,9 @@ if(acessoGeral){
             res.send("sucesso").status(200).end();
           }
         }
+     else{
+        res.send("semAcesso").status(200).end();
+      }
 
 
       } catch (error) {
@@ -343,9 +344,7 @@ if(acessoGeral){
 
     }
   });
-}else{
-  res.send("semAcesso").status(200).end();
-}
+
 
 });
 
@@ -911,12 +910,15 @@ if(usuario){
           SELECT USRO.USRO_NOME,
           USRO.USRO_CPF,     
           USRO.USRO_USUARIO,      
-          ACES.ACES_DESCRICAO,ACGR.*,GACE.GRAC_DESCRICAO
-     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES
+          ACES.ACES_DESCRICAO,ACGR.*,GACE.GRAC_DESCRICAO,ASD.ACES_SGRA_DESCRICAO
+     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES,
+     ACESSO_SGRA ASD, ACES_SGRA_GRAC ASGC
     WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
     AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO(+)
     AND ACES.ACES_CODIGO(+) = ACGR.ACES_CODIGO
       AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO
+      AND ASD.ACES_SGRA_CODIGO(+) = ASGC.ACES_SGRA_CODIGO
+      AND ASGC.GRAC_CODIGO(+) = GACE.GRAC_CODIGO
       AND USRO.USRO_USUARIO = '${usuario}' 
 
                     
@@ -968,12 +970,95 @@ if(usuario){
 
     }
   })
-}
+}  
 
 
+
+});
+
+router.post("/acessoMenuUsuario", async (req, res) => {
+  const { token, usuario } = req.body; 
   
+if(usuario){
+  let connection = await oracledb.getConnection(dbConfig);
 
-  
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+      console.error(err, "err");
+      erroAcesso = "erroLogin";
+      res.send("erroLogin").end();
+
+    } else {
+
+      try {
+
+        let result = await connection.execute(
+          ` 
+          SELECT DISTINCT (GA.GRAC_DESCRICAO),
+                GA.GRAC_CODIGO,
+                (SELECT LISTAGG(AC.ACES_DESCRICAO || ' ' ||
+                                ASG.ACES_SGRA_DESCRICAO) WITHIN GROUP(ORDER BY AC.ACES_DESCRICAO)
+                   FROM ACESSO         AC,
+                        ACESSO_SGRA    ASG,
+                        ACES_GRAC,
+                        ACES_SGRA_GRAC AGC
+                  WHERE AC.ACES_CODIGO(+) = ACES_GRAC.ACES_CODIGO
+                    AND GA.GRAC_CODIGO = ACES_GRAC.GRAC_CODIGO(+)
+                    AND AGC.GRAC_CODIGO(+) = GA.GRAC_CODIGO
+                    AND AGC.ACES_SGRA_CODIGO = ASG.ACES_SGRA_CODIGO(+)) AS ACESSOS_LIBERADOS
+  FROM GRUPO_ACESSO GA
+      WHERE GA.GRAC_CODIGO = '${usuario}' 
+
+                    
+     
+          
+          `,
+          [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+    
+    
+          }
+        );
+   
+        if(result.rows.length > 0){
+          res.send(result.rows).status(200).end();
+        }else{
+          res.send("semAcesso").status(200).end();
+        }
+        
+    
+    
+    
+    
+      } catch (error) {
+        console.error(error);
+        res.send("erro de conexao").status(500).end();
+    
+      } finally {
+        if (connection) {
+          try {
+            await connection.close();
+    
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    
+
+
+
+
+
+
+
+
+    
+
+    }
+  })
+}  
 
 
 
@@ -990,13 +1075,39 @@ if(usuario){
 
 
 
-
-
 module.exports = router;
 
 /**
  * 
- * 
+ 
+
+SELECT DISTINCT(GA.GRAC_DESCRICAO),
+(SELECT LISTAGG(AC.ACES_DESCRICAO ||' '||ASG.ACES_SGRA_DESCRICAO )
+WITHIN GROUP(ORDER BY AC.ACES_DESCRICAO)FROM 
+ACESSO         AC,       
+       ACESSO_SGRA    ASG,
+       ACES_GRAC,
+       ACES_SGRA_GRAC  AGC   
+       WHERE AC.ACES_CODIGO(+) = ACES_GRAC.ACES_CODIGO
+       AND GA.GRAC_CODIGO = ACES_GRAC.GRAC_CODIGO(+)
+       AND AGC.GRAC_CODIGO(+) = GA.GRAC_CODIGO
+       AND AGC.ACES_SGRA_CODIGO = ASG.ACES_SGRA_CODIGO(+)
+)
+ AS GR
+
+  FROM GRUPO_ACESSO   GA,
+       ACESSO         AC,       
+       ACESSO_SGRA    ASG,
+       ACES_GRAC,
+       ACES_SGRA_GRAC  AGC   
+       WHERE AC.ACES_CODIGO(+) = ACES_GRAC.ACES_CODIGO
+       AND GA.GRAC_CODIGO = ACES_GRAC.GRAC_CODIGO(+)
+       AND AGC.GRAC_CODIGO(+) = GA.GRAC_CODIGO
+       AND AGC.ACES_SGRA_CODIGO = ASG.ACES_SGRA_CODIGO(+)
+       
+      
+
+
  * 
  * 
  * 

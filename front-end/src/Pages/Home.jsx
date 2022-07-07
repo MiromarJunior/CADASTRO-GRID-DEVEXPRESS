@@ -115,8 +115,11 @@ const  HomePage = () => {
             (res.data).forEach((l)=>{
           
               if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){               
-                setDisplayAcessoGeral("");       
-              } 
+                setDisplayAcessoGeral(""); 
+                setDisplayAcessoSGRA("");      
+              }else if(process.env.REACT_APP_API_LISTA_SGRA === l.ACES_SGRA_DESCRICAO || process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO ) {
+                setDisplayAcessoSGRA("");
+              }
             })            
           } 
   

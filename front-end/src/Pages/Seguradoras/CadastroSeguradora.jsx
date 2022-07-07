@@ -157,13 +157,10 @@ const CadastroSeguradora = () => {
 
                     } else {
                         (res.data).forEach((l) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL || process.env.REACT_APP_API_ACESSO_CAD === l.ACES_DESCRICAO) {
+                            if (process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO || process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO) {
                                 setAcessoGeral(true);
-                                setDisplayAcesso("");
                                 setAcessoCAD(true);
-
-
-                                
+                                setDisplayAcesso("");                                  
                             }
 
 
@@ -666,10 +663,10 @@ useEffect(()=>{
 
 
     return (
-        <div>
+        <div >
                   
 
-            <div className="container-fluid" style={{ marginBottom: "10px", marginTop: "10px" }}>
+            <div  style={{ marginBottom: "10px", marginTop: "10px" }}>
 
 
 
@@ -687,22 +684,29 @@ useEffect(()=>{
                    
                 >
 
-            <div style={{marginLeft : "-40px"}} >                 
-                    <TextField required label="Razão Social" error={razaoSocial.length < 1  || razaoSocial.length > 127 ? true : false}  variant="outlined" disabled={!acessoCAD} maxLength={128} id="razaoSoc"  type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{width : "48%"}}/>
-                    <TextField required label="Nome Fantasia" error={nomeFantasia.length < 1  || nomeFantasia.length > 63 ? true : false} disabled={!acessoCAD} maxLength={64} id="nomeFant"  type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia}  style={{width : "48%"}} />
-                    <TextField required label="CNPJ" error={cnpjSeguradora.length < 1  || cnpjSeguradora.length > 20 ? true : false}   disabled={!acessoCAD} id="txtCnpj"  maxLength={20}  onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} />
-                    <TextField required label="Codigo Legado" error={codLegado.length < 1  || codLegado.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="codLeg"  type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} style={{maxWidth : "15%"}} />
-                     <TextField required id="tipoP" error={tipoPessoa.length < 1 ? true : false} label="Tipo de Pessoa" select  disabled={!acessoCAD}  value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)}  style={{maxWidth : "18%"}}  >
+             <div style={{}} >  
+          
+                          
+                    <TextField required label="Razão Social" error={razaoSocial.length < 1  || razaoSocial.length > 127 ? true : false}  variant="outlined" disabled={!acessoCAD} maxLength={128} id="razaoSoc"  type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ minWidth : "30em"}}/>
+                   
+                   
+                    <TextField required label="Nome Fantasia" error={nomeFantasia.length < 1  || nomeFantasia.length > 63 ? true : false} disabled={!acessoCAD} maxLength={64} id="nomeFant"  type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia}  style={{ minWidth : "25em"}} />
+               
+                        
+                     
+                       <TextField required label="CNPJ" error={cnpjSeguradora.length < 1  || cnpjSeguradora.length > 20 ? true : false}   disabled={!acessoCAD} id="txtCnpj"  maxLength={20}  onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} />
+                    <TextField required label="Codigo Legado" error={codLegado.length < 1  || codLegado.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="codLeg"  type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} style={{maxWidth : "11em"}} />
+                     <TextField required id="tipoP" error={tipoPessoa.length < 1 ? true : false} label="Tipo de Pessoa" select  disabled={!acessoCAD}  value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)}  style={{maxWidth : "11em"}}  >
                       
                         <MenuItem  value={"Juridica"}>Juridica</MenuItem>
                         <MenuItem  value={"Fisica"}>Fisica</MenuItem>
                     </TextField>
-                    <TextField  required select error={optSimples.length < 1  ? true : false} label="Optante Simples" disabled={!acessoCAD} id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)}  style={{ maxWidth : "20%" }}>
+                    <TextField  required select error={optSimples.length < 1  ? true : false} label="Optante Simples" disabled={!acessoCAD} id="opSimp" value={optSimples} onChange={(e) => setOptSimples(e.target.value)}  style={{ maxWidth : "11em" }}>
                         
                         <MenuItem value={"Sim"} >Sim</MenuItem>
                         <MenuItem value={"Nao"}>Não</MenuItem>
                     </TextField>
-                    <TextField required select error={statusSeg.length < 1  ? true : false} label={"Status"} disabled={!acessoCAD} id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)}  style={{ maxWidth : "15%"}}>
+                    <TextField required select error={statusSeg.length < 1  ? true : false} label={"Status"} disabled={!acessoCAD} id="statusSEG" value={statusSeg} onChange={(e) => setStatusSeg(e.target.value)}  style={{ maxWidth : "11em"}}>
                        
                         <MenuItem value={"Ativo"}>Ativo</MenuItem>
                         <MenuItem value={"Inativo"}>Inativo</MenuItem>
@@ -710,19 +714,27 @@ useEffect(()=>{
 
                     <TextField required label="Inscrição Estadual" error={ ie.length > 20 ? true : false}  disabled={!acessoCAD} maxLength={20}  type="text" onChange={(e) => setIE(e.target.value)} value={ie} />
                     <TextField required label="Inscrição Municipal" error={ im.length > 20 ? true : false}  disabled={!acessoCAD} maxLength={20}  type="text" onChange={(e) => setIM(e.target.value)} value={im}  />
-                    <TextField required select error={estadoUF.length < 1  ? true : false} label={"UF"} disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF}  style={{ maxWidth : "10%"}} >
+                    <TextField required select error={estadoUF.length < 1  ? true : false} label={"UF"} disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF}  style={{ maxWidth : "6em"}} >
                     {listaUF.map((l) =>
                         <MenuItem key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</MenuItem>
                     )}
                     </TextField>                    
-                    <TextField required label="CEP" error={cep.length < 1 || cep.length > 10 ? true : false} disabled={!acessoCAD} id="cep" type="text" onChange={(e) => setCep(e.target.value)} value={cep}  style={{ maxWidth : "20%"}}/>
-              
-                   <Button onClick={(e) => buscaCepOnline(e)} style={{padding : "13px", marginTop : "11px", marginLeft : "2%"}} > BUSCAR CEP  </Button>
+                              
+                    
+                     <TextField required label="CEP" error={cep.length < 1 || cep.length > 10 ? true : false} disabled={!acessoCAD} id="cep" type="text" onChange={(e) => setCep(e.target.value)} value={cep}  style={{ maxWidth : "11em"}}></TextField>
+                     <Button disabled={!acessoCAD}  onClick={(e) => buscaCepOnline(e)} style={{padding : "13px", marginTop : "11px"}} > BUSCAR CEP  </Button>
+                
+                 
+                   
+                   
+                   
+                   
                    <TextField required label="Cidade" error={nomeCidade.length < 1 || nomeCidade.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="cidade"  type="text" onChange={(e) => setNomeCidade(e.target.value)} value={nomeCidade} />
                    <TextField required label="Bairro" error={bairro.length < 1 || bairro.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="bairro" type="text" onChange={(e) => setBairro(e.target.value)} value={bairro}  />
-                   <TextField required label="Logradouro" error={logradouro.length < 1 || logradouro.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="lograd"  type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} style={{ width : "48%"}} />
-                   <TextField required label="Complemento" error={complemento.length < 1 || complemento.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="compl" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} style={{ width : "48%"}}   />
-                   <TextField required label="NR" error={nrLogradouro.length < 1 || nrLogradouro.length > 10 ? true : false} disabled={!acessoCAD} maxLength={10} id="nrLograd"  type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro}   />
+                   <TextField required label="Logradouro" error={logradouro.length < 1 || logradouro.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="lograd"  type="text" onChange={(e) => setLogradouro(e.target.value)} value={logradouro} style={{ minWidth : "25em"}} />
+                   <TextField required label="NR" error={nrLogradouro.length < 1 || nrLogradouro.length > 10 ? true : false} disabled={!acessoCAD} maxLength={10} id="nrLograd"  type="text" onChange={(e) => setNrLogradouro(e.target.value)} value={nrLogradouro}   style={{ maxWidth : "11em"}} />
+                   <TextField required label="Complemento" error={complemento.length < 1 || complemento.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="compl" type="text" onChange={(e) => setComplemento(e.target.value)} value={complemento} style={{ minWidth : "25em"}}   />
+                  
                               
             </div>
 
@@ -746,25 +758,25 @@ useEffect(()=>{
                    
                 >
 
-             <div style={{marginLeft : "-30px", display: displayAcesso}}>
+             <div style={{ display: displayAcesso}}>
              <h3 id="titulos" >Dados do Sistema</h3>       
 
              <TextField required label="SMTP" error={smtpSist.length < 1 || smtpSist.length > 255 ? true : false} disabled={!acessoCAD} id="smtp" maxLength={256} value={smtpSist} onChange={(e) => setSmtpSist(e.target.value)}  type="text"  />
-             <TextField required label="Porta" error={portaSist.length < 1 || portaSist.length > 5 ? true : false}  disabled={!acessoCAD} id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} type="number"  style={{ width : "8%"}}/>
-             <TextField required label="Usuário (E-Mail)" error={emailSist.length < 1 || emailSist.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)}  type="text" style={{ width : "41%"}}  />
+             <TextField required label="Porta" error={portaSist.length < 1 || portaSist.length > 5 ? true : false}  disabled={!acessoCAD} id="porta" maxLength={5} value={portaSist} onChange={(e) => setPortaSist(e.target.value)} type="number"  style={{ }}/>
+             <TextField required label="Usuário (E-Mail)" error={emailSist.length < 1 || emailSist.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="txtEmailU" value={emailSist} onChange={(e) => setEmailSist(e.target.value)}  type="text" style={{ minWidth : "25em"}}  />
              <TextField required label="Senha(E-MAIL)" error={senhaEmailSist.length < 1 || senhaEmailSist.length > 128 ? true : false}disabled={!acessoCAD} id="semail" maxLength={128} value={senhaEmailSist} onChange={(e) => setSenhaEmailSist(e.target.value)}  type="password"  />
-             <TextField required label="Remetente" error={remetenteEmailSist.length < 1 || remetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)}  type="text" style={{ width : "30%"}} />
-             <TextField required label="Nome Remetente" error={nomeRemetenteEmailSist.length < 1 || nomeRemetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)}  type="text" style={{ width : "30%"}} />
-             <TextField select required label="SMTP Auth" error={smtpSistAuth.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} style={{ maxWidth : "13%"}} >
+             <TextField required label="Remetente" error={remetenteEmailSist.length < 1 || remetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="remet" maxLength={256} value={remetenteEmailSist} onChange={(e) => setRemetenteEmailSist(e.target.value)}  type="text" style={{ minWidth : "25em"}} />
+             <TextField required label="Nome Remetente" error={nomeRemetenteEmailSist.length < 1 || nomeRemetenteEmailSist.length > 256 ? true : false} disabled={!acessoCAD} id="nremet" maxLength={256} value={nomeRemetenteEmailSist} onChange={(e) => setNomeRemetenteEmailSist(e.target.value)}  type="text" style={{ minWidth : "25em"}} />
+             <TextField select required label="SMTP Auth" error={smtpSistAuth.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistAuth} onChange={(e) => setSmtpSistAuth(e.target.value)} style={{ maxWidth : "11em" }} >
                         <MenuItem value={"True"}>True</MenuItem>
                         <MenuItem value={"False"}>False</MenuItem>
              </TextField>
-             <TextField select required label="SMTP Secure"  error={smtpSistSecure.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)}style={{ maxWidth : "12%"}}  >
+             <TextField select required label="SMTP Secure"  error={smtpSistSecure.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)}style={{ maxWidth : "11em"}}  >
                         <MenuItem value={"TLS"}>TLS</MenuItem>
                         <MenuItem value={"SSL"}>SSL</MenuItem>
              </TextField>
-             <TextField required label="SOAP Retorno de Solicitação"  error={soapRetSol.length < 1 || soapRetSol.length > 256 ? true : false} disabled={!acessoCAD} id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)}  type="text" style={{ width : "48%"}}/>
-             <TextField required label="SOAP Retorno de Notas" error={soapRetNotas.length < 1 || soapRetNotas.length > 256 ? true : false} disabled={!acessoCAD} id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)}  type="text" style={{ width : "48%"}} />
+             <TextField required label="SOAP Retorno de Solicitação"  error={soapRetSol.length < 1 || soapRetSol.length > 256 ? true : false} disabled={!acessoCAD} id="soapret" maxLength={256} value={soapRetSol} onChange={(e) => setSoapRetSol(e.target.value)}  type="text" style={{ minWidth : "30em"}}/>
+             <TextField required label="SOAP Retorno de Notas" error={soapRetNotas.length < 1 || soapRetNotas.length > 256 ? true : false} disabled={!acessoCAD} id="soapNo" maxLength={256} value={soapRetNotas} onChange={(e) => setSoapRetNotas(e.target.value)}  type="text" style={{ minWidth : "30em"}} />
  
 
                 
@@ -776,7 +788,7 @@ useEffect(()=>{
 
            
 
-             <div className="form-inline" id="" style={{ fontSize: "9", marginBottom :"10px" ,marginLeft : "10px" }}>
+             <div className="form-inline" id="" style={{ fontSize: "9", marginBottom :"10px" }}>
 
                 <hr style={{ width: "100%" }} />
                 <div className="form-group col-md-7" style={{ display: displayCont }}   >
@@ -844,7 +856,7 @@ useEffect(()=>{
             
 
 
-                <div className="form-group col-md-10" style={{marginBottom :"10px" ,marginLeft : "10px"}}>
+                <div className="form-group col-md-10" style={{marginBottom :"10px" ,marginLeft : "20px", marginTop : "10px"}}>
                     {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
                     <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
                     <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />

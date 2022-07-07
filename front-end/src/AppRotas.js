@@ -9,10 +9,10 @@ import LoginPage from "./Login/Login";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
 import ListarUsuario from "./Pages/Usuario/ListarUsuario";
 import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
-import GrupoDeAcesso from "./Pages/Usuario/GrupoDeAcesso";
 import Acesso from "./Pages/Usuario/Acesso";
 import Inicial from "./Pages/Inicial";
-import AcessoSGRA from "./Pages/Usuario/AcessoSGRA";
+import GrupoDeAcesso from "./Pages/GrupoDeAcesso";
+import AcessoSGRA from "./Pages/Seguradoras/AcessoSGRA";
 
 
 

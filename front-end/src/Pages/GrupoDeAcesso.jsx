@@ -3,9 +3,9 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import IconButton from '@mui/material/IconButton';
-import { AuthContext } from "../../Autenticação/validacao";
+import { AuthContext } from "../Autenticação/validacao";
 import {  Paper } from "@mui/material";
-import { deleteGrupoAcesso, getAcessoUserMenu, getGrupoAcesso, saveGrupoAcesso } from "../../Service/usuarioService";
+import { deleteGrupoAcesso, getAcessoUserMenu, getGrupoAcesso, saveGrupoAcesso } from "../Service/usuarioService";
 import { Grid, Table, TableColumnResizing, TableEditColumn, TableEditRow, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -293,7 +293,8 @@ const [columns] = useState([
     },
     { name: "ACESSOSGRA", title: "SEGURADORAS",
     getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO,row.GRAC_DESCRICAO] : undefined),
-},      
+}, 
+     
 
 
   ])
@@ -379,7 +380,7 @@ const [columns] = useState([
      { columnName: 'ACESSOUSU', filteringEnabled: false,editingEnabled : false },
     ]); 
 
-
+    const BotaoEditor =()=> " ";
     const BotaoAcesso = ({ value }) => (
         <div>
           <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>USUÁRIO</button>
@@ -391,7 +392,7 @@ const [columns] = useState([
    const BotaoAcessoProv = (props) => (
             <DataTypeProvider
               formatterComponent={BotaoAcesso}
-              editorComponent={"acessos"}
+              editorComponent={BotaoEditor}
               {...props}
           
             />
@@ -408,7 +409,7 @@ const [columns] = useState([
    const BotaoAcessoSGRAProv = (props) => (
                 <DataTypeProvider
                   formatterComponent={BotaoAcessoSGRA}
-                  editorComponent={"acessos"}
+                  editorComponent={BotaoEditor}
                   {...props}
               
                 />
@@ -416,7 +417,7 @@ const [columns] = useState([
 
     return(
         <div className="container-fluid">
-            <h3 id="titulos"> Grupos de Acesso</h3>   
+            <h3 id="titulos">{acessoGeral ? "Grupos de Acesso" :"Usuário sem permissão"} </h3>   
            
             <div className="card " style={{display : displayAcesso}}>
             <Paper>

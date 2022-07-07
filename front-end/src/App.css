@@ -77,7 +77,10 @@ margin-top: 10px;
       height: 100px;
     }
 
-   
+   .btnAcessoGr{
+    width : 90px; 
+    font-size : 12px !important;
+   }
    
 
 

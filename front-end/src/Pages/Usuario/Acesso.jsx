@@ -221,7 +221,7 @@ const [columns] = useState([
 
           const BotaoStatus = ({ value }) => (
      
-     <button style={{width : "120px"}} onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger" : "btn btn-outline-primary"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
+     <button  onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
             
                  
                 )
@@ -250,7 +250,7 @@ const [columns] = useState([
    
         <div className="container-fluid " style={{display :  displayAcesso}} >
             <h3 id="titulos"> Controle de Acessos grupo {grAce}</h3>   
-           <button style={{marginBottom : "5px"}} className="btn btn-outline-primary" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
+           <button style={{marginBottom : "5px"}} className="btn btn-outline-primary btnAcessoGr" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
             <div className="card  "    >
             <Paper>
                 <Grid

@@ -625,7 +625,113 @@ router.post("/excluirContatoSeguradora", async(req, res)=> {
   
   });
   
+  router.post("/cadastrarAcessoSGRA", async (req, res) => {
+    const { token, idGa, idAc, acessoGeral } = req.body;
+    let connection = await oracledb.getConnection(dbConfig);
+    let result;
   
+  
+  if(acessoGeral){
+  
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+  
+      } else {
+        try {
+  
+          let resultAce = await connection.execute(
+            `     
+            SELECT * FROM ACES_SGRA_GRAC AG
+            WHERE AG.GRAC_CODIGO = ${idGa}
+            AND AG.ACES_SGRA_CODIGO = ${idAc}
+            
+            `,
+            [],
+            {
+              outFormat: oracledb.OUT_FORMAT_OBJECT,
+              autoCommit: true
+  
+            }
+          );
+  
+          if (resultAce.rows.length > 0) {
+            result = await connection.execute(
+              `
+                DELETE FROM ACES_SGRA_GRAC
+                WHERE GRAC_CODIGO = ${idGa}
+                AND ACES_SGRA_CODIGO =  ${idAc}     
+                
+                
+                `,
+              [],
+              {
+                outFormat: oracledb.OUT_FORMAT_OBJECT,
+                autoCommit: true
+  
+              }
+            );
+            result.rowsAffected > 0 ? res.send("sucessoD").status(200).end() : res.send("erro").status(200).end();
+  
+          } else {
+            result = await connection.execute(
+              `     
+                INSERT INTO ACES_SGRA_GRAC(
+                  GRAC_CODIGO, ACES_SGRA_CODIGO)
+                  VALUES(${idGa},${idAc})
+                
+                `,
+              [],
+              {
+                outFormat: oracledb.OUT_FORMAT_OBJECT,
+                autoCommit: true
+  
+              }
+            );
+            result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end();
+  
+  
+          }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+        } catch (error) {
+          console.error(error);
+          res.send("erro de conexao").status(500).end();
+  
+        } finally {
+          if (connection) {
+            try {
+              await connection.close();
+  
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+  
+      }
+    })
+  }else{
+    res.send("semAcesso").status(200).end();
+  }
+  
+  });  
 
 
  

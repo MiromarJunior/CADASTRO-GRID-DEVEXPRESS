@@ -13,6 +13,7 @@ import {
     TableHeaderRow,
     TableEditRow,
     TableFilterRow,
+    TableColumnVisibility,
 
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
@@ -49,9 +50,10 @@ const ListarSeguradora = () => {
     const [validCNPJ] = useState(["SGRA_CNPJ"]);
     const [editSeg] = useState(["ALTERACAO"]); 
     let token = localStorage.getItem("token");  
-    const [acessoGeral, setAcessoGeral] = useState(false);
+    const [acessoGeral, setAcessoGeral] = useState(false);    
     const [acessoCAD, setAcessoCAD] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");
+    const [defaultHiddenColumnNames] = useState(['nova']);
 
 
     useEffect(() => {     
@@ -60,11 +62,15 @@ const ListarSeguradora = () => {
             await getAcessoUserMenu(dados)
               .then((res) => {                 
                   (res.data).forEach((l)=>{                
-                    if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
-                     setAcessoGeral(true);
-                     setAcessoCAD(true); 
+                    if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO ){
+                     setAcessoGeral(true);                    
                      listarSeguradoras();                       
-                    }   
+                    }else if(process.env.REACT_APP_API_LISTA_SGRA === l.ACES_SGRA_DESCRICAO) {
+                        listarSeguradoras();
+                     }else if(process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO) {
+                        listarSeguradoras();
+                        setAcessoCAD(true);
+                     }
         
                   })                   
         
@@ -76,7 +82,7 @@ const ListarSeguradora = () => {
               })
         
           }
-        
+          
         
           acessoMenuUser();   
         
@@ -151,49 +157,53 @@ const ListarSeguradora = () => {
  
  
   
-  
-        const [columns] =  useState([
-        { name: 'SGRA_CNPJ', title: `CNPJ` },
+  const BotaoAd =  < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />         
+   
+  const columns  =
+  (     acessoGeral || acessoCAD ?
+    
+           [{ name: 'SGRA_CNPJ', title: `CNPJ` },
         { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
-        { name: 'SGRA_CIDADE', title: "CIDADE" },
-        
-      {
-            name: "ALTERACAO", title: " ",
-            getCellValue: row => (row.ID_SEGURADORA)
+        { name: 'SGRA_CIDADE', title: "CIDADE" },        
+        {name: "ALTERACAO", title: BotaoAd,
+          getCellValue: row => (row.ID_SEGURADORA)
+        }]    
+        :
+        [{ name: 'SGRA_CNPJ', title: `CNPJ` },
+        { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
+        { name: 'SGRA_CIDADE', title: "CIDADE" },        
+        {name: "ALTERACAO", title: "Cadastro",
+          getCellValue: row => (row.ID_SEGURADORA)
+        }]   
 
-        }
-        
+  )
 
-    ]);
 
     const [editingStateColumns] = useState([
-        { columnName: "ALTERACAO", editingEnabled: false },
+        { columnName: "ALTERACAO", editingEnabled: false , title :"olamn"},
         // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
         // {columnName : "PRDT_VALOR",align: 'center'},
 
     ])
 
-    const acessoSGRA =(valor)=>{ 
-    if(acessoGeral){
-        return(    
-            <div>  
-        < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />         
-        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />
-        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(valor)} />
-        </div> 
-        )
-    } else{
-      return  <VisibilityIcon titleAccess="Visualizar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${valor}`)} type="button" />
-
-    }
-}
-    const EditSeguradoras = ({ value }) => (
-       acessoSGRA(value)    
+   
+    const EditSeguradorasAdm = ({ value }) => (
+        <div>  
+        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />
+        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" }} onClick={(e) => deletarSeguradora(value)} />
+        </div>  
     
     )
+    const EditSeguradorasUsu = ({ value }) => (
+        <div>  
+         <VisibilityIcon titleAccess="Visualizar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />    </div>  
+    
+    )
+
+
     const EditSeguradorasProv = props => (
         <DataTypeProvider
-            formatterComponent={EditSeguradoras}
+            formatterComponent={acessoGeral || acessoCAD ? EditSeguradorasAdm : EditSeguradorasUsu}
             {...props}
         />
     )
@@ -233,6 +243,12 @@ const ListarSeguradora = () => {
                     <Table
                       //  tableComponent={TableComponent}
                     />
+                    {!acessoGeral ? <TableColumnVisibility
+                     defaultHiddenColumnNames={defaultHiddenColumnNames}
+  
+                     /> : ""
+                    }
+                    
                     <TableHeaderRow
                         contentComponent={TableComponentTitle}
                         showSortingControls />
