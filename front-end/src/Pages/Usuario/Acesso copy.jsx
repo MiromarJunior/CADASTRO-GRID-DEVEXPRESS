@@ -2,15 +2,18 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+
+
 import { AuthContext } from "../../Autenticação/validacao";
 
 import {  Paper } from "@mui/material";
-import { getAcessoUserMenu,saveAcesso } from "../../Service/usuarioService";
+import { getAcesso, getAcessoGrupoMenu, getAcessoUserMenu,saveAcesso } from "../../Service/usuarioService";
 
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering,  IntegratedSorting,  SortingState } from "@devexpress/dx-react-grid";
-import { getAcessoSeguradora, saveAcessoSeguradora } from "../../Service/seguradoraService";
+
+
 
 
 
@@ -29,8 +32,9 @@ const TableComponentTitle = ({ style, ...restProps }) => (
 
 
 
+
 const getRowId = row => row.id;
-const AcessoSGRA = ()=>{
+const Acesso = ()=>{
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout, nomeUser } = useContext(AuthContext);
@@ -38,7 +42,7 @@ const AcessoSGRA = ()=>{
     const [botaoStatus] = useState(["ALTERACAO"]);
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none")
-    const {idGa,grAce} = useParams();
+    const {idGa,grAce,grMen} = useParams();
 
 
     useEffect(() => {
@@ -55,9 +59,9 @@ const AcessoSGRA = ()=>{
               window.alert("Usuário sem permissão !!!");
     
             } else {
-              (res.data).forEach((l)=>{
+              (res.data).forEach((ac)=>{
             
-                if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
+                if(process.env.REACT_APP_API_ACESSO_GERAL === ac){
                   setAcessoGeral(true);
                   setDisplayAcesso("");
                   listaAcesso();
@@ -91,7 +95,7 @@ const AcessoSGRA = ()=>{
         let dados = { idGa,idAc, token,acessoGeral };
         if(acessoGeral){
     
-          saveAcessoSeguradora(dados)
+        saveAcesso(dados)
           .then((res) => {
             if (res.data === "erroLogin") {
               window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -129,8 +133,10 @@ const AcessoSGRA = ()=>{
         }
       }
       const listaAcesso = async ()=>{
-         let dados = { token,idGa, acessoGeral };    
-        await getAcessoSeguradora(dados)
+         let dados = { token,idGa, acessoGeral,grupoMenu : grMen }; 
+         
+         
+          await getAcesso(dados)
           .then((res) => {
             if (res.data === "erroLogin") {
               window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -141,45 +147,55 @@ const AcessoSGRA = ()=>{
               window.alert("Usuário sem permissão !!!");
     
             } else {
-             
                 (res.data).forEach((item, index) => (item.id = index));
               return setRows(res.data);
             }
     
     
           })
+
+
           .catch((err) => {
             console.error(err);
-            window.alert("Erro ao cadastrar !!")
+            window.alert("Erro ao Listar acesso !!")
           })
+
+     
+
+        
         }
       
- 
+
+   
+
+
+
 
 const alteraAcesso =(valor)=>{
-  if(valor === "ACESSO_ADM_SGRA"){
-    return "ADM SEGURADORA"
-  }else if(valor === "ACESSO_LISTA_SGRA"){
-    return "LISTAR SEGURADORAS"
-  }  
+  if(valor === "ACESSO_MASTER"){
+    return "ACESSO GERAL"
+  }else if(valor === "CADASTRO_SGRA"){
+    return "CADASTRO SEGURADORAS"
+  }else if(valor === "ACESSO_ADM_USRO"){
+    return "ADM USUÁRIO"
+  }else if(valor === "ACESSO_CAD_GERAL"){
+    return "CADASTROS GERAIS"
+  }   
   else{return valor}
 
 } 
-const [columns] = useState([
-  
-    { name: 'ACES_SGRA_DESCRICAO', title: "ACESSO" ,
-    getCellValue: row => (alteraAcesso(row.ACES_SGRA_DESCRICAO)),
-  
-  
+const columns = ([  
+    { name: 'ACES_DESCRICAO', title: "ACESSO" ,
+    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),   
   },   
     { name: 'ALTERACAO', title: "STATUS",
-    getCellValue: row => ([row.TOTAL, row.ACES_SGRA_CODIGO]),
+    getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
   },   
 
   ])
 
   const [defaultColumnWidths] = useState([
-    { columnName: 'ACES_SGRA_DESCRICAO', width: 400 },
+    { columnName: 'ACES_DESCRICAO', width: 400 },
     { columnName: 'ALTERACAO', width: 200 ,
   },
    
@@ -200,7 +216,7 @@ const [columns] = useState([
 
           const BotaoStatus = ({ value }) => (
      
-     <button id="btnAcessoGr" onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
+     <button  onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
             
                  
                 )
@@ -215,10 +231,20 @@ const [columns] = useState([
 
 
 
+
+
+
+
+
+
+
+
+
+
     return(
    
         <div className="container-fluid " style={{display :  displayAcesso}} >
-            <h3 id="titulos"> Controle de Acessos Seguradora grupo {grAce}</h3>   
+            <h3 id="titulos"> Controle de Acessos {grMen} do grupo {grAce}</h3>   
            <button style={{marginBottom : "5px"}} className="btn btn-outline-primary btnAcessoGr" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
             <div className="card  "    >
             <Paper>
@@ -243,7 +269,7 @@ const [columns] = useState([
             // defaultEditingRowIds={}
             />
             <SortingState
-              defaultSorting={[{ columnName: 'ACES_SGRA_DESCRICAO', direction: 'asc' }]}   
+              defaultSorting={[{ columnName: 'ACES_DESCRICAO', direction: 'asc' }]}   
              />
             <FilteringState 
             columnExtensions={filteringStateColumnExtensions}
@@ -283,7 +309,7 @@ const [columns] = useState([
 
 }
 
-export default AcessoSGRA;
+export default Acesso;
 
 
 

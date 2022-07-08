@@ -730,9 +730,17 @@ if(acessoGeral){
 
 
 router.post("/listarAcesso", async (req, res) => {
-  const { token, idGa } = req.body;
+  const { token, idGa,grupoMenu } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
+  let grupoSql = "";
+  let geralSql = "";
+ 
+  if(grupoMenu === "USUARIO" || grupoMenu ==="SEGURADORA"){     
+    grupoSql = `AND ACES.GRUPO_MENU = '${grupoMenu}'`;
+  }else if(grupoMenu === "GERAL"){  
+    geralSql = ` AND (ACGR.GRAC_CODIGO) > 0`
+  }
 
 
   jwt.verify(token, SECRET, async (err, decoded) => {
@@ -750,7 +758,9 @@ router.post("/listarAcesso", async (req, res) => {
             FROM ACESSO ACES ,ACES_GRAC ACGR, GRUPO_ACESSO GRAC
             WHERE ACGR.ACES_CODIGO(+) = ACES.ACES_CODIGO 
             AND GRAC.GRAC_CODIGO(+) = ACGR.GRAC_CODIGO
-            AND ACGR.GRAC_CODIGO(+) = ${idGa}
+            ${grupoSql}
+            AND ACGR.GRAC_CODIGO(+) = ${idGa}             
+            ${geralSql}
             GROUP BY ACES.ACES_DESCRICAO,GRAC.GRAC_CODIGO,ACES.ACES_CODIGO   
             ORDER BY ACES.ACES_DESCRICAO 
             
@@ -758,6 +768,7 @@ router.post("/listarAcesso", async (req, res) => {
           [],
           { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
+      
         res.send(result.rows).status(200).end();
 
 
@@ -803,6 +814,7 @@ if(acessoGeral){
           SELECT * FROM ACES_GRAC AG
           WHERE AG.GRAC_CODIGO = ${idGa}
           AND AG.ACES_CODIGO = ${idAc}
+          
           
           `,
           [],
@@ -853,19 +865,6 @@ if(acessoGeral){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
       } catch (error) {
         console.error(error);
         res.send("erro de conexao").status(500).end();
@@ -889,93 +888,23 @@ if(acessoGeral){
 
 });
 
-router.post("/acessoMenuUsuario", async (req, res) => {
-  const { token, usuario } = req.body; 
-  
-if(usuario){
-  let connection = await oracledb.getConnection(dbConfig);
 
-  jwt.verify(token, SECRET, async (err, decoded) => {
-    if (err) {
-      console.error(err, "err");
-      erroAcesso = "erroLogin";
-      res.send("erroLogin").end();
 
-    } else {
-
-      try {
-
-        let result = await connection.execute(
-          ` 
-          SELECT USRO.USRO_NOME,
+/**
+ SELECT USRO.USRO_NOME,
           USRO.USRO_CPF,     
           USRO.USRO_USUARIO,      
-          ACES.ACES_DESCRICAO,ACGR.*,GACE.GRAC_DESCRICAO,ASD.ACES_SGRA_DESCRICAO
-     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES,
-     ACESSO_SGRA ASD, ACES_SGRA_GRAC ASGC
+          ACES.ACES_DESCRICAO,GACE.GRAC_DESCRICAO
+     FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES     
     WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
     AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO(+)
     AND ACES.ACES_CODIGO(+) = ACGR.ACES_CODIGO
       AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO
-      AND ASD.ACES_SGRA_CODIGO(+) = ASGC.ACES_SGRA_CODIGO
-      AND ASGC.GRAC_CODIGO(+) = GACE.GRAC_CODIGO
-      AND USRO.USRO_USUARIO = '${usuario}' 
-
-                    
-     
-          
-          `,
-          [],
-          {
-            outFormat: oracledb.OUT_FORMAT_OBJECT,
-    
-    
-          }
-        );
-   
-        if(result.rows.length > 0){
-          res.send(result.rows).status(200).end();
-        }else{
-          res.send("semAcesso").status(200).end();
-        }
-        
-    
-    
-    
-    
-      } catch (error) {
-        console.error(error);
-        res.send("erro de conexao").status(500).end();
-    
-      } finally {
-        if (connection) {
-          try {
-            await connection.close();
-    
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-    
+      AND USRO.USRO_USUARIO = '${usuario}'  
 
 
 
-
-
-
-
-
-    
-
-    }
-  })
-}  
-
-
-
-});
-
+ */
 router.post("/acessoMenuUsuario", async (req, res) => {
   const { token, usuario } = req.body; 
   
@@ -994,20 +923,18 @@ if(usuario){
 
         let result = await connection.execute(
           ` 
-          SELECT DISTINCT (GA.GRAC_DESCRICAO),
-                GA.GRAC_CODIGO,
-                (SELECT LISTAGG(AC.ACES_DESCRICAO || ' ' ||
-                                ASG.ACES_SGRA_DESCRICAO) WITHIN GROUP(ORDER BY AC.ACES_DESCRICAO)
-                   FROM ACESSO         AC,
-                        ACESSO_SGRA    ASG,
-                        ACES_GRAC,
-                        ACES_SGRA_GRAC AGC
-                  WHERE AC.ACES_CODIGO(+) = ACES_GRAC.ACES_CODIGO
-                    AND GA.GRAC_CODIGO = ACES_GRAC.GRAC_CODIGO(+)
-                    AND AGC.GRAC_CODIGO(+) = GA.GRAC_CODIGO
-                    AND AGC.ACES_SGRA_CODIGO = ASG.ACES_SGRA_CODIGO(+)) AS ACESSOS_LIBERADOS
-  FROM GRUPO_ACESSO GA
-      WHERE GA.GRAC_CODIGO = '${usuario}' 
+          SELECT DISTINCT(USRO.USRO_NOME),
+          USRO.USRO_CPF,     
+          USRO.USRO_USUARIO,      
+          LISTAGG(ACES.ACES_DESCRICAO||',') WITHIN GROUP(ORDER BY ACES.ACES_DESCRICAO) AS ACES_DESCRICAO
+          ,GACE.GRAC_DESCRICAO
+    FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES     
+    WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
+    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO(+)
+    AND ACES.ACES_CODIGO(+) = ACGR.ACES_CODIGO
+      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO    
+      AND USRO.USRO_USUARIO = '${usuario}' 
+      GROUP BY USRO.USRO_NOME,   USRO.USRO_CPF, USRO.USRO_USUARIO, GACE.GRAC_DESCRICAO
 
                     
      
@@ -1020,9 +947,17 @@ if(usuario){
     
           }
         );
+        
+        let acessos ;
+        let stri = ""
+        result.rows.map((l)=>{
+          stri += l.ACES_DESCRICAO;              
+        })            
+        acessos = ( (stri.substring(0,stri.length -1)).split(','))       
+        
    
         if(result.rows.length > 0){
-          res.send(result.rows).status(200).end();
+          res.send(acessos).status(200).end();
         }else{
           res.send("semAcesso").status(200).end();
         }
@@ -1064,6 +999,99 @@ if(usuario){
 
 });
 
+
+router.post("/listarAcessoPorGrupo", async (req, res) => {
+  const { token, idGa, } = req.body; 
+  console.log(req.body);
+  
+
+  let connection = await oracledb.getConnection(dbConfig);
+
+  jwt.verify(token, SECRET, async (err, decoded) => {
+    if (err) {
+      console.error(err, "err");
+      erroAcesso = "erroLogin";
+      res.send("erroLogin").end();
+
+    } else {
+
+      try {
+
+        let result = await connection.execute(
+          ` 
+          SELECT AC.ACES_DESCRICAO,
+       GA.GRAC_CODIGO,
+       GA.GRAC_DESCRICAO,
+       AC.ACES_CODIGO,
+       AC.GRUPO_MENU,
+       AG.GRAC_CODIGO,
+       AG.ACES_CODIGO
+  FROM GRUPO_ACESSO GA, ACESSO AC, ACES_GRAC AG
+ WHERE AC.ACES_CODIGO = AG.ACES_CODIGO
+   AND GA.GRAC_CODIGO = AG.GRAC_CODIGO
+   AND GA.GRAC_CODIGO = ${idGa}
+
+                    
+     
+          
+          `,
+          [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+    
+    
+          }
+        );
+        
+        let acessos ;
+        let stri = ""
+        console.log(result.rows);
+        // result.rows.map((l)=>{
+        //   stri += l.ACES_DESCRICAO;              
+        // })            
+        // acessos = ( (stri.substring(0,stri.length -1)).split(','))       
+        
+   
+    
+          res.send(result.rows).status(200).end();
+        
+        
+    
+    
+    
+    
+      } catch (error) {
+        console.error(error);
+        res.send("erro de conexao").status(500).end();
+    
+      } finally {
+        if (connection) {
+          try {
+            await connection.close();
+    
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    
+
+
+
+
+
+
+
+
+    
+
+    }
+  })
+
+
+
+
+});
 
 
 
@@ -1082,8 +1110,8 @@ module.exports = router;
  
 
 SELECT DISTINCT(GA.GRAC_DESCRICAO),
-(SELECT LISTAGG(AC.ACES_DESCRICAO ||' '||ASG.ACES_SGRA_DESCRICAO )
-WITHIN GROUP(ORDER BY AC.ACES_DESCRICAO)FROM 
+(SELECT 
+  FROM 
 ACESSO         AC,       
        ACESSO_SGRA    ASG,
        ACES_GRAC,

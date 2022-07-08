@@ -61,13 +61,13 @@ const ListarSeguradora = () => {
             let dados = { token, usuario : nomeUser() };
             await getAcessoUserMenu(dados)
               .then((res) => {                 
-                  (res.data).forEach((l)=>{                
-                    if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO ){
+                  (res.data).forEach((ac)=>{                
+                    if(process.env.REACT_APP_API_ACESSO_GERAL === ac ){
                      setAcessoGeral(true);                    
                      listarSeguradoras();                       
-                    }else if(process.env.REACT_APP_API_LISTA_SGRA === l.ACES_SGRA_DESCRICAO) {
+                    }else if(process.env.REACT_APP_API_LISTA_SGRA === ac) {
                         listarSeguradoras();
-                     }else if(process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO) {
+                     }else if(process.env.REACT_APP_API_ADM_SGRA === ac) {
                         listarSeguradoras();
                         setAcessoCAD(true);
                      }

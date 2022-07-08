@@ -45,6 +45,9 @@ const getAcessoUserMenu = (data)=>{
     return axios.post(`${baseURL}acessoMenuUsuario`,data);
 } 
 
+const getAcessoGrupoMenu = (data)=>{
+    return axios.post(`${baseURL}listarAcessoPorGrupo`,data);
+} 
 
 
 
@@ -53,4 +56,4 @@ const getAcessoUserMenu = (data)=>{
 
 const api = axios.create({baseURL});
 
-module.exports = {getAcessoUserMenu,saveAcesso,getAcessoUsu,getAcesso,deleteGrupoAcesso,saveGrupoAcesso,getGrupoAcesso,api,saveUsuario,loginUsuario,getUsuarios,deleteUsuario};
+module.exports = {getAcessoGrupoMenu,getAcessoUserMenu,saveAcesso,getAcessoUsu,getAcesso,deleteGrupoAcesso,saveGrupoAcesso,getGrupoAcesso,api,saveUsuario,loginUsuario,getUsuarios,deleteUsuario};

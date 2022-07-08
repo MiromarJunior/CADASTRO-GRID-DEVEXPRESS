@@ -34,6 +34,7 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import { getAcessoUserMenu } from "../Service/usuarioService";
+import { accordionActionsClasses } from "@mui/material";
 
 
 
@@ -112,12 +113,12 @@ const  HomePage = () => {
             window.alert("Usuário sem permissão !!!");
   
           } else {
-            (res.data).forEach((l)=>{
+            (res.data).forEach((ac)=>{
           
-              if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){               
+              if(process.env.REACT_APP_API_ACESSO_GERAL === ac){               
                 setDisplayAcessoGeral(""); 
                 setDisplayAcessoSGRA("");      
-              }else if(process.env.REACT_APP_API_LISTA_SGRA === l.ACES_SGRA_DESCRICAO || process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO ) {
+              }else if(process.env.REACT_APP_API_LISTA_SGRA === ac || process.env.REACT_APP_API_ADM_SGRA === ac ) {
                 setDisplayAcessoSGRA("");
               }
             })            

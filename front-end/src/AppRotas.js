@@ -12,7 +12,7 @@ import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
 import Acesso from "./Pages/Usuario/Acesso";
 import Inicial from "./Pages/Inicial";
 import GrupoDeAcesso from "./Pages/GrupoDeAcesso";
-import AcessoSGRA from "./Pages/Seguradoras/AcessoSGRA";
+
 
 
 
@@ -49,8 +49,8 @@ const AppRotas = () => {
 
                    
                 
-                <Route exact path="/acessoSeguradora/:idGa/:grAce" element={ <Private><AcessoSGRA /></Private> } /> 
-                <Route exact path="/acessoUsuario/:idGa/:grAce" element={ <Private><Acesso /></Private> } />     
+             
+                <Route exact path="/acessos/:idGa/:grAce/:grMen" element={ <Private><Acesso /></Private> } />     
                 <Route exact path="/gruposDeAcesso" element={ <Private><GrupoDeAcesso /></Private> } />            
                 <Route exact path="/listarSeguradora" element={ <Private><ListarSeguradora /></Private> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={<Private> <CadastroSeguradora /> </Private>} />

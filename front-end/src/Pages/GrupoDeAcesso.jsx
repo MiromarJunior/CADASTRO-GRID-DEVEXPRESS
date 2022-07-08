@@ -130,6 +130,8 @@ const GrupoDeAcesso = ()=>{
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [botaoAcessoColumn] = useState(["ACESSOUSU"]);
     const [botaoAcessoSGRA] = useState(["ACESSOSGRA"]);
+    const [botaoAcessoGeral] = useState(["ACESSOGERAL"]);
+    
     
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");
@@ -215,9 +217,9 @@ const GrupoDeAcesso = ()=>{
                 window.alert("Usuário sem permissão !!!");
       
               } else {
-                (res.data).forEach((l)=>{
+                (res.data).forEach((ac)=>{
               
-                  if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
+                  if(process.env.REACT_APP_API_ACESSO_GERAL === ac){
                     setAcessoGeral(true);
                     setDisplayAcesso("");
                     listaGrupoAcesso();
@@ -293,7 +295,10 @@ const [columns] = useState([
     },
     { name: "ACESSOSGRA", title: "SEGURADORAS",
     getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO,row.GRAC_DESCRICAO] : undefined),
-}, 
+    }, 
+    { name: "ACESSOGERAL", title: "ACESSOGERAL",
+    getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO,row.GRAC_DESCRICAO] : undefined),
+    }, 
      
 
 
@@ -304,6 +309,7 @@ const [columns] = useState([
     { columnName: 'GRAC_DESCRICAO', width: 200 },
     { columnName: 'ACESSOUSU', width: 110  },
     { columnName: 'ACESSOSGRA', width: 150  },
+    { columnName: 'ACESSOGERAL', width: 150  },
 
 ])
 
@@ -383,9 +389,8 @@ const [columns] = useState([
     const BotaoEditor =()=> " ";
     const BotaoAcesso = ({ value }) => (
         <div>
-          <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoUsuario/${value[0]}/${value[1]}`)}>USUÁRIO</button>
-                  
-        </div>
+          <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessos/${value[0]}/${value[1]}/USUARIO`)}>USUÁRIO</button>
+         </div>
       
            
           )
@@ -400,7 +405,7 @@ const [columns] = useState([
 
    const BotaoAcessoSGRA = ({ value }) => (
             <div>
-              <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessoSeguradora/${value[0]}/${value[1]}`)}>SEGURADORAS</button>
+              <button style={{fontSize : 12}} className="btn btn-outline-primary" onClick={(e)=>navigate( `/acessos/${value[0]}/${value[1]}/SEGURADORA`)}>SEGURADORAS</button>
                       
             </div>
           
@@ -414,6 +419,27 @@ const [columns] = useState([
               
                 />
               )
+
+
+   const BotaoAcessoGeral = ({ value }) => (
+                <div>
+                  <button style={{fontSize : 12}} className="btn btn-outline-secondary" onClick={(e)=>navigate( `/acessos/${value[0]}/${value[1]}/GERAL`)}>ACESSOS</button>
+                          
+                </div>
+              
+                   
+                  )
+   const BotaoAcessoGeralProv = (props) => (
+                    <DataTypeProvider
+                      formatterComponent={BotaoAcessoGeral}
+                      editorComponent={BotaoEditor}
+                      {...props}
+                  
+                    />
+                  )
+
+
+
 
     return(
         <div className="container-fluid">
@@ -431,6 +457,9 @@ const [columns] = useState([
                     />
                     <BotaoAcessoSGRAProv
                      for={botaoAcessoSGRA}
+                    />
+                    <BotaoAcessoGeralProv
+                    for={botaoAcessoGeral}
                     />
 
 

@@ -156,8 +156,8 @@ const CadastroSeguradora = () => {
                         window.alert("Usuário sem permissão !!!");
 
                     } else {
-                        (res.data).forEach((l) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO || process.env.REACT_APP_API_ADM_SGRA === l.ACES_SGRA_DESCRICAO) {
+                        (res.data).forEach((ac) => {
+                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || process.env.REACT_APP_API_ADM_SGRA === ac) {
                                 setAcessoGeral(true);
                                 setAcessoCAD(true);
                                 setDisplayAcesso("");                                  

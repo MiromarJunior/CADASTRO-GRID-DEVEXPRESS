@@ -272,9 +272,9 @@ const ListarUsuario = () => {
         if(typeof(res.data) === "string"){
           window.alert("Erro ao buscar");
          }else{
-        
-          (res.data).forEach((l)=>{            
-            if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO || process.env.REACT_APP_API_CAD_USU === l.ACES_DESCRICAO){                 
+                  
+          (res.data).forEach((ac)=>{                    
+            if(process.env.REACT_APP_API_ACESSO_GERAL === ac|| process.env.REACT_APP_API_ADM_USRO === ac){                 
             acessoGeral = true;
             listaUsuarios();              
          }                             

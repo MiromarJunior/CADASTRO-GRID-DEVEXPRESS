@@ -31,16 +31,6 @@ const TableComponentTitle = ({ style, ...restProps }) => (
 
 
 
- 
-
-
-
-
-
-
-
-
-
 
 
 const getRowId = row => row.id;
@@ -52,7 +42,7 @@ const Acesso = ()=>{
     const [botaoStatus] = useState(["ALTERACAO"]);
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none")
-    const {idGa,grAce} = useParams();
+    const {idGa,grAce,grMen} = useParams();
 
 
     useEffect(() => {
@@ -69,9 +59,9 @@ const Acesso = ()=>{
               window.alert("Usuário sem permissão !!!");
     
             } else {
-              (res.data).forEach((l)=>{
+              (res.data).forEach((ac)=>{
             
-                if(process.env.REACT_APP_API_ACESSO_GERAL === l.ACES_DESCRICAO){
+                if(process.env.REACT_APP_API_ACESSO_GERAL === ac){
                   setAcessoGeral(true);
                   setDisplayAcesso("");
                   listaAcesso();
@@ -143,7 +133,10 @@ const Acesso = ()=>{
         }
       }
       const listaAcesso = async ()=>{
-         let dados = { token,idGa, acessoGeral };    
+         let dados = { token,idGa, acessoGeral,grupoMenu : grMen }; 
+         
+     
+
         await getAcesso(dados)
           .then((res) => {
             if (res.data === "erroLogin") {
@@ -161,6 +154,8 @@ const Acesso = ()=>{
     
     
           })
+
+
           .catch((err) => {
             console.error(err);
             window.alert("Erro ao cadastrar !!")
@@ -178,20 +173,25 @@ const alteraAcesso =(valor)=>{
     return "ACESSO GERAL"
   }else if(valor === "CADASTRO_SGRA"){
     return "CADASTRO SEGURADORAS"
-  }else if(valor === "CADASTRO_USRO"){
-    return "CADASTRO USUÁRIOS"
+  }else if(valor === "ACESSO_ADM_USRO"){
+    return "ADM USUÁRIO"
   }else if(valor === "ACESSO_CAD_GERAL"){
     return "CADASTROS GERAIS"
-  }   
+  }else if(valor === "ACESSO_ADM_SGRA"){
+    return "ADM SEGURADORAS"
+  }else if(valor === "ACESSO_LISTA_SGRA"){
+    return "LISTAR SEGURADORAS"
+  }
+  
+  
+
+
   else{return valor}
 
 } 
-const [columns] = useState([
-  
+const columns = ([  
     { name: 'ACES_DESCRICAO', title: "ACESSO" ,
-    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),
-  
-  
+    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),   
   },   
     { name: 'ALTERACAO', title: "STATUS",
     getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
@@ -249,7 +249,7 @@ const [columns] = useState([
     return(
    
         <div className="container-fluid " style={{display :  displayAcesso}} >
-            <h3 id="titulos"> Controle de Acessos grupo {grAce}</h3>   
+            <h3 id="titulos"> Controle de Acessos {grMen} do grupo {grAce}</h3>   
            <button style={{marginBottom : "5px"}} className="btn btn-outline-primary btnAcessoGr" onClick={(e)=> navigate("/gruposDeAcesso")} >VOLTAR</button>
             <div className="card  "    >
             <Paper>
