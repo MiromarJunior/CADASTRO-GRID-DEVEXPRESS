@@ -154,6 +154,8 @@ const  HomePage = () => {
   const listarSeguradoras =()=>{
     navigate("/listarSeguradora");
     handleDrawerClose();
+
+   
   }
   const listarUsuarios =()=>{
     navigate("/listarUsuario");
@@ -163,6 +165,18 @@ const  HomePage = () => {
     navigate("/gruposDeAcesso");
     handleDrawerClose();
   }
+  const listarCatMSG =()=>{
+    navigate("/listarCategMsgs");
+    handleDrawerClose();
+  }
+  const listarGrupoItem =()=>{
+    navigate("/listarGrupoItem");
+    handleDrawerClose();
+  }
+
+
+
+  
  
   return (
     <div style={{ display: nomeUser() ? "" : "none" }} >
@@ -233,11 +247,9 @@ const  HomePage = () => {
       
     >
       
-      <TreeItem nodeId="1" label="CADASTROS GERAIS">
+      <TreeItem nodeId="CADG" label="CADASTROS GERAIS">       
 
-       
-
-        <TreeItem nodeId="2" label="BÁSICO">
+        <TreeItem nodeId="BAS" label="BÁSICO">
         <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
               <ListItemButton onClick={ ()=>listarSeguradoras()  }>
                 <ListItemIcon>
@@ -255,7 +267,7 @@ const  HomePage = () => {
 
         </TreeItem>
 
-        <TreeItem nodeId="3" label="USUÁRIO">
+        <TreeItem nodeId="USU" label="USUÁRIO">
         <ListItem  disablePadding>
               <ListItemButton onClick={ ()=> listarUsuarios() }>
                 <ListItemIcon>
@@ -289,7 +301,62 @@ const  HomePage = () => {
       </TreeItem>
 
       
+      <TreeItem nodeId="MARCIO" label="MARCIO"> 
+      <ListItemButton onClick={ ()=>listarCatMSG()  }>
+        <ListItemIcon>
+          <ListIcon /> 
+        </ListItemIcon>
+        <ListItemText primary={"Categoria Msg"} />
+      </ListItemButton>
 
+      <ListItemButton onClick={ ()=>listarGrupoItem()  }>
+        <ListItemIcon>
+          <ListIcon /> 
+        </ListItemIcon>
+        <ListItemText primary={"Grupo do Item"} />
+      </ListItemButton>
+
+
+    
+
+
+  
+
+
+
+
+<TreeItem nodeId="6" label="USUÁRIO">
+<ListItem  disablePadding>
+      <ListItemButton onClick={ ()=> listarUsuarios() }>
+        <ListItemIcon>
+        <ListIcon /> 
+        </ListItemIcon>
+        <ListItemText primary={"Usuários"}   />
+      </ListItemButton>
+    </ListItem>
+
+    <ListItem  disablePadding style={{display : displayAcessoGeral}}>
+      <ListItemButton onClick={ ()=> listarGrupoDeAcesso() }>
+        <ListItemIcon>
+        <ListIcon /> 
+        </ListItemIcon>
+        <ListItemText primary={"Grupos de Acesso"}   />
+      </ListItemButton>
+    </ListItem>
+
+
+    
+
+
+
+
+
+    
+
+</TreeItem>
+
+
+</TreeItem>
 
 
 
