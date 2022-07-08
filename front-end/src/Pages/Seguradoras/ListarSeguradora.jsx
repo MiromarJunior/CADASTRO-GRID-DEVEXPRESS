@@ -23,7 +23,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { display } from "@mui/system";
+
 
 
 // const TableComponent = ({ ...restProps }) => (
@@ -31,7 +31,6 @@ import { display } from "@mui/system";
 //         {...restProps}
 //     />
 // );
-
 
 
 
@@ -52,7 +51,6 @@ const ListarSeguradora = () => {
     let token = localStorage.getItem("token");  
     const [acessoGeral, setAcessoGeral] = useState(false);    
     const [acessoCAD, setAcessoCAD] = useState(false);
-    const [displayAcesso, setDisplayAcesso] = useState("none");
     const [defaultHiddenColumnNames] = useState(['nova']);
 
 
@@ -86,7 +84,7 @@ const ListarSeguradora = () => {
         
           acessoMenuUser();   
         
-       
+     //eslint-disable-next-line  
     }, [logout, token]);
 
     const listarSeguradoras = async () => {

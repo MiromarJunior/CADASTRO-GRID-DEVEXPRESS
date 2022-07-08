@@ -141,7 +141,6 @@ const CadastroSeguradora = () => {
     const [displayAcesso, setDisplayAcesso] = useState("none");
 
 
-
     useEffect(() => {
         const acessoMenuUser = async () => {
             let dados = { token, usuario: nomeUser() };
@@ -183,7 +182,8 @@ const CadastroSeguradora = () => {
         acessoMenuUser();       
         buscarContatos(idSegN);  
 
-    }, [idSeg,idSegN,logout,nomeUser,token]);
+    //eslint-disable-next-line
+}, [idSeg,idSegN,logout,nomeUser,token]);
 
     useEffect(()=>{
         const buscaUnidadeFederativa = async () => {

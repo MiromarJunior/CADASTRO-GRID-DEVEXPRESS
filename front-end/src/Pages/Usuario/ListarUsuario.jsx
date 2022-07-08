@@ -4,7 +4,6 @@
  */
 
 import Paper from '@mui/material/Paper';
-import Chip from '@mui/material/Chip';
 import Input from '@mui/material/Input';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -31,7 +30,6 @@ import {
   TableColumnResizing,
   TableColumnReordering,
   DragDropProvider,
-  TableColumnVisibility,
   PagingPanel,
 
 } from "@devexpress/dx-react-grid-material-ui";
@@ -258,12 +256,12 @@ const ListarUsuario = () => {
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
   const [pageSizes] = useState([5, 10, 15,20, 0]);   
-  const [displayAcesso, setDisplayAcesso] = useState("none");
 
 
 
 
 
+ //eslint-disable-next-line
   useEffect( () => { 
     const acessoMenuUser = ()=>{
       let dados = { token, usuario :nomeUser() }; 
@@ -280,11 +278,6 @@ const ListarUsuario = () => {
          }                             
         })                
               }  
-           
-            
-            
-   
-  
   
         })
         .catch((err) => {
@@ -296,9 +289,9 @@ const ListarUsuario = () => {
     acessoMenuUser();    
     listaGrupoAcesso();  
     listaUsuarios();  
- 
-    }, [logout,token]); 
-
+ //eslint-disable-next-line
+    }, [logout,token,nomeUser]); 
+    
 
    
  
@@ -465,10 +458,11 @@ const GrupoAcessoProvider = props => (
     { name: 'USRO_USUARIO', title: `USUARIO` },
     { name: 'USRO_NOME', title: "NOME" },
     { name: 'SENHA', title: "SENHA" },
+    { name: 'GRUPO_ACE', title: "GRUPO" },
     { name: 'USRO_CATEGORIA', title: "CATEGORIA" },
     { name: 'USRO_CNPJ_FORNECEDOR', title: "CNPJ FORNECEDOR" },
     { name: 'USRO_CPF', title: "CPF" },
-    { name: 'GRUPO_ACE', title: "GRUPO DE ACESSOS" },
+ 
 
   ])
   const [defaultColumnWidths] = useState([
@@ -478,11 +472,11 @@ const GrupoAcessoProvider = props => (
     { columnName: 'USRO_CATEGORIA', width: 130 },
     { columnName: 'USRO_CNPJ_FORNECEDOR', width: 180 },
     { columnName: 'USRO_CPF', width: 130 },
-    { columnName: 'GRUPO_ACE', width: 240 },
+    { columnName: 'GRUPO_ACE', width: 180 },
  
   ]);
   const [columnOrder, setColumnOrder] = useState(['USRO_USUARIO', 'USRO_NOME', 
-  'SENHA', 'USRO_CATEGORIA','USRO_CNPJ_FORNECEDOR','USRO_CPF','GRUPO_ACE',]);
+  'SENHA', 'GRUPO_ACE','USRO_CATEGORIA','USRO_CNPJ_FORNECEDOR','USRO_CPF',]);
 
   const changeAddedRows = value => setAddedRows(
     value.map(row => (Object.keys(row).length ? row : {

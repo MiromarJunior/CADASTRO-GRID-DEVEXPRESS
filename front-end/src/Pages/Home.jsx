@@ -34,7 +34,8 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import { getAcessoUserMenu } from "../Service/usuarioService";
-import { accordionActionsClasses } from "@mui/material";
+
+
 
 
 
@@ -150,6 +151,18 @@ const  HomePage = () => {
     setOpen(false);
   };
 
+  const listarSeguradoras =()=>{
+    navigate("/listarSeguradora");
+    handleDrawerClose();
+  }
+  const listarUsuarios =()=>{
+    navigate("/listarUsuario");
+    handleDrawerClose();
+  }
+  const listarGrupoDeAcesso =()=>{
+    navigate("/gruposDeAcesso");
+    handleDrawerClose();
+  }
  
   return (
     <div style={{ display: nomeUser() ? "" : "none" }} >
@@ -172,12 +185,14 @@ const  HomePage = () => {
           
           </Typography>
           
-                 
-          <Typography marginLeft={"60%"} style={{color : "black"}} >
-            <button  style={{backgroundColor: "rgb(171, 239, 191)", border : 0}} onClick={ ()=> navigate("/listarUsuario")} > Usuário(a)  {nomeUser()}</button>
+    
+      
+            <button  style={{backgroundColor: "rgb(171, 239, 191)",marginLeft : "65em", border : 0, fontSize : 12}} onClick={ ()=> navigate("/listarUsuario")} > Usuário(a)  {nomeUser()}</button>
            
           
-          </Typography>
+       
+            
+          
            
         </Toolbar>
        
@@ -224,7 +239,7 @@ const  HomePage = () => {
 
         <TreeItem nodeId="2" label="BÁSICO">
         <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
-              <ListItemButton onClick={ ()=> navigate("/listarSeguradora") }>
+              <ListItemButton onClick={ ()=>listarSeguradoras()  }>
                 <ListItemIcon>
                   <ListIcon /> 
                 </ListItemIcon>
@@ -242,7 +257,7 @@ const  HomePage = () => {
 
         <TreeItem nodeId="3" label="USUÁRIO">
         <ListItem  disablePadding>
-              <ListItemButton onClick={ ()=> navigate("/listarUsuario")}>
+              <ListItemButton onClick={ ()=> listarUsuarios() }>
                 <ListItemIcon>
                 <ListIcon /> 
                 </ListItemIcon>
@@ -251,7 +266,7 @@ const  HomePage = () => {
             </ListItem>
 
             <ListItem  disablePadding style={{display : displayAcessoGeral}}>
-              <ListItemButton onClick={ ()=> navigate("/gruposDeAcesso")}>
+              <ListItemButton onClick={ ()=> listarGrupoDeAcesso() }>
                 <ListItemIcon>
                 <ListIcon /> 
                 </ListItemIcon>

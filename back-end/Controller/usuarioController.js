@@ -17,7 +17,6 @@ e responde com os dados de autenticação
 */
 
 
-
 const router = require("express").Router();
 const express = require("express");
 const oracledb = require("oracledb");
@@ -557,7 +556,7 @@ router.post("/cadastrarGrupoAcesso", async (req, res) => {
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let idGa = lista.GRAC_CODIGO,
-    grupoAcesso = (lista.GRAC_DESCRICAO).toUpperCase(),
+    grupoAcesso = lista.GRAC_DESCRICAO,
     statusGA = lista.GRAC_DESCRICAO;
 if(acessoGeral){
 
@@ -569,8 +568,21 @@ if(acessoGeral){
 
     } else {
       try {
-
-        if (idGa) {
+        let resultSel = await connection.execute(
+          `     
+          SELECT * FROM  GRUPO_ACESSO GA
+          WHERE GA.GRAC_DESCRICAO = UPPER('${grupoAcesso}')
+          
+          `,
+          [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            
+          }
+        );
+        console.log(resultSel.rows.length)
+          if(resultSel.rows.length === 0 ){
+             if (idGa) {
           result = await connection.execute(
             `     
             UPDATE GRUPO_ACESSO 
@@ -587,7 +599,12 @@ if(acessoGeral){
           );
           result.rowsAffected > 0 ? res.send("sucessoU").status(200).end() : res.send("erro").status(200).end();
 
-        } else {
+        } 
+        
+        
+        
+        
+        else {
           result = await connection.execute(
             `     
             INSERT INTO GRUPO_ACESSO
@@ -604,6 +621,15 @@ if(acessoGeral){
           result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erro").status(200).end();
 
         }
+
+          }else{
+            res.send("duplicidade").status(200).end();
+          }
+
+
+
+
+       
 
 
 
@@ -727,7 +753,6 @@ if(acessoGeral){
 }
 
 });
-
 
 router.post("/listarAcesso", async (req, res) => {
   const { token, idGa,grupoMenu } = req.body;

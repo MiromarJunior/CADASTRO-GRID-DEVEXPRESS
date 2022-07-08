@@ -72,23 +72,19 @@ const Acesso = ()=>{
 
               })
               
-            }
-    
+            }    
     
           })
           .catch((err) => {
             console.error(err);
             window.alert("Erro ao buscar Usuário !!")
-          })
-    
+          })    
       }
-
-
-      acessoMenuUser();
-
-     
+      acessoMenuUser();    
    
-      }, [logout,token,nomeUser]); 
+      
+    //eslint-disable-next-line
+  }, [logout,token,nomeUser]); 
 
     const cadastrarAcesso = (idGa,idAc) => {
         
@@ -181,8 +177,7 @@ const alteraAcesso =(valor)=>{
     return "ADM SEGURADORAS"
   }else if(valor === "ACESSO_LISTA_SGRA"){
     return "LISTAR SEGURADORAS"
-  }
-  
+  }  
   
 
 
