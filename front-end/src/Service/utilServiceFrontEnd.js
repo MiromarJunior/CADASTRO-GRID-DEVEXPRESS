@@ -7,6 +7,8 @@ import { cnpj } from "cpf-cnpj-validator";
 const emailV = /\S+@\S+\.\S+/;
 const funcaoTeste = "teste";
 
+const funcaoMiromar = "Miromar";
+
 //  const dataBRa = (data)=>{
 //     return(
 //     new Date(data).getFullYear()+"-"+
