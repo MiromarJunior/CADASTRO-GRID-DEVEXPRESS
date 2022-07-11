@@ -8,6 +8,8 @@ const emailV = /\S+@\S+\.\S+/;
 const funcaoTeste = "teste";
 const funcaoiury = "iury";
 
+const funcaoMiromar = "Miromar";
+
 //  const dataBRa = (data)=>{
 //     return(
 //     new Date(data).getFullYear()+"-"+
