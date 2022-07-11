@@ -138,7 +138,8 @@ const CadastroSeguradora = () => {
     const [rowChanges, setRowChanges] = useState({});
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [acessoCAD, setAcessoCAD] = useState(false);
-    const [displayAcesso, setDisplayAcesso] = useState("none");
+    const [displayAcesso, setDisplayAcesso] = useState("none");   
+    const editarSgra = "EDIT_SGRA";
 
 
     useEffect(() => {
@@ -156,7 +157,7 @@ const CadastroSeguradora = () => {
 
                     } else {
                         (res.data).forEach((ac) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || process.env.REACT_APP_API_ADM_SGRA === ac) {
+                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || editarSgra === ac) {
                                 setAcessoGeral(true);
                                 setAcessoCAD(true);
                                 setDisplayAcesso("");                                  
@@ -666,13 +667,8 @@ useEffect(()=>{
         <div >
                   
 
-            <div  style={{ marginBottom: "10px", marginTop: "10px" }}>
-
-
-
-          
-                    <h3 id="titulos">CADASTRO DE SEGURADORAS </h3>
-             
+            <div  style={{ marginBottom: "10px", marginTop: "10px" }}>          
+                    <h3 id="titulos">CADASTRO DE SEGURADORAS </h3>           
                
                 <Box
                     component="form"
@@ -688,13 +684,11 @@ useEffect(()=>{
           
                           
                     <TextField required label="Razão Social" error={razaoSocial.length < 1  || razaoSocial.length > 127 ? true : false}  variant="outlined" disabled={!acessoCAD} maxLength={128} id="razaoSoc"  type="text" onChange={(e) => setRazaoSocial(e.target.value)} value={razaoSocial} style={{ minWidth : "30em"}}/>
-                   
-                   
+                                 
                     <TextField required label="Nome Fantasia" error={nomeFantasia.length < 1  || nomeFantasia.length > 63 ? true : false} disabled={!acessoCAD} maxLength={64} id="nomeFant"  type="text" onChange={(e) => setNomeFantasia(e.target.value)} value={nomeFantasia}  style={{ minWidth : "25em"}} />
-               
-                        
+                                      
                      
-                       <TextField required label="CNPJ" error={cnpjSeguradora.length < 1  || cnpjSeguradora.length > 20 ? true : false}   disabled={!acessoCAD} id="txtCnpj"  maxLength={20}  onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} />
+                    <TextField required label="CNPJ" error={cnpjSeguradora.length < 1  || cnpjSeguradora.length > 20 ? true : false}   disabled={!acessoCAD} id="txtCnpj"  maxLength={20}  onChange={(e) => setCnpjSeguradora(e.target.value)} value={cnpj.format(cnpjSeguradora)} />
                     <TextField required label="Codigo Legado" error={codLegado.length < 1  || codLegado.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="codLeg"  type="number" value={codLegado} onChange={(e) => setCodLegado(e.target.value)} style={{maxWidth : "11em"}} />
                      <TextField required id="tipoP" error={tipoPessoa.length < 1 ? true : false} label="Tipo de Pessoa" select  disabled={!acessoCAD}  value={tipoPessoa} onChange={(e) => setTipoPessoa(e.target.value)}  style={{maxWidth : "11em"}}  >
                       

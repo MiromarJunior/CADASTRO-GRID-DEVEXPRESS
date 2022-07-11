@@ -19,6 +19,5 @@ const getGrupoItem = data=>{
 } 
 
 
-const api = axios.create({baseURL});
 
 module.exports = {getSubGrupoItem, deleteSubGrupoItem, saveSubGrupoItem, getGrupoItem};

@@ -20,6 +20,5 @@ const saveGrupoItem = data=>{
     return axios.post(`${baseURL}cadastrarGrupoItem`,data);
 } 
 
-const api = axios.create({baseURL});
 
 module.exports = {getGrupoItem, deleteGrupoItem, saveGrupoItem};

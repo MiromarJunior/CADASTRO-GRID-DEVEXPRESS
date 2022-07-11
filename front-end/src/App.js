@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import 'ag-grid-community/dist/styles/ag-grid.css'; // Core grid CSS, always needed
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; // Optional theme CSS

@@ -113,69 +113,6 @@ const FormatCPFProv = (props) => (
 
 
 
-const DeleteButton = ({ onExecute }) => (
-  <IconButton
-    onClick={() => {
-      // eslint-disable-next-line
-      if (window.confirm('Deseja excluir esse contato ?')) {
-        onExecute();
-      }
-    }}
-    title="Excluir Usuário"
-    size="large"
-  >
-    <DeleteForeverOutlinedIcon style={{ color: "red" }} />
-  </IconButton>
-);
-
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: 'center' }}>
-    <IconButton size="large"
-      color="primary"
-      onClick={onExecute}
-      title="Novo Usuário"
-    >
-      <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
-    </IconButton>
-  </div>
-);
-
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Usuário" size="large" >
-    <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Salvar alterações" size="large">
-    <SaveIcon />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
-    <CancelIcon />
-  </IconButton>
-);
-const commandComponents = {
-
-  add: AddButton,
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton,
-
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return (
-    <CommandButton
-      onExecute={onExecute}
-    />
-  );
-};
 
 
 // const TableComponent = ({ ...restProps }) => (
@@ -241,6 +178,8 @@ const CategoriaProvider = props => (
 
 let acessoGeral=false;
 let acessoCAD =false;
+let acessoListUsu = false;
+let acessoADM = false;
 const ListarUsuario = () => {
 
   const { logout, nomeUser } = useContext(AuthContext);
@@ -256,6 +195,15 @@ const ListarUsuario = () => {
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
   const [pageSizes] = useState([5, 10, 15,20, 0]);   
+  const [acessoDEL, setAcessoDEL] = useState(false);
+    const [displayEDIT, setDisplayEDIT] = useState("");
+    const [displayDEL, setDisplayDEL] = useState("none");
+    const [displayADD, setDisplayADD] = useState("none");
+    const listaUsro = "LIST_USRO";
+    const incluirUsro = "ADD_USRO";
+    const excluirUsro = "DEL_USRO";
+    const editarUsro = "EDIT_USRO";
+    const admUsro = "ADM_USRO";
 
 
 
@@ -271,10 +219,29 @@ const ListarUsuario = () => {
           window.alert("Erro ao buscar");
          }else{
                   
-          (res.data).forEach((ac)=>{                    
-            if(process.env.REACT_APP_API_ACESSO_GERAL === ac|| process.env.REACT_APP_API_ADM_USRO === ac){                 
-            acessoGeral = true;
-            listaUsuarios();              
+          (res.data).forEach((ac)=>{    
+                       
+            if(process.env.REACT_APP_API_ACESSO_GERAL === ac){                 
+            acessoGeral = true;   
+            setDisplayADD("");   
+            setDisplayDEL("");  
+            setDisplayEDIT("");  
+            listaUsuarios();             
+         } else if(incluirUsro === ac){
+          setDisplayADD("");
+         }  else if(excluirUsro === ac){
+          setDisplayDEL("");
+          setAcessoDEL(true);
+         } else if(editarUsro === ac){
+          setDisplayEDIT("");
+         }  else if(listaUsro === ac){
+          acessoListUsu = true;
+          listaUsuarios();   
+           
+         }   else if(admUsro === ac){            
+        acessoADM = true;
+        listaUsuarios();   
+           
          }                             
         })                
               }  
@@ -290,11 +257,7 @@ const ListarUsuario = () => {
     listaGrupoAcesso();  
     listaUsuarios();  
  //eslint-disable-next-line
-    }, [logout,token,nomeUser]); 
-    
-
-   
- 
+    }, [logout,token,nomeUser]);   
 
   const cadastraUsuario = (lista) => {
     let dados = { lista, token, acessoGeral, acessoCAD, usuLogado : nomeUser() }; 
@@ -331,8 +294,9 @@ const ListarUsuario = () => {
   }
 
   const deletarUsuario = (idUsu, usuario) => {
+    if(acessoDEL || acessoGeral){
 
-    let dados = { token, idUsu: parseInt(idUsu) , usuario, acessoGeral, acessoCAD};
+    let dados = { token, idUsu: parseInt(idUsu) , usuario, acessoGeral,  acessoDEL};
     deleteUsuario(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -361,10 +325,11 @@ const ListarUsuario = () => {
         console.error(err);
         window.alert("Erro ao cadastrar !!")
       })
+    }
   }
 
   const listaUsuarios = async () => {
-    let dados = { token, usuario : nomeUser(), acessoGeral };
+    let dados = { token, usuario : nomeUser(), acessoGeral,acessoListUsu };
     await getUsuarios(dados)
       .then((res) => {
 
@@ -442,7 +407,7 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
 );
 
 const GrupoAcessoProvider = props => (
-  acessoGeral ?
+  acessoGeral || acessoADM ?
   <DataTypeProvider
   formatterComponent={GrupoAcessoFormatter}
   editorComponent={GrupoAcessoEditor}
@@ -567,12 +532,85 @@ const GrupoAcessoProvider = props => (
     }
     setRows(changedRows);
   };
-  const [editingStateColumnExtensions] = useState([
-  { columnName: 'GRUPO_ACE', editingEnabled:(acessoGeral ? true :false) } ,
-   { columnName: 'USRO_CATEGORIA', editingEnabled:  (acessoGeral ? true :false) },
-   { columnName: 'USRO_CNPJ_FORNECEDOR', editingEnabled:  (acessoGeral ? true :false) },
-   { columnName: 'USRO_CPF', editingEnabled:  (acessoGeral ? true :false) },
+
+  const editingStateColumnExtensions =([
+  { columnName: 'GRUPO_ACE', editingEnabled:(acessoGeral  || acessoADM ? true :false) } ,
+   { columnName: 'USRO_CATEGORIA', editingEnabled:  (acessoGeral || acessoADM  ? true :false) },
+   { columnName: 'USRO_CNPJ_FORNECEDOR', editingEnabled:  (acessoGeral || acessoADM  ? true :false) },
+   { columnName: 'USRO_CPF', editingEnabled:  (acessoGeral || acessoADM ? true :false) },
   ]);
+
+  const DeleteButton = ({ onExecute }) => (
+    <IconButton style={{display : displayDEL}}
+      onClick={() => {
+        // eslint-disable-next-line
+        if (window.confirm('Deseja excluir esse contato ?')) {
+          onExecute();
+        }
+      }}
+      title="Excluir Usuário"
+      size="large"
+    >
+      <DeleteForeverOutlinedIcon style={{ color: "red" }} />
+    </IconButton>
+  );
+  
+  const AddButton = ({ onExecute }) => (
+    <div style={{ textAlign: 'center' }}>
+      <IconButton size="large" style={{display : displayADD}}
+        color="primary"
+        onClick={onExecute}
+        title="Novo Usuário"
+      >
+        <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
+      </IconButton>
+    </div>
+  );
+  
+  
+  const EditButton = ({ onExecute }) => (
+    <IconButton onClick={onExecute} title="Alterar Usuário" size="large" style={{display : displayEDIT}}>
+      <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
+    </IconButton>
+  );
+  
+  const CommitButton = ({ onExecute }) => (
+    <IconButton onClick={onExecute} title="Salvar alterações" size="large">
+      <SaveIcon />
+    </IconButton>
+  );
+  
+  const CancelButton = ({ onExecute }) => (
+    <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
+      <CancelIcon />
+    </IconButton>
+  );
+  const commandComponents = {
+  
+    add: AddButton,
+    edit: EditButton,
+    delete: DeleteButton,
+    commit: CommitButton,
+    cancel: CancelButton,
+  
+  };
+  
+  const Command = ({ id, onExecute }) => {
+    const CommandButton = commandComponents[id];
+    return (
+      <CommandButton
+        onExecute={onExecute}
+      />
+    );
+  };
+  
+
+
+
+
+
+
+
 
 
   return (
@@ -585,7 +623,7 @@ const GrupoAcessoProvider = props => (
             rows={rows}
             columns={columns}
 
-          > {acessoGeral ?
+          > {acessoGeral || acessoADM?
             <CategoriaProvider
               for={booleanColumns}
             />          
@@ -594,11 +632,11 @@ const GrupoAcessoProvider = props => (
             <GrupoAcessoProvider
             for={columnsGrupoAcess}
             />
-            {acessoGeral ? <FormatCnpjProv
+            {acessoGeral || acessoADM? <FormatCnpjProv
               for={formatCNPJ} 
             /> : ""
             }
-            {acessoGeral ?
+            {acessoGeral || acessoADM ?
             <FormatCPFProv
             for={formatCPF}
           />         
@@ -663,21 +701,19 @@ const GrupoAcessoProvider = props => (
           onOrderChange={setColumnOrder}
         /> 
             <TableEditRow />
-           {acessoGeral ?
-           <TableEditColumn 
-           showEditCommand
-           showDeleteCommand      
-           showAddCommand={!addedRows.length}
-           commandComponent={Command}
-           />           
-          : 
-          <TableEditColumn 
-            showEditCommand           
-            commandComponent={Command}
-            />
+          {(displayADD === "none" && displayDEL === "none" && displayEDIT === "none" )
+          ?
+          ""        
+        
+        : <TableEditColumn 
+        showEditCommand
+         showDeleteCommand      
+        showAddCommand={!addedRows.length}
+        commandComponent={Command}
+        />   }
+                   
+        
           
-          
-          }
             
           
              <TableFilterRow />

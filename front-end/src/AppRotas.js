@@ -9,12 +9,13 @@ import LoginPage from "./Login/Login";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
 import ListarUsuario from "./Pages/Usuario/ListarUsuario";
 import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
-import Acesso from "./Pages/Usuario/Acesso";
 import Inicial from "./Pages/Inicial";
 import GrupoDeAcesso from "./Pages/GrupoDeAcesso";
 import ListarCategMsgs from "./Pages/CategoriaMensagens/ListarCategoriaMensagens";
 import ListarGrupoItem from "./Pages/GruposItem/ListarGrupoItem";
 import ListarSubGrupoItem from "./Pages/SubGruposItem/ListarSubGruposItem";
+import Acesso from "./Pages/Acesso";
+import ParametroLeilao from "./Pages/Leilao/ParametroLeilao";
 
 
 const { BrowserRouter, Routes, Route, Navigate, } = require("react-router-dom");
@@ -46,8 +47,7 @@ const AppRotas = () => {
       
             <Routes>
                 <Route exact path="/" element={<LoginPage/>} /> 
-                <Route exact path="/home" element={<Inicial/>} /> 
-
+                {/* <Route exact path="/home" element={<Inicial/>} /> 
                  <Route exact path="/listarGrupoItem" element={ <ListarGrupoItem />} /> 
                 <Route exact path="/ListarSubGrupoItem/:idGrupo" element={ <ListarSubGrupoItem /> } /> 
                 <Route exact path="/listarCategMsgs" element={ <ListarCategMsgs /> } />
@@ -55,17 +55,19 @@ const AppRotas = () => {
                 <Route exact path="/gruposDeAcesso" element={ <GrupoDeAcesso /> } />            
                 <Route exact path="/listarSeguradora" element={ <ListarSeguradora /> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={ <CadastroSeguradora />} />
-                <Route exact path="/listarUsuario" element={ <ListarUsuario /> } />
+                <Route exact path="/listarUsuario" element={ <ListarUsuario /> } /> */}
 
-                   
-                {/* <Route exact path="/listarGrupoItem" element={ <Private><ListarGrupoItem /> </Private>} /> 
+
+                <Route exact path="/parametrosLeilao" element={ <Private><ParametroLeilao  /> </Private>} /> 
+                <Route exact path="/home" element={<Private><Inicial/></Private>} />   
+                <Route exact path="/listarGrupoItem" element={ <Private><ListarGrupoItem /> </Private>} /> 
                 <Route exact path="/ListarSubGrupoItem/:idGrupo" element={ <Private><ListarSubGrupoItem /> </Private>} /> 
                 <Route exact path="/listarCategMsgs" element={ <Private><ListarCategMsgs /> </Private>} />
                 <Route exact path="/acessos/:idGa/:grAce/:grMen" element={ <Private><Acesso /></Private> } />     
                 <Route exact path="/gruposDeAcesso" element={ <Private><GrupoDeAcesso /></Private> } />            
                 <Route exact path="/listarSeguradora" element={ <Private><ListarSeguradora /></Private> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={<Private> <CadastroSeguradora /> </Private>} />
-                <Route exact path="/listarUsuario" element={ <Private><ListarUsuario /> </Private>} /> */}
+                <Route exact path="/listarUsuario" element={ <Private><ListarUsuario /> </Private>} />
               
            
               

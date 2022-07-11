@@ -256,7 +256,7 @@ router.post("/listarSeguradora", async(req, res)=> {
 });
 
 router.post("/excluirSeguradora", async(req, res)=> {
-  const {token,idSeg, acessoGeral  
+  const {token,idSeg, acessoGeral, acessoDEL  
 } =req.body;
 
 
@@ -266,7 +266,7 @@ router.post("/excluirSeguradora", async(req, res)=> {
 let deleteSql = "";
 let deleteSql1 = "";
 
-if(acessoGeral){
+if(acessoGeral || acessoDEL){
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {

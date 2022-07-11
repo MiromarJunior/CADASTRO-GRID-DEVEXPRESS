@@ -1,9 +1,8 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { borderRadius } from '@mui/system';
+
 
 const { useContext, useState } = require("react");
-const { useNavigate } = require("react-router-dom");
 const { AuthContext } = require("../Autenticação/validacao");
 const avvante = require("../img/avvante60.png");
 
@@ -16,8 +15,7 @@ function LoginPage() {
 
 
 	const [usuario, setUsuario] = useState("");
-	const [senha, setSenha] = useState("");
-	const navigate = useNavigate();
+	const [senha, setSenha] = useState("");	
 	const { login } = useContext(AuthContext);
 
 	function acessoLogin(e) {
@@ -35,14 +33,13 @@ function LoginPage() {
 
 
 
-
-
 			<div className="container-fluid">
 				<div className="row main-content bg-success text-center">
 					<div className="col-md-4 text-center company__info">
-						<span className="company__logo"><h2><span className="fa fa-android"></span></h2></span>
-						<h4 className="company_title"></h4>
-						<img src={avvante} />
+						<span className="company__logo"><span className="fa fa-android"></span></span>
+								
+						<img alt="" src={avvante} />
+						
 					</div>
 					<div className="col-md-8 col-xs-12 col-sm-12 login_form ">
 

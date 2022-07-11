@@ -39,7 +39,7 @@ import { getAcessoUserMenu } from "../Service/usuarioService";
 
 
 
-const drawerWidth = 320;
+const drawerWidth = 280;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -96,8 +96,12 @@ const  HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
-  const [displayAcessoGeral, setDisplayAcessoGeral] = useState("none")
-  const [displayAcessoSGRA, setDisplayAcessoSGRA] = useState("none")
+  const [displayAcessoGeral, setDisplayAcessoGeral] = useState("none");
+  const [displayAcessoSGRA, setDisplayAcessoSGRA] = useState("none");
+  const listaSgra = "LIST_SGRA";
+  const incluirSgra = "ADD_SGRA";
+  const excluirSgra = "DEL_SGRA";
+  const editarSgra = "EDIT_SGRA";
 
   useEffect(() => {
     if(nomeUser()){
@@ -119,7 +123,7 @@ const  HomePage = () => {
               if(process.env.REACT_APP_API_ACESSO_GERAL === ac){               
                 setDisplayAcessoGeral(""); 
                 setDisplayAcessoSGRA("");      
-              }else if(process.env.REACT_APP_API_LISTA_SGRA === ac || process.env.REACT_APP_API_ADM_SGRA === ac ) {
+              }else if(listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac ) {
                 setDisplayAcessoSGRA("");
               }
             })            
@@ -160,6 +164,7 @@ const  HomePage = () => {
   const listarUsuarios =()=>{
     navigate("/listarUsuario");
     handleDrawerClose();
+  
   }
   const listarGrupoDeAcesso =()=>{
     navigate("/gruposDeAcesso");
@@ -173,8 +178,12 @@ const  HomePage = () => {
     navigate("/listarGrupoItem");
     handleDrawerClose();
   }
+  const parametrosDeLeilao =()=>{
+    navigate("/parametrosLeilao");
+    handleDrawerClose();
+  }
 
-
+  
 
   
  
@@ -259,6 +268,16 @@ const  HomePage = () => {
               </ListItemButton>
             </ListItem>
 
+
+            <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
+              <ListItemButton onClick={ ()=>parametrosDeLeilao()  }>
+                <ListItemIcon>
+                  <ListIcon /> 
+                </ListItemIcon>
+                <ListItemText primary={"Parametros do Leilão"} />
+              </ListItemButton>
+            </ListItem>
+
             
 
 
@@ -320,40 +339,6 @@ const  HomePage = () => {
     
 
 
-  
-
-
-
-
-<TreeItem nodeId="6" label="USUÁRIO">
-<ListItem  disablePadding>
-      <ListItemButton onClick={ ()=> listarUsuarios() }>
-        <ListItemIcon>
-        <ListIcon /> 
-        </ListItemIcon>
-        <ListItemText primary={"Usuários"}   />
-      </ListItemButton>
-    </ListItem>
-
-    <ListItem  disablePadding style={{display : displayAcessoGeral}}>
-      <ListItemButton onClick={ ()=> listarGrupoDeAcesso() }>
-        <ListItemIcon>
-        <ListIcon /> 
-        </ListItemIcon>
-        <ListItemText primary={"Grupos de Acesso"}   />
-      </ListItemButton>
-    </ListItem>
-
-
-    
-
-
-
-
-
-    
-
-</TreeItem>
 
 
 </TreeItem>

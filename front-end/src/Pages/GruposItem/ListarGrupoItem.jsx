@@ -130,6 +130,7 @@ const ListarGrupoItem = () => {
   
   useEffect(() => {
     listaGruposItem();
+    // eslint-disable-next-line
   }, [logout, token]);
 
   const cadastraGrupoItem = (lista) => {

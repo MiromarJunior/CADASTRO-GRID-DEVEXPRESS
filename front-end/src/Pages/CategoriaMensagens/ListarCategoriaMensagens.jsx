@@ -118,6 +118,7 @@ const ListarCategMsgs = () => {
 
   useEffect(() => {
     listaCategMsgs();
+    // eslint-disable-next-line
   }, [logout, token]);
 
 

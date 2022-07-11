@@ -20,6 +20,5 @@ const saveCategMsgs = data=>{
     return axios.post(`${baseURL}cadastrarCategMsgs`,data);
 } 
 
-const api = axios.create({baseURL});
 
 module.exports = {getCategMsgs, deleteCategMsgs, saveCategMsgs};

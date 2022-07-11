@@ -4,18 +4,18 @@ import { useNavigate, useParams } from "react-router-dom";
 
 
 
-import { AuthContext } from "../../Autenticação/validacao";
+import { AuthContext } from "../Autenticação/validacao";
 
-import {  Paper } from "@mui/material";
-import { getAcesso, getAcessoUserMenu,saveAcesso } from "../../Service/usuarioService";
+import {  Checkbox, FormControlLabel, FormGroup, Paper } from "@mui/material";
+import { getAcesso, getAcessoUserMenu,saveAcesso } from "../Service/usuarioService";
 
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering,  IntegratedSorting,  SortingState } from "@devexpress/dx-react-grid";
-
-
-
-
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import ListIcon from '@mui/icons-material/List';
+import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 
 
 const TableComponentTitle = ({ style, ...restProps }) => (
@@ -38,8 +38,8 @@ const Acesso = ()=>{
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { logout, nomeUser } = useContext(AuthContext);
-    const [rows, setRows] = useState([]);
-    const [botaoStatus] = useState(["ALTERACAO"]);
+    const [rows, setRows] = useState([]); 
+    const [botaoAcessosL] = useState(["ACESSOL"]);
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none")
     const {idGa,grAce,grMen} = useParams();
@@ -175,9 +175,31 @@ const alteraAcesso =(valor)=>{
     return "CADASTROS GERAIS"
   }else if(valor === "ACESSO_ADM_SGRA"){
     return "ADM SEGURADORAS"
-  }else if(valor === "ACESSO_LISTA_SGRA"){
-    return "LISTAR SEGURADORAS"
-  }  
+  }else if(valor === "LIST_SGRA"){
+    return <span> Listar Seguradoras  <ListIcon style={{ color: "green" }}/></span>  
+  } else if(valor === "ADD_USRO"){
+    return <span>Incluir Usuário <AddCircleOutlinedIcon style={{ color: "blue" }}/> </span>
+  } else if(valor === "EDIT_USRO"){
+    return <span>Alterar usuário <ModeEditOutlineOutlinedIcon style={{ color: "orange" }}/></span> 
+  } else if(valor === "DEL_USRO"){
+    return <span>Excluir Usuário <DeleteForeverOutlinedIcon style={{ color: "red" }}/></span>
+  } else if(valor === "LIST_USRO"){
+    return <span>Listar Usuários <ListIcon style={{ color: "green" }}/></span>  
+  } else if(valor === "ADM_USRO"){
+    return <span>Administrador Usuários </span>  
+  } 
+
+
+  else if(valor === "ADD_SGRA"){
+    return <span>Incluir Seguradora <AddCircleOutlinedIcon style={{ color: "blue" }}/> </span>
+  } else if(valor === "EDIT_SGRA"){
+    return <span>Alterar Seguradora <ModeEditOutlineOutlinedIcon style={{ color: "orange" }}/></span>  
+    } else if(valor === "DEL_SGRA"){
+    return <span>Excluir Seguradora <DeleteForeverOutlinedIcon style={{ color: "red" }}/></span>
+   
+  } 
+  
+  
   
 
 
@@ -187,17 +209,18 @@ const alteraAcesso =(valor)=>{
 const columns = ([  
     { name: 'ACES_DESCRICAO', title: "ACESSO" ,
     getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),   
-  },   
-    { name: 'ALTERACAO', title: "STATUS",
-    getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
-  },   
+  },      
+  { name: 'ACESSOL', title: "ATIVO",
+  getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
+},
+   
+     
 
   ])
 
   const [defaultColumnWidths] = useState([
-    { columnName: 'ACES_DESCRICAO', width: 400 },
-    { columnName: 'ALTERACAO', width: 200 ,
-  },
+    { columnName: 'ACES_DESCRICAO', width: 400 },  
+    { columnName: 'ACESSOL', width: 200} ,
    
  
   ]);
@@ -214,21 +237,27 @@ const columns = ([
   
    
 
-          const BotaoStatus = ({ value }) => (
+  const BotaoAcessos = ({ value }) => (
+    <div>
+    <FormGroup>
+  <FormControlLabel onClick={(e)=> cadastrarAcesso(idGa,value[1])} control={<Checkbox checked={value[0]===1 ? true : false} />} />
+  {/* <FormControlLabel disabled control={<Checkbox />} label="Disabled" /> */}
+</FormGroup>
      
-     <button  onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button>
+     {/* <button  onClick={(e)=> cadastrarAcesso(idGa,value[1])}  className={value[0] === 1 ? "btn btn-outline-danger btnAcessoGr" : "btn btn-outline-primary btnAcessoGr"} >{  value[0] === 1 ? "DESATIVAR" : "ATIVAR"}</button> */}
             
-                 
+     </div>          
                 )
-                const BotaoStatusProv = (props) => (
+  const BotaoAcessosProv = (props) => (
                   <DataTypeProvider
-                    formatterComponent={BotaoStatus}
+                    formatterComponent={BotaoAcessos}
                     {...props}
                 
                   />
                 )
 
 
+             
 
 
 
@@ -253,9 +282,9 @@ const columns = ([
                  columns={columns}
                  getRowId={getRowId}
                 >
-                    
-                    <BotaoStatusProv
-                      for={botaoStatus}
+                 
+                    <BotaoAcessosProv
+                      for={botaoAcessosL}
                     />
 
 

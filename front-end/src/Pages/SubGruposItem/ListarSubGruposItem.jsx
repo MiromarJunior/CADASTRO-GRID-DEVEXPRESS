@@ -149,14 +149,15 @@ const ListarSubGrupoItem = () => {
   const { idGrupo } = useParams();
   const [forneceColumn] = useState(['SBGR_FORNECE_GENUINA_ORIGINAL']);
   const navigate = useNavigate();
-  let xxx;
+
 
 
   useEffect(() => {
     buscaGrupoItem();
      
     listaSubGruposItem();
-  }, [logout, token, idGrupo, descricaoGrupo,xxx]);
+    // eslint-disable-next-line
+  }, [logout, token, idGrupo, descricaoGrupo]);
 
   const cadastraSubGrupoItem = (lista) => {
     let dados = { lista, token, idGrupo };

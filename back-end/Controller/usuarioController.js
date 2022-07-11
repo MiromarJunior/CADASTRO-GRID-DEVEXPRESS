@@ -31,12 +31,13 @@ const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 const SECRET = process.env.SECRET;
 
 router.post("/listarUsu", async (req, res) => {
-  const { token,acessoGeral,usuario } = req.body;
+  const { token,acessoGeral,usuario ,acessoListUsu} = req.body;
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let acessoUsuSql = "";
+ 
 
-  if(acessoGeral){
+  if(acessoGeral || acessoListUsu){
     acessoUsuSql = "";    
   }else{
     acessoUsuSql = ` WHERE U.USRO_USUARIO = '${usuario}' `
@@ -412,11 +413,11 @@ router.post("/loginUsuario", async (req, res) => {
 });
 
 router.post("/excluirUsuario", async (req, res) => {
-  let = { idUsu, token, usuario,acessoGeral } = req.body
+  let = { idUsu, token, usuario,acessoGeral, acessoDEL } = req.body
   let connection = await oracledb.getConnection(dbConfig);
   
 
- if(acessoGeral){
+ if(acessoGeral || acessoDEL){
 
  
   jwt.verify(token, SECRET, async (err, decoded) => {
@@ -441,7 +442,7 @@ router.post("/excluirUsuario", async (req, res) => {
           
           });
           let adm = resultADM.rows.toString();
-          console.log(adm);
+         
           if(adm === "adm" ){
             res.send("adm").status(200).end();
           }else{
@@ -580,7 +581,7 @@ if(acessoGeral){
             
           }
         );
-        console.log(resultSel.rows.length)
+     
           if(resultSel.rows.length === 0 ){
              if (idGa) {
           result = await connection.execute(
@@ -1027,7 +1028,6 @@ if(usuario){
 
 router.post("/listarAcessoPorGrupo", async (req, res) => {
   const { token, idGa, } = req.body; 
-  console.log(req.body);
   
 
   let connection = await oracledb.getConnection(dbConfig);
@@ -1070,7 +1070,7 @@ router.post("/listarAcessoPorGrupo", async (req, res) => {
         
         let acessos ;
         let stri = ""
-        console.log(result.rows);
+    
         // result.rows.map((l)=>{
         //   stri += l.ACES_DESCRICAO;              
         // })            
