@@ -16,6 +16,7 @@ import ListarGrupoItem from "./Pages/GruposItem/ListarGrupoItem";
 import ListarSubGrupoItem from "./Pages/SubGruposItem/ListarSubGruposItem";
 import Acesso from "./Pages/Acesso";
 import ParametroLeilao from "./Pages/Leilao/ParametroLeilao";
+import MarcaVeiculo from "./Pages/Marca/MarcaVeiculo";
 
 
 const { BrowserRouter, Routes, Route, Navigate, } = require("react-router-dom");
@@ -68,7 +69,8 @@ const AppRotas = () => {
                 <Route exact path="/listarSeguradora" element={ <Private><ListarSeguradora /></Private> } />
                 <Route exact path="/cadastroSeguradora/:idSeg" element={<Private> <CadastroSeguradora /> </Private>} />
                 <Route exact path="/listarUsuario" element={ <Private><ListarUsuario /> </Private>} />
-              
+                <Route exact path="/marcaVeiculo" element={ <Private><MarcaVeiculo /> </Private>} />
+                
            
               
             </Routes>

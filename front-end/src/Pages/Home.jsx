@@ -34,8 +34,9 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TreeItem from '@mui/lab/TreeItem';
 import { getAcessoUserMenu } from "../Service/usuarioService";
-
-
+import PersonIcon from '@mui/icons-material/Person';
+import GroupsSharpIcon from '@mui/icons-material/GroupsSharp';
+import HdrAutoIcon from '@mui/icons-material/HdrAuto';
 
 
 
@@ -92,7 +93,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 
 
-const  HomePage = () => {
+const HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
@@ -104,43 +105,43 @@ const  HomePage = () => {
   const editarSgra = "EDIT_SGRA";
 
   useEffect(() => {
-    if(nomeUser()){
-    const acessoMenuUser = async ()=>{
-      let dados = { token, usuario :nomeUser() };
-      await getAcessoUserMenu(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            window.alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          }
-          else if (res.data === "semAcesso") {
-            window.alert("Usuário sem permissão !!!");
-  
-          } else {
-            (res.data).forEach((ac)=>{
-          
-              if(process.env.REACT_APP_API_ACESSO_GERAL === ac){               
-                setDisplayAcessoGeral(""); 
-                setDisplayAcessoSGRA("");      
-              }else if(listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac ) {
-                setDisplayAcessoSGRA("");
-              }
-            })            
-          } 
-  
-        })
-        .catch((err) => {
-          console.error(err);
-          window.alert("Erro ao buscar Usuário!!")
-        })  
+    if (nomeUser()) {
+      const acessoMenuUser = async () => {
+        let dados = { token, usuario: nomeUser() };
+        await getAcessoUserMenu(dados)
+          .then((res) => {
+            if (res.data === "erroLogin") {
+              window.alert("Sessão expirada, Favor efetuar um novo login !!");
+              logout();
+              window.location.reload();
+            }
+            else if (res.data === "semAcesso") {
+              window.alert("Usuário sem permissão !!!");
+
+            } else {
+              (res.data).forEach((ac) => {
+
+                if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                  setDisplayAcessoGeral("");
+                  setDisplayAcessoSGRA("");
+                } else if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
+                  setDisplayAcessoSGRA("");
+                }
+              })
+            }
+
+          })
+          .catch((err) => {
+            console.error(err);
+            window.alert("Erro ao buscar Usuário!!")
+          })
+      }
+      acessoMenuUser();
+
     }
-    acessoMenuUser();   
 
-  }
 
-  
-    }, [logout,token,nomeUser]); 
+  }, [logout, token, nomeUser]);
 
 
 
@@ -155,186 +156,195 @@ const  HomePage = () => {
     setOpen(false);
   };
 
-  const listarSeguradoras =()=>{
+  const listarSeguradoras = () => {
     navigate("/listarSeguradora");
+    handleDrawerClose();
+
+
+  }
+  const listarUsuarios = () => {
+    navigate("/listarUsuario");
+    handleDrawerClose();
+
+  }
+  const listarGrupoDeAcesso = () => {
+    navigate("/gruposDeAcesso");
+    handleDrawerClose();
+  }
+  const listarCatMSG = () => {
+    navigate("/listarCategMsgs");
+    handleDrawerClose();
+  }
+  const listarGrupoItem = () => {
+    navigate("/listarGrupoItem");
+    handleDrawerClose();
+  }
+  const parametrosDeLeilao = () => {
+    navigate("/parametrosLeilao");
+    handleDrawerClose();
+  }
+  const marcaVeiculo =()=>{
+    navigate("/marcaVeiculo");
     handleDrawerClose();
 
    
   }
-  const listarUsuarios =()=>{
-    navigate("/listarUsuario");
-    handleDrawerClose();
-  
-  }
-  const listarGrupoDeAcesso =()=>{
-    navigate("/gruposDeAcesso");
-    handleDrawerClose();
-  }
-  const listarCatMSG =()=>{
-    navigate("/listarCategMsgs");
-    handleDrawerClose();
-  }
-  const listarGrupoItem =()=>{
-    navigate("/listarGrupoItem");
-    handleDrawerClose();
-  }
-  const parametrosDeLeilao =()=>{
-    navigate("/parametrosLeilao");
-    handleDrawerClose();
-  }
 
-  
 
-  
- 
+
+
   return (
     <div style={{ display: nomeUser() ? "" : "none" }} >
 
-<Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} style={{color : "black"}}>
-        <Toolbar style={{backgroundColor: "rgb(171, 239, 191)"}}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" style={{color : "black"}} >
-            SISTEMA DE COTAÇÕES
-          
-          </Typography>
-          
-    
-      
-            <button  style={{backgroundColor: "rgb(171, 239, 191)",marginLeft : "65em", border : 0, fontSize : 12}} onClick={ ()=> navigate("/listarUsuario")} > Usuário(a)  {nomeUser()}</button>
-           
-          
-       
-            
-          
-           
-        </Toolbar>
-       
-        
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={open} style={{ color: "black" }}>
+          <Toolbar style={{ backgroundColor: "rgb(171, 239, 191)" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" style={{ color: "black" }} >
+              SISTEMA DE COTAÇÕES
+
+            </Typography>
+
+
+
+            <button style={{ backgroundColor: "rgb(171, 239, 191)", marginLeft: "65em", border: 0, fontSize: 12 }} onClick={() => navigate("/listarUsuario")} > Usuário(a)  {nomeUser()}</button>
+
+
+
+
+
+
+          </Toolbar>
+
+
+        </AppBar>
+        <Drawer
+          sx={{
             width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-        <Typography variant="h6" fontFamily={"serif"} noWrap component="div" marginRight={"65%"}>
-           MENU
-          
-          </Typography>
-      
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-          
-          
-        </DrawerHeader>
-        
-        <Divider />
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <Typography variant="h6" fontFamily={"serif"} noWrap component="div" marginRight={"4em"}>
+              MENU
 
-        <TreeView
-      aria-label="file system navigator"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-      
-    >
-      
-      <TreeItem nodeId="CADG" label="CADASTROS GERAIS">       
+            </Typography>
 
-        <TreeItem nodeId="BAS" label="BÁSICO">
-        <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
-              <ListItemButton onClick={ ()=>listarSeguradoras()  }>
-                <ListItemIcon>
-                  <ListIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Seguradoras"} />
-              </ListItemButton>
-            </ListItem>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
 
 
-            <ListItem  disablePadding style={{display : displayAcessoSGRA}}>
-              <ListItemButton onClick={ ()=>parametrosDeLeilao()  }>
-                <ListItemIcon>
-                  <ListIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Parametros do Leilão"} />
-              </ListItemButton>
-            </ListItem>
+          </DrawerHeader>
 
-            
+          <Divider />
+
+          <TreeView
+            aria-label="file system navigator"
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+
+          >
+
+            <TreeItem nodeId="CADG" label="CADASTROS GERAIS">
+
+              <TreeItem nodeId="BAS" label="BÁSICO">
+                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                  <ListItemButton onClick={() => listarSeguradoras()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Seguradoras"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItemButton onClick={() => listarCatMSG()}>
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Categoria Msg"} />
+                </ListItemButton>
+
+                <ListItemButton onClick={() => listarGrupoItem()}>
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Grupo do Item"} />
+                </ListItemButton>
 
 
-          
-
-
-        </TreeItem>
-
-        <TreeItem nodeId="USU" label="USUÁRIO">
-        <ListItem  disablePadding>
-              <ListItemButton onClick={ ()=> listarUsuarios() }>
-                <ListItemIcon>
-                <ListIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Usuários"}   />
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem  disablePadding style={{display : displayAcessoGeral}}>
-              <ListItemButton onClick={ ()=> listarGrupoDeAcesso() }>
-                <ListItemIcon>
-                <ListIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Grupos de Acesso"}   />
-              </ListItemButton>
-            </ListItem>
-
-
-            
+                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                  <ListItemButton onClick={() => parametrosDeLeilao()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Parametros do Leilão"} />
+                  </ListItemButton>
+                </ListItem>
 
 
 
 
 
-            
 
-        </TreeItem>
-        
 
-      </TreeItem>
 
-      
-      <TreeItem nodeId="MARCIO" label="MARCIO"> 
-      <ListItemButton onClick={ ()=>listarCatMSG()  }>
+              </TreeItem>
+
+              <TreeItem nodeId="USU" label="USUÁRIO">
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => listarUsuarios()}>
+                    <ListItemIcon>
+                      <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Usuários"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoGeral }}>
+                  <ListItemButton onClick={() => listarGrupoDeAcesso()}>
+                    <ListItemIcon>
+                      <GroupsSharpIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Grupos de Acesso"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
+
+
+
+
+
+
+
+              </TreeItem>
+              <TreeItem nodeId="GUSTAVO" label="GUSTAVO"> 
+      <ListItemButton onClick={ ()=>marcaVeiculo()  }>
         <ListItemIcon>
-          <ListIcon /> 
+          <HdrAutoIcon style = {{color : "green"}}/> 
         </ListItemIcon>
-        <ListItemText primary={"Categoria Msg"} />
+        <ListItemText primary={"Marca Veículo"} />
       </ListItemButton>
 
-      <ListItemButton onClick={ ()=>listarGrupoItem()  }>
-        <ListItemIcon>
-          <ListIcon /> 
-        </ListItemIcon>
-        <ListItemText primary={"Grupo do Item"} />
-      </ListItemButton>
-
+      
 
     
 
@@ -345,9 +355,7 @@ const  HomePage = () => {
 
 
 
-
-    </TreeView>
-
+            </TreeItem>
 
 
 
@@ -355,20 +363,29 @@ const  HomePage = () => {
 
 
 
+          </TreeView>
 
-     
 
 
-         
-            
 
-            
-   
-      
-        
 
-        <Divider />
-        {/* <List>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <Divider />
+          {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
@@ -381,25 +398,25 @@ const  HomePage = () => {
           ))}
         </List> */}
 
-        
-            <ListItem  disablePadding  style={{marginTop : 300}}>
-              <ListItemButton onClick={logout}>
-                <ListItemIcon>
-                  <ExitToAppTwoToneIcon /> 
-                </ListItemIcon>
-                <ListItemText primary={"Sair"} />
-              </ListItemButton>
-            </ListItem>
-      </Drawer>
-      <Main open={open}>
-        
-        <DrawerHeader />  
-        
-      </Main>
 
-      
-    </Box>
-     
+          <ListItem disablePadding style={{ marginTop: 300 }}>
+            <ListItemButton onClick={logout}>
+              <ListItemIcon>
+                <ExitToAppTwoToneIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Sair"} />
+            </ListItemButton>
+          </ListItem>
+        </Drawer>
+        <Main open={open}>
+
+          <DrawerHeader />
+
+        </Main>
+
+
+      </Box>
+
 
 
     </div>

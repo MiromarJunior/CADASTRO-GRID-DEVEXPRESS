@@ -33,6 +33,8 @@ app.listen(port, ()=>{
   let SubgrupoItemRotas = require("./Controller/SubgrupoitemController");
   app.use("/",SubgrupoItemRotas) ;
 
+  let marcaVeiculoRotas = require("./Controller/marcaVeiculoController");
+  app.use("/",marcaVeiculoRotas) ;
 
   console.log("Servidor online na porta  : ", port);
   
