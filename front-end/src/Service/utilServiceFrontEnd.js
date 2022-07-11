@@ -7,6 +7,7 @@ import { cnpj } from "cpf-cnpj-validator";
 const emailV = /\S+@\S+\.\S+/;
 const funcaoTeste = "teste";
 const funcaoiury = "iury";
+const funcaoiury3 = "teste iury 3";
 
 //  const dataBRa = (data)=>{
 //     return(
