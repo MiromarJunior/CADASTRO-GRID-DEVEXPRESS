@@ -9,6 +9,7 @@ const funcaoTeste = "teste";
 
 const funcaoMiromar = "Miromar";
 
+const funcaoMiromarnova  = "22236";
 //  const dataBRa = (data)=>{
 //     return(
 //     new Date(data).getFullYear()+"-"+
