@@ -6,6 +6,7 @@ Métodos padrões para utilizar em todo front-end
 import { cnpj } from "cpf-cnpj-validator";
 const emailV = /\S+@\S+\.\S+/;
 const funcaoTeste = "teste";
+const funcaoiury = "iury";
 
 const funcaoMiromar = "Miromar";
 
