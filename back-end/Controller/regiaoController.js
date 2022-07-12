@@ -20,6 +20,7 @@ router.post("/listarRegiao", async (req, res) => {
     let connection = await oracledb.getConnection(dbConfig);
     let result;
     let selectSql = "";
+    
     if (idReg > 0) {
         selectSql = ` WHERE ID_REGIAO = ${idReg} `
     }
@@ -48,7 +49,7 @@ router.post("/listarRegiao", async (req, res) => {
         })
 
     } catch (error) {
-        console.error(error);
+        console.error('Erro Listar Regiao', error);
         res.send("erro de conexao").status(500);
 
     } finally {
@@ -72,7 +73,7 @@ router.post("/cadastrarRegiao", async (req, res) => {
     let insertSql;
     let selectSql;
 
-    console.log('CadastrarRegiao.lista', lista);
+    // console.log('CadastrarRegiao.lista', lista);
 
     let connection = await oracledb.getConnection(dbConfig);
 
@@ -147,7 +148,7 @@ router.post("/excluirRegiao", async (req, res) => {
     const { regiaoID, token, acessoGeral
     } = req.body;
 
-    console.log('Inicio excluirRegiao', req.body);
+    // console.log('Inicio excluirRegiao', req.body);
 
     let connection = await oracledb.getConnection(dbConfig);
 

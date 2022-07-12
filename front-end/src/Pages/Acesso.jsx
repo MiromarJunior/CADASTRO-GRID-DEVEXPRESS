@@ -192,7 +192,15 @@ const Acesso = () => {
     } else if (valor === "DEL_REGIAO") {
       return <span>Excluir Região <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_REGIAO") {
-      return <span>Listar Usuários <ListIcon style={{ color: "green" }} /></span>
+      return <span>Listar Região <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "ADD_JUSTIFICATIVA") {
+      return <span>Incluir JJustificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    } else if (valor === "EDIT_JUSTIFICATIVA") {
+      return <span>Alterar Justificativa do Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_JUSTIFICATIVA") {
+      return <span>Excluir Justificativa do Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "LIST_JUSTIFICATIVA") {
+      return <span>Listar Justificativa do Item <ListIcon style={{ color: "green" }} /></span>
     }
 
     else { return valor }
