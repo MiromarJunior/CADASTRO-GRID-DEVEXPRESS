@@ -11,7 +11,7 @@ const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 const app = express();
 app.use(express.json());
 
-router.post("/ListarSacMontadoras", async (req, res) => {
+router.post("/listarSac", async (req, res) => {
   const { token } = req.body;
 
   let connection = await oracledb.getConnection(dbConfig);
@@ -51,14 +51,14 @@ router.post("/ListarSacMontadoras", async (req, res) => {
   }
 });
 
-router.post("/cadastrarContatoSeguradora", async (req, res) => {
+router.post("/cadastrarSac", async (req, res) => {
   const { token, idSeg, sacmontadoras, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
 
   let nomeCont = sacmontadoras.SCMN_MARCA,
-      emailCont = sacmontadoras.SCMN_EMAIL,
-      nrCelCont = sacmontadoras.SCMN_TELEFONE,
-      idCont = sacmontadoras.ID_SAC_MONTADORAS;
+    emailCont = sacmontadoras.SCMN_EMAIL,
+    nrCelCont = sacmontadoras.SCMN_TELEFONE,
+    idCont = sacmontadoras.ID_SAC_MONTADORAS;
 
   if (acessoGeral) {
     try {

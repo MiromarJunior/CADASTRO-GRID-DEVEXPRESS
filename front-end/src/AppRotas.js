@@ -17,7 +17,7 @@ import ListarSubGrupoItem from "./Pages/SubGruposItem/ListarSubGruposItem";
 import Acesso from "./Pages/Acesso";
 import ParametroLeilao from "./Pages/Leilao/ParametroLeilao";
 import MarcaVeiculo from "./Pages/Marca/MarcaVeiculo";
-import SacMontadoras from "./Pages/SacMontadoras/sacMontadoras";
+import SacMontadoras from "./Pages/SacMontadoras/SacMontadoras";
 
 import Regiao from "./Pages/Regiao/Regiao";
 import JustificativaItem from "./Pages/JustificativaItem/JustificativaItem";

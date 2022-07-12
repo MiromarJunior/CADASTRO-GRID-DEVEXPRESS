@@ -34,7 +34,6 @@ import { getAcessoUserMenu } from "../Service/usuarioService";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
-import SacMontadoras from "./SacMontadoras/sacMontadoras";
 
 const drawerWidth = 280;
 
