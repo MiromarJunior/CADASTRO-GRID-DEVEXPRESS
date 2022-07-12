@@ -852,7 +852,7 @@ useEffect(()=>{
 
                 <div className="form-group col-md-10" style={{marginBottom :"10px" ,marginLeft : "20px", marginTop : "10px"}}>
                     {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
-                    <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
+                    <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "SALVAR" : "SALVAR ALTERAÇÕES"}</Button>
                     <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
 
                 </div>
