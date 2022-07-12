@@ -5,7 +5,7 @@ REACT_APP_API_URL=http://localhost:5000/
 #http://192.168.1.42:5004/
 #http://177.30.111.194:5004/
 
-
+#teste
 
 
 REACT_APP_API_ACESSO_GERAL=ACESSO_MASTER

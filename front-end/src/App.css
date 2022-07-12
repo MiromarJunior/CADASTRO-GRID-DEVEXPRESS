@@ -99,7 +99,16 @@ margin-top: 10px;
   margin-top: 1em;
 } 
 
+#titulosLabel2{ 
+  display: block !important;
+  color:#008080 !important;
+  font-weight: 600 !important;
+  background-color: #fff !important;
+  border: none !important;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 20;
 
+} 
 
 
 
