@@ -5,14 +5,10 @@ Métodos padrões para utilizar em todo front-end
 
 import { cnpj } from "cpf-cnpj-validator";
 const emailV = /\S+@\S+\.\S+/;
-const funcaoGit = "git_iury";
-// const funcaoMiromar = "Miromar";
 
 
-const funcaoMiromarnova  = "22236";
 
 
-const novaoo = "5589";
 //  const dataBRa = (data)=>{
 //     return(
 //     new Date(data).getFullYear()+"-"+

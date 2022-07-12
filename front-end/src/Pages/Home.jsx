@@ -183,11 +183,11 @@ const HomePage = () => {
     navigate("/parametrosLeilao");
     handleDrawerClose();
   }
-  const marcaVeiculo =()=>{
+  const marcaVeiculo = () => {
     navigate("/marcaVeiculo");
     handleDrawerClose();
 
-   
+
   }
 
 
@@ -288,6 +288,13 @@ const HomePage = () => {
                   <ListItemText primary={"Grupo do Item"} />
                 </ListItemButton>
 
+                <ListItemButton onClick={() => marcaVeiculo()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Marcas"} />
+                </ListItemButton>
+
 
                 <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
@@ -325,65 +332,9 @@ const HomePage = () => {
                     <ListItemText primary={"Grupos de Acesso"} />
                   </ListItemButton>
                 </ListItem>
-
-
-
-
-
-
-
-
-
-
-              </TreeItem>
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO"> 
-      <ListItemButton onClick={ ()=>marcaVeiculo()  }>
-        <ListItemIcon>
-          <HdrAutoIcon style = {{color : "green"}}/> 
-        </ListItemIcon>
-        <ListItemText primary={"Marca Veículo"} />
-      </ListItemButton>
-
-      
-
-    
-
-
-
-
-</TreeItem>
-
-
-
+              </TreeItem>  
             </TreeItem>
-
-
-
-
-
-
-
           </TreeView>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <Divider />
           {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
@@ -397,8 +348,6 @@ const HomePage = () => {
             </ListItem>
           ))}
         </List> */}
-
-
           <ListItem disablePadding style={{ marginTop: 300 }}>
             <ListItemButton onClick={logout}>
               <ListItemIcon>

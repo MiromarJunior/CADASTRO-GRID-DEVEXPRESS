@@ -42,7 +42,7 @@ const ParametroLeilao = ()=>{
             <TextField required label="Horário Inicio" error={horaIniL.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horaIniL ? horaIniL : "00:00"}  onChange={(e)=> setHoraIniL(e.target.value)}  type={"time"}  />
             <TextField required label="Horário Fim" error={horaFimL.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horaFimL ? horaFimL : "00:00"}  onChange={(e)=> setHoraFimL(e.target.value)}  type={"time"}  /><br/>
           
-            <TextField required label="Tempo Abertura After" error={tempoAbertAft.length > 0 ? false : true} disabled={!acessoGeral} id="" value={tempoAbertAft}  onChange={(e)=> setPontuacaoInicial(e.target.value)}  type={"number"}  /> 
+            <TextField required label="Tempo Abertura After" error={tempoAbertAft.length > 0 ? false : true} disabled={!acessoGeral} id="" value={tempoAbertAft}  onChange={(e)=> setTempoAbertAft(e.target.value)}  type={"number"}  /> 
             <button style={{marginTop : "1.2em", border : "0", backgroundColor  :"white"}}> em Minutos</button>
              {/* <TextField select required label="SMTP Secure"  error={smtpSistSecure.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)}style={{ maxWidth : "11em"}}  >
                         <MenuItem value={"TLS"}>TLS</MenuItem>
