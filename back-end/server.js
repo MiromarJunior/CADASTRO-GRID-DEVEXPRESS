@@ -36,6 +36,15 @@ app.listen(port, ()=>{
   let marcaVeiculoRotas = require("./Controller/marcaVeiculoController");
   app.use("/",marcaVeiculoRotas) ;
 
+  let justificativaItemRotas = require('./Controller/justificativaItemController');
+  app.use('/', justificativaItemRotas);
+
+  let municipiosRotas = require('./Controller/municipiosController');
+  app.use('/', municipiosRotas);
+
+  let regiaoRotas = require('./Controller/regiaoController');
+  app.use('/', regiaoRotas);
+
   console.log("Servidor online na porta  : ", port);
   
 

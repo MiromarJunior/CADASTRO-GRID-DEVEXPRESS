@@ -320,6 +320,16 @@ export const validaGRID = (valor, val, changedRows, setRows, msg) => {
   //  }
 };
 
+export const validaDescricao = (descricao) =>{
+  if (descricao.length > 1){
+    return true;
+  } else {
+    window.alert('Favor Preencher o campo Descrição Corretamente');
+    return false;
+  }
+}
+
+
 export const criandoU = (n) => {
   let v = n + 1;
   const res = {

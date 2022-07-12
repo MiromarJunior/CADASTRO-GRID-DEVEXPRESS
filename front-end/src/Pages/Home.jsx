@@ -183,13 +183,25 @@ const HomePage = () => {
     navigate("/parametrosLeilao");
     handleDrawerClose();
   }
-  const marcaVeiculo =()=>{
+  const marcaVeiculo = () => {
     navigate("/marcaVeiculo");
     handleDrawerClose();
-
-   
   }
 
+  const listarMunicipios = () => {
+    navigate('/listarMunicipios');
+    handleDrawerClose();
+  }
+
+  const listarJustificativaItem = () => {
+    navigate('/listarJustificativaItem');
+    handleDrawerClose();
+  }
+
+  const listarRegiao = () => {
+    navigate('/listarRegiao');
+    handleDrawerClose();
+  }
 
 
 
@@ -326,62 +338,43 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
-
-
-
-
-
-
-
-
+              </TreeItem>
+              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
+                <ListItemButton onClick={() => marcaVeiculo()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Marca Veículo"} />
+                </ListItemButton>
 
               </TreeItem>
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO"> 
-      <ListItemButton onClick={ ()=>marcaVeiculo()  }>
-        <ListItemIcon>
-          <HdrAutoIcon style = {{color : "green"}}/> 
-        </ListItemIcon>
-        <ListItemText primary={"Marca Veículo"} />
-      </ListItemButton>
-
-      
-
-    
 
 
 
-
-</TreeItem>
-
-
+              <TreeItem nodeId="Gesner" label="Gesner">
+              <ListItemButton onClick={() => listarJustificativaItem()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Listar Justificativa Item"} />
+                </ListItemButton>                
+                <ListItemButton onClick={() => listarMunicipios()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Listar Municipios"} />
+                </ListItemButton>
+                <ListItemButton onClick={() => listarRegiao()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Listar Regiao"} />
+                </ListItemButton>
+              </TreeItem>
 
             </TreeItem>
 
-
-
-
-
-
-
           </TreeView>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
           <Divider />
