@@ -5,14 +5,10 @@ Métodos padrões para utilizar em todo front-end
 
 import { cnpj } from "cpf-cnpj-validator";
 const emailV = /\S+@\S+\.\S+/;
-const funcaoGit = "git_iury";
-// const funcaoMiromar = "Miromar";
 
 
-const funcaoMiromarnova  = "22236";
 
 
-const novaoo = "5589";
 //  const dataBRa = (data)=>{
 //     return(
 //     new Date(data).getFullYear()+"-"+
@@ -319,6 +315,16 @@ export const validaGRID = (valor, val, changedRows, setRows, msg) => {
   //     return false;
   //  }
 };
+
+export const validaDescricao = (descricao) =>{
+  if (descricao.length > 1){
+    return true;
+  } else {
+    window.alert('Favor Preencher o campo Descrição Corretamente');
+    return false;
+  }
+}
+
 
 export const criandoU = (n) => {
   let v = n + 1;

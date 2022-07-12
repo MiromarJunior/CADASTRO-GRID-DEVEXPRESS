@@ -164,11 +164,27 @@ const HomePage = () => {
   const parametrosDeLeilao = () => {
     navigate("/parametrosLeilao");
     handleDrawerClose();
-  };
+  }
   const marcaVeiculo = () => {
     navigate("/marcaVeiculo");
     handleDrawerClose();
-  };
+  }
+
+  const municipios = () => {
+    navigate('/municipios');
+    handleDrawerClose();
+  }
+
+  const jstificativaItem = () => {
+    navigate('/justificativaItem');
+    handleDrawerClose();
+  }
+
+  const regiao = () => {
+    navigate('/regiao');
+    handleDrawerClose();
+  }
+
   const sacmontadoras = () => {
     navigate("/sacmontadoras");
     handleDrawerClose();
@@ -272,6 +288,13 @@ const HomePage = () => {
                   <ListItemText primary={"Grupo do Item"} />
                 </ListItemButton>
 
+                <ListItemButton onClick={() => marcaVeiculo()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Marca Veículo"} />
+                </ListItemButton>
+
                 <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
                     <ListItemIcon>
@@ -303,7 +326,18 @@ const HomePage = () => {
                     <ListItemText primary={"Grupos de Acesso"} />
                   </ListItemButton>
                 </ListItem>
+
               </TreeItem>
+              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
+                <ListItemButton onClick={() => marcaVeiculo()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Marca Veículo"} />
+                </ListItemButton>
+
+              </TreeItem>
+
               <TreeItem nodeId="SAC" label="SAC">
                 <ListItem disablePadding>
                   <ListItemButton onClick={() => sacmontadoras()}>
@@ -315,15 +349,29 @@ const HomePage = () => {
                 </ListItem>
               </TreeItem>
 
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
-                <ListItemButton onClick={() => marcaVeiculo()}>
+              <TreeItem nodeId="Gesner" label="Gesner">
+              <ListItemButton onClick={() => jstificativaItem()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Marca Veículo"} />
+                  <ListItemText primary={"Justificativa do Item"} />
+                </ListItemButton>                
+                <ListItemButton onClick={() => municipios()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Municipios"} />
+                </ListItemButton>
+                <ListItemButton onClick={() => regiao()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Regiao"} />
                 </ListItemButton>
               </TreeItem>
+
             </TreeItem>
+
           </TreeView>
 
           <Divider />
