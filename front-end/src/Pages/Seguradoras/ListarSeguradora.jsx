@@ -34,71 +34,65 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 
 
-
-
-
-
-
-
-
 const getRowId = row => row.id;
 const ListarSeguradora = () => {
     const [rows, setRows] = useState([]);
-    const navigate = useNavigate();     
+    const navigate = useNavigate();
     const { logout, nomeUser } = useContext(AuthContext);
     const [validCNPJ] = useState(["SGRA_CNPJ"]);
-    const [editSeg] = useState(["ALTERACAO"]); 
-    let token = localStorage.getItem("token");  
-    const [acessoGeral, setAcessoGeral] = useState(false);    
+    const [editSeg] = useState(["ALTERACAO"]);
+    let token = localStorage.getItem("token");
+    const [acessoGeral, setAcessoGeral] = useState(false);
     const [acessoDEL, setAcessoDEL] = useState(false);
-     const [defaultHiddenColumnNames] = useState(['nova']);   
+    const [defaultHiddenColumnNames] = useState(['nova']);
     const [acessoADD, setAcessoADD] = useState(false);
     const [displayEDIT, setDisplayEDIT] = useState("none");
     const [displayDEL, setDisplayDEL] = useState("none");
+
     const listaSgra = "LIST_SGRA";
     const incluirSgra = "ADD_SGRA";
     const excluirSgra = "DEL_SGRA";
     const editarSgra = "EDIT_SGRA";
 
 
-    useEffect(() => {     
-        const acessoMenuUser = async ()=>{          
-            let dados = { token, usuario : nomeUser() };
+    useEffect(() => {
+        const acessoMenuUser = async () => {
+            let dados = { token, usuario: nomeUser() };
             await getAcessoUserMenu(dados)
-              .then((res) => {                 
-                  (res.data).forEach((ac)=>{                
-                    if(process.env.REACT_APP_API_ACESSO_GERAL === ac ){                    
-                     setDisplayEDIT("");  
-                     setDisplayDEL("");   
-                     setAcessoGeral(true);                    
-                     listarSeguradoras();                       
-                    }else if(listaSgra === ac) {
-                        listarSeguradoras();
-                     }else if(incluirSgra === ac) {
-                        setAcessoADD(true);
-                                          
-                     }else if(editarSgra === ac) {
-                        setDisplayEDIT("");                        
-                     }else if(excluirSgra === ac) {
-                        setDisplayDEL("");   
-                        setAcessoDEL(true);                     
-                     }
-        
-                  })                   
-        
-        
-              })
-              .catch((err) => {
-                console.error(err);
-                window.alert("Erro ao Listar Seguradoras !!")
-              })
-        
-          }
-          
-        
-          acessoMenuUser();   
-        
-     //eslint-disable-next-line  
+                .then((res) => {
+                    (res.data).forEach((ac) => {
+                        if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                            setDisplayEDIT("");
+                            setDisplayDEL("");
+                            setAcessoGeral(true);
+                            listarSeguradoras();
+                        } else if (listaSgra === ac) {
+                            listarSeguradoras();
+                        } else if (incluirSgra === ac) {
+                            setAcessoADD(true);
+
+                        } else if (editarSgra === ac) {
+                            setDisplayEDIT("");
+                        } else if (excluirSgra === ac) {
+                            setDisplayDEL("");
+                            setAcessoDEL(true);
+                        }
+
+                    })
+
+
+                })
+                .catch((err) => {
+                    console.error(err);
+                    window.alert("Erro ao Listar Seguradoras !!")
+                })
+
+        }
+
+
+        acessoMenuUser();
+
+        //eslint-disable-next-line  
     }, [logout, token]);
 
     const listarSeguradoras = async () => {
@@ -131,106 +125,108 @@ const ListarSeguradora = () => {
     };
 
     const deletarSeguradora = (idSeg) => {
-        if(acessoGeral || acessoDEL){        
-        let dados = { idSeg, token, acessoGeral, acessoDEL };
-        if (window.confirm("deseja excluir o item ?")) {
-            deleteSeguradoraID(dados)
-                .then((res) => {
-                    if (res.data === "erroLogin") {
-                        window.alert("Sessão expirada, Favor efetuar um novo login !!");
-                        logout();
-                        window.location.reload();
-                    }
-                    else if (res.data === "semAcesso") {
-                        window.alert("Usuário sem permissão !!!");
+        if (acessoGeral || acessoDEL) {
+            let dados = { idSeg, token, acessoGeral, acessoDEL };
+            if (window.confirm("deseja excluir o item ?")) {
+                deleteSeguradoraID(dados)
+                    .then((res) => {
+                        if (res.data === "erroLogin") {
+                            window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                            logout();
+                            window.location.reload();
+                        }
+                        else if (res.data === "semAcesso") {
+                            window.alert("Usuário sem permissão !!!");
 
-                    } else if (res.data === "campoNulo") {
-                        window.alert("Preencha todos os Campos obrigatorios!!!");
-                    }
-                    else if (res.data === "erroSalvar") {
-                        window.alert("Erro a tentar salvar ou alterar!!!");
-                    }
-                    else if (res.data === "sucesso") {
-                        window.alert("Seguradora Excluída com Sucesso!!!");
-                        listarSeguradoras();
-                    }
+                        } else if (res.data === "campoNulo") {
+                            window.alert("Preencha todos os Campos obrigatorios!!!");
+                        }
+                        else if (res.data === "erroSalvar") {
+                            window.alert("Erro a tentar salvar ou alterar!!!");
+                        }
+                        else if (res.data === "sucesso") {
+                            window.alert("Seguradora Excluída com Sucesso!!!");
+                            listarSeguradoras();
+                        }
 
-                })
-                .catch((res) => {
-                    console.error(res);
-                    window.alert("Erro ao tentar excluir seguradora");
-                })
+                    })
+                    .catch((res) => {
+                        console.error(res);
+                        window.alert("Erro ao tentar excluir seguradora");
+                    })
+            }
+        } else {
+            window.alert("Usuário sem permissão !!!");
         }
-    }else{
-        window.alert("Usuário sem permissão !!!");
-    }
 
     };
 
 
 
     //GRID
- 
- 
-  
-  const BotaoAd =  < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />         
-   
-  const columns  =
-  (     acessoGeral || acessoADD ?
-    
-           [{ name: 'SGRA_CNPJ', title: `CNPJ` },
-        { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
-        { name: 'SGRA_CIDADE', title: "CIDADE" },        
-        {name: "ALTERACAO", title: BotaoAd,
-          getCellValue: row => (row.ID_SEGURADORA)
-        }]    
-        :
-        [{ name: 'SGRA_CNPJ', title: `CNPJ` },
-        { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
-        { name: 'SGRA_CIDADE', title: "CIDADE" },        
-        {name: "ALTERACAO", title: "Cadastro",
-          getCellValue: row => (row.ID_SEGURADORA)
-        }]   
 
-  )
+
+
+    const BotaoAd = < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSeguradora/0")} />
+
+    const columns =
+        (acessoGeral || acessoADD ?
+
+            [{ name: 'SGRA_CNPJ', title: `CNPJ` },
+            { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
+            { name: 'SGRA_CIDADE', title: "CIDADE" },
+            {
+                name: "ALTERACAO", title: BotaoAd,
+                getCellValue: row => (row.ID_SEGURADORA)
+            }]
+            :
+            [{ name: 'SGRA_CNPJ', title: `CNPJ` },
+            { name: 'SGRA_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
+            { name: 'SGRA_CIDADE', title: "CIDADE" },
+            {
+                name: "ALTERACAO", title: "Cadastro",
+                getCellValue: row => (row.ID_SEGURADORA)
+            }]
+
+        )
 
 
     const [editingStateColumns] = useState([
-        { columnName: "ALTERACAO", editingEnabled: false , title :"olamn"},
+        { columnName: "ALTERACAO", editingEnabled: false, title: "olamn" },
         // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
         // {columnName : "PRDT_VALOR",align: 'center'},
 
     ])
 
-   
+
     const EditSeguradorasAdm = ({ value }) => (
-        <div>  
-        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />
-        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : displayDEL}}   className="margemRight" onClick={(e) => deletarSeguradora(value)} />
-        
-        <VisibilityIcon style={{ color: "green" ,display : (displayEDIT ==="none" ? "" : "none")}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />   
-    
-        </div>  
-    
+        <div>
+            <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display: displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />
+            <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red", display: displayDEL }} className="margemRight" onClick={(e) => deletarSeguradora(value)} />
+
+            <VisibilityIcon style={{ color: "green", display: (displayEDIT === "none" ? "" : "none") }} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroSeguradora/${value}`)} type="button" />
+
+        </div>
+
     )
-    
-    
+
+
 
 
     const EditSeguradorasProv = props => (
         <DataTypeProvider
-            formatterComponent={ EditSeguradorasAdm}
+            formatterComponent={EditSeguradorasAdm}
             {...props}
         />
     )
-    
+
 
 
 
     return (
         <div className="container-fluid">
 
-<h3 id='titulos'>Seguradoras 🚗 ​​</h3> 
+            <h3 id='titulos'>Seguradoras 🚗 ​​</h3>
 
             <div className="card">
                 <Grid
@@ -257,20 +253,20 @@ const ListarSeguradora = () => {
                     />
 
                     <Table
-                      //  tableComponent={TableComponent}
+                    //  tableComponent={TableComponent}
                     />
                     {!acessoGeral ? <TableColumnVisibility
-                     defaultHiddenColumnNames={defaultHiddenColumnNames}
-  
-                     /> : ""
+                        defaultHiddenColumnNames={defaultHiddenColumnNames}
+
+                    /> : ""
                     }
-                    
+
                     <TableHeaderRow
                         contentComponent={TableComponentTitle}
                         showSortingControls />
                     <TableEditRow />
                     <TableFilterRow />
-                    
+
 
                 </Grid>
             </div>

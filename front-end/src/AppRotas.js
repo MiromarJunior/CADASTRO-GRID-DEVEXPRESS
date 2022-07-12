@@ -19,6 +19,10 @@ import ParametroLeilao from "./Pages/Leilao/ParametroLeilao";
 import MarcaVeiculo from "./Pages/Marca/MarcaVeiculo";
 import SacMontadoras from "./Pages/SacMontadoras/sacMontadoras";
 
+import ListarRegiao from "./Pages/Regiao/ListarRegiao";
+import ListarJustificativaItem from "./Pages/JustificativaItem/ListarJustificativaItem";
+import ListarMunicipios from "./Pages/Municipios/ListarMunicipios";
+
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
 const AppRotas = () => {
@@ -159,6 +163,10 @@ const AppRotas = () => {
               </Private>
             }
           />
+          
+                    <Route exact path="/listarRegiao" element={<Private> <ListarRegiao /> </Private>} />
+                    <Route exact path="/listarJustificativaItem" element={<Private><ListarJustificativaItem /> </Private>} />
+                    <Route exact path="/listarMunicipios" element={<Private><ListarMunicipios /> </Private>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
@@ -166,3 +174,4 @@ const AppRotas = () => {
 };
 
 export default AppRotas;
+
