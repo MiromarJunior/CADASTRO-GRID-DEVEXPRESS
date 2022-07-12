@@ -1,45 +1,54 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+// const {
+//   default: SacMontadoras,
+// } = require("../front-end/src/Pages/SacMontadoras/sacMontadoras");
 require("dotenv").config();
 const port = 5000;
 app.use(express.json());
 
-app.use(cors({origin : [process.env.URL_FRONT_END,process.env.URL_FRONT_END4,process.env.URL_FRONT_END2,process.env.URL_FRONT_END3] }));
+app.use(
+  cors({
+    origin: [
+      process.env.URL_FRONT_END,
+      process.env.URL_FRONT_END4,
+      process.env.URL_FRONT_END2,
+      process.env.URL_FRONT_END3,
+    ],
+  })
+);
 
-app.use(express.urlencoded({
-    extended : true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-
-app.listen(port, ()=>{ 
-
+app.listen(port, () => {
   let usuarioRotas = require("./Controller/usuarioController");
-  app.use("/",usuarioRotas)  ;
- 
+  app.use("/", usuarioRotas);
 
   let seguradoraRotas = require("./Controller/seguradoraController");
-  app.use("/",seguradoraRotas) ;
+  app.use("/", seguradoraRotas);
 
   let unidadeFederativaRotas = require("./Controller/unidadeFederativaController");
-  app.use("/",unidadeFederativaRotas) ;
+  app.use("/", unidadeFederativaRotas);
 
   let categMsgsRotas = require("./Controller/categoriamensagensController");
-  app.use("/",categMsgsRotas) ;
+  app.use("/", categMsgsRotas);
 
   let grupoItemRotas = require("./Controller/grupoitemController");
-  app.use("/",grupoItemRotas) ;
+  app.use("/", grupoItemRotas);
 
   let SubgrupoItemRotas = require("./Controller/SubgrupoitemController");
-  app.use("/",SubgrupoItemRotas) ;
+  app.use("/", SubgrupoItemRotas);
 
   let marcaVeiculoRotas = require("./Controller/marcaVeiculoController");
-  app.use("/",marcaVeiculoRotas) ;
+  app.use("/", marcaVeiculoRotas);
+
+  let sacMontadoraRotas = require("./Controller/sacMontadorasController");
+  app.use("/", sacMontadoraRotas);
 
   console.log("Servidor online na porta  : ", port);
-  
-
-
-
-
 });
