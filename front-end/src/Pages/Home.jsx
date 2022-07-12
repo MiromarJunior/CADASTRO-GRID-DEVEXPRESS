@@ -273,6 +273,13 @@ const HomePage = () => {
                   <ListItemText primary={"Grupo do Item"} />
                 </ListItemButton>
 
+                <ListItemButton onClick={() => marcaVeiculo()}>
+                  <ListItemIcon>
+                    <HdrAutoIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Marca Veículo"} />
+                </ListItemButton>
+
                 <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
                     <ListItemIcon>
@@ -315,15 +322,7 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
               </TreeItem>
-
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
-                <ListItemButton onClick={() => marcaVeiculo()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Marca Veículo"} />
-                </ListItemButton>
-              </TreeItem>
+          
             </TreeItem>
           </TreeView>
 

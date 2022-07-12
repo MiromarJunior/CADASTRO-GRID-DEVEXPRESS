@@ -29,21 +29,37 @@ const ParametroLeilao = ()=>{
                    
                 >
 
-                    
-            <label id="titulosLabel">Ranking</label>
+
+  <label id="titulosLabel2">Ranking</label>
              <TextField required label="Pontuação Inicial" error={pontuacaoInicial.length > 0 ? false : true} disabled={!acessoGeral} id="" value={pontuacaoInicial}  onChange={(e)=> setPontuacaoInicial(e.target.value)}  type={"number"}  />
           
-
-
-
-             <label id="titulosLabel">Leilão</label>
+   <hr/>
+  <label id="titulosLabel2">Leilão</label>
             <TextField  required label="Horas" error={horasL.length > 0 ? false : true} disabled={!acessoGeral} id="" value={horasL ? horasL : "00:00"} onChange={(e)=> setHorasL(e.target.value)}   type={"time"}  />
-            <TextField required label="Horas Extendida" error={horasExtend.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horasExtend ? horasExtend : "00:00"}  onChange={(e)=> setHorasExtend(e.target.value)}  type={"time"}  /><br/>
+            <TextField required label="Horas Extendida" error={horasExtend.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horasExtend ? horasExtend : "00:00"}  onChange={(e)=> setHorasExtend(e.target.value)}  type={"time"}  />
             <TextField required label="Horário Inicio" error={horaIniL.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horaIniL ? horaIniL : "00:00"}  onChange={(e)=> setHoraIniL(e.target.value)}  type={"time"}  />
-            <TextField required label="Horário Fim" error={horaFimL.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horaFimL ? horaFimL : "00:00"}  onChange={(e)=> setHoraFimL(e.target.value)}  type={"time"}  /><br/>
+            <TextField required label="Horário Fim" error={horaFimL.length > 0 ? false : true} disabled={!acessoGeral} id=""  value={horaFimL ? horaFimL : "00:00"}  onChange={(e)=> setHoraFimL(e.target.value)}  type={"time"}  />
           
-            <TextField required label="Tempo Abertura After" error={tempoAbertAft.length > 0 ? false : true} disabled={!acessoGeral} id="" value={tempoAbertAft}  onChange={(e)=> setPontuacaoInicial(e.target.value)}  type={"number"}  /> 
+            <TextField required label="Tempo Abertura After" error={tempoAbertAft.length > 0 ? false : true} disabled={!acessoGeral} id="" value={tempoAbertAft}  onChange={(e)=> setTempoAbertAft(e.target.value)}  type={"number"}  /> 
             <button style={{marginTop : "1.2em", border : "0", backgroundColor  :"white"}}> em Minutos</button>
+           
+            <hr/> 
+              
+            <label id="titulosLabel">Horas para validação nota SEFAZ</label>
+            <TextField  required label="Quantidade de Horas" error={qtdHorasValSef.length > 0 ? false : true} disabled={!acessoGeral} id="" value={qtdHorasValSef ? qtdHorasValSef : ""} onChange={(e)=> setQtdHorasValSef(e.target.value)}   type={"number"}  />
+            <hr/> 
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
              {/* <TextField select required label="SMTP Secure"  error={smtpSistSecure.length < 1  ? true : false} disabled={!acessoCAD} value={smtpSistSecure} onChange={(e) => setSmtpSistSecure(e.target.value)}style={{ maxWidth : "11em"}}  >
                         <MenuItem value={"TLS"}>TLS</MenuItem>
                         <MenuItem value={"SSL"}>SSL</MenuItem>
