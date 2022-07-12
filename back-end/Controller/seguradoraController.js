@@ -40,7 +40,6 @@ const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
           res.send("erroLogin").end();
 
       } else{  
-
         insertSql = (
           ` INSERT INTO SEGURADORA(ID_SEGURADORA,
             SGRA_CNPJ,

@@ -1,6 +1,6 @@
 import Paper from '@mui/material/Paper';
 
-import "./Regiao.css";
+import "./JustificativaItem.css";
 import {
   DataTypeProvider,
   EditingState,
@@ -34,7 +34,7 @@ import Input from '@mui/material/Input';
 import Select from '@mui/material/Select';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { saveRegiao, getRegiao, deleteRegiaoID } from "../../Service/regiaoService";
+import { saveJustificativaItem, getJustificativaItem, deleteJustificativaItemID } from "../../Service/justificativaItemService";
 import { getAcessoUserMenu } from '../../Service/usuarioService';
 import { validaDescricao } from '../../Service/utilServiceFrontEnd';
 
@@ -43,11 +43,11 @@ const DeleteButton = ({ onExecute }) => (
   <IconButton
     onClick={() => {
       // eslint-disable-next-line
-      if (window.confirm('Deseja excluir esta Região ?')) {
+      if (window.confirm('Deseja excluir esta Justificativa do Item ?')) {
         onExecute();
       }
     }}
-    title="Excluir Região"
+    title="Excluir Justificativa do Item"
     size="large"
   >
     <DeleteForeverOutlinedIcon style={{ color: "red" }} />
@@ -59,7 +59,7 @@ const AddButton = ({ onExecute }) => (
     <IconButton size="large"
       color="primary"
       onClick={onExecute}
-      title="Nova Região"
+      title="Nova Justificativa do Item"
     >
       <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
     </IconButton>
@@ -68,7 +68,7 @@ const AddButton = ({ onExecute }) => (
 
 
 const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Região" size="large" >
+  <IconButton onClick={onExecute} title="Alterar Justificativa do Item" size="large" >
     <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
   </IconButton>
 );
@@ -116,13 +116,12 @@ const TableComponentTitle = ({ style, ...restProps }) => (
 
 let acessoGeral = false;
 
-const ListarRegiao = () => {
+const JustificativaItem = () => {
 
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
-  const [regDescricao, setRegDescricao] = useState([]);
-  const { idReg } = useParams();
+  // const [descricaoJustificativaItem, setDescricaoJustificativaItem] = useState([]);
   const navigate = useNavigate();
 
 
@@ -158,19 +157,19 @@ const ListarRegiao = () => {
   }, [])
 
   useEffect(() => {
-    listaRegiao();
+    listaJustificativaItem();
   }, [logout, token]);
 
-  const cadastraRegiao = (lista) => {
-    let dados = { lista, token, idReg, acessoGeral };
+  const cadastraJustificativaItem = (lista) => {
+    let dados = { lista, token, acessoGeral };
 
-    console.log(lista);
+    // console.log('cadastrar Justificativa do Item', lista);
 
-    if (!validaDescricao(lista.REGI_DESCRICAO)) {
-      return { mensagem: 'Erro de Validação' };
+    if (!validaDescricao(lista.JSIT_DESCRICAO)) {
+      return { mensagem: 'Erro de Validação da Descrição da Justificativa do Item' };
     }
 
-    saveRegiao(dados)
+    saveJustificativaItem(dados)
       .then((res) => {
 
         if (res.data === "erroLogin") {
@@ -188,26 +187,26 @@ const ListarRegiao = () => {
           alert("Erro a tentar salvar ou alterar!!!");
         }
         else {
-          if (lista.regiaoID > 0) {
-            window.alert("Região Alterada com Sucesso!!!");
+          if (lista.ID_JUSTIFICATIVA_ITEM > 0) {
+            window.alert("Justificativa do Item Alterada com Sucesso!!!");
           } else {
-            window.alert("Região Cadastrada  com Sucesso!!!");
+            window.alert("Justificativa do Item Cadastrada  com Sucesso!!!");
           }
-          // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
+          // listaJustificativaItem(); // sempre chamar a lista no caso de cadastro simples.
         }
 
-        listaRegiao();
+        listaJustificativaItem();
       })
       .catch((err) => {
-        console.error('Erro ao Cadastrar Região', err);
+        console.error('Erro ao Cadastrar Justificativa do Item', err);
         window.alert("Erro ao cadastrar !!")
       })
   }
 
-  const deletarRegiao = (regiaoID) => {
+  const deletarJustificativaItem = (justificativaItemID) => {
 
-    let dados = { token, acessoGeral, regiaoID: parseInt(regiaoID) };
-    deleteRegiaoID(dados)
+    let dados = { token, acessoGeral, justificativaItemID: parseInt(justificativaItemID) };
+    deleteJustificativaItemID(dados)
       .then((res) => {
 
         if (res.data === "erroLogin") {
@@ -224,19 +223,19 @@ const ListarRegiao = () => {
         else if (res.data === "erroSalvar") {
           alert("Erro a tentar excluir!!!");
         } else {
-          window.alert("Região excluída com sucesso !!");
-          listaRegiao();
+          window.alert("Justificativa do Item excluída com sucesso !!");
+          listaJustificativaItem();
         }
       })
       .catch((err) => {
-        console.error('Erro ao Excluir Região', err);
+        console.error('Erro ao Excluir Justificativa do Item', err);
         window.alert("Erro ao Excluir !!")
       })
   }
 
-  const listaRegiao = async () => {
+  const listaJustificativaItem = async () => {
     let dados = { token, acessoGeral };
-    await getRegiao(dados)
+    await getJustificativaItem(dados)
       .then((res) => {
 
         if (res.data === "erroLogin") {
@@ -253,40 +252,17 @@ const ListarRegiao = () => {
         }
       })
       .catch((err) => {
-        console.error('Erro ao Listar Região', err);
+        console.error('Erro ao Listar Justificativa do Item', err);
         window.alert("Erro ao Listar !!")
       })
   }
 
-  // const buscaRegiao = async () => {
-  //   let dados = { token, idReg };
-  //   await getRegiao(dados)
-  //     .then((res) => {
-  //       if (res.data === "erroLogin") {
-  //         window.alert("Sessão expirada, Favor efetuar um novo login !!");
-  //         logout();
-  //         window.location.reload();
-  //       }
-  //       else if (res.data === "semAcesso") {
-  //         window.alert("Usuário sem permissão !!!");
-
-  //       } else {
-  //         (res.data).forEach((item, index) => (item.id = index));
-  //         return setRegDescricao(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       window.alert("Erro ao cadastrar !!")
-  //     })
-  // }
-
   const columns = [
-    { name: 'REGI_DESCRICAO', title: `DESCRIÇÃO DA REGIÃO`, required: true }
+    { name: 'JSIT_DESCRICAO', title: `DESCRIÇÃO DA JUSTIFICATIVA DO ITEM`, required: true }
   ]
 
   const [defaultColumnWidths] = useState([
-    { columnName: 'REGI_DESCRICAO', width: 450 }
+    { columnName: 'JSIT_DESCRICAO', width: 450 }
   ]);
   const [rowChanges, setRowChanges] = useState({});
   const [addedRows, setAddedRows] = useState([]);
@@ -294,8 +270,8 @@ const ListarRegiao = () => {
 
   const changeAddedRows = value => setAddedRows(
     value.map(row => (Object.keys(row).length ? row : {
-      ID_REGIAO: null,
-      REGI_DESCRICAO: ""
+      ID_JUSTIFICATIVA_ITEM: null,
+      JSIT_DESCRICAO: ""
     })),
   );
   const commitChanges = ({ added, changed, deleted }) => {
@@ -311,15 +287,14 @@ const ListarRegiao = () => {
         })),
       ];
 
-
       for (let i = 0; i < changedRows.length; i++) {
-        if (!(changedRows[i].ID_REGIAO)) {
+        if (!(changedRows[i].ID_JUSTIFICATIVA_ITEM)) {
 
 
-          if (changedRows[i].REGI_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Região");
+          if (changedRows[i].JSIT_DESCRICAO === "") {
+            window.alert("Favor Preencher campo Descrição da Justificativa do Item");
           } else {
-            cadastraRegiao(changedRows[i])
+            cadastraJustificativaItem(changedRows[i])
           }
           //cadastraUsuario(changedRows[i]);
         }
@@ -331,10 +306,10 @@ const ListarRegiao = () => {
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
 
-          if (changedRows[i].REGI_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Região");
+          if (changedRows[i].JSIT_DESCRICAO === "") {
+            window.alert("Favor Preencher campo Descrição da Justificativa do Item");
           } else {
-            cadastraRegiao(changedRows[i])
+            cadastraJustificativaItem(changedRows[i])
           }
         }
       }
@@ -342,15 +317,15 @@ const ListarRegiao = () => {
     if (deleted) {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter(row => deletedSet.has(row.id));
-      deletarRegiao(changedRows.map(l => l.ID_REGIAO));
+      deletarJustificativaItem(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
       // setRows(changedRows);
     }
     setRows(changedRows);
   };
   return (
     <div className='container-fluid'>
-      <h3 id='titulos'>Região: </h3>
-      <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarRegiao`)} type="button" />
+      <h3 id='titulos'>Justificativa do Item: </h3>
+      {/* <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarJustificativaItem`)} type="button" /> */}
       <div className="container">
 
         <Paper>
@@ -362,7 +337,7 @@ const ListarRegiao = () => {
             <SortingState
             />
             <FilteringState
-              defaultFilters={[{ columnName: "REGI_DESCRICAO", value: "" }]} />
+              defaultFilters={[{ columnName: "JSIT_DESCRICAO", value: "" }]} />
             <IntegratedFiltering />
             <IntegratedSorting />
             <EditingState
@@ -399,4 +374,4 @@ const ListarRegiao = () => {
 
 }
 
-export default ListarRegiao;
+export default JustificativaItem;

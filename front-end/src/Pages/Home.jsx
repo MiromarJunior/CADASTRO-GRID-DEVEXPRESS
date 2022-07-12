@@ -171,18 +171,18 @@ const HomePage = () => {
     handleDrawerClose();
   }
 
-  const listarMunicipios = () => {
-    navigate('/listarMunicipios');
+  const municipios = () => {
+    navigate('/municipios');
     handleDrawerClose();
   }
 
-  const listarJustificativaItem = () => {
-    navigate('/listarJustificativaItem');
+  const jstificativaItem = () => {
+    navigate('/justificativaItem');
     handleDrawerClose();
   }
 
-  const listarRegiao = () => {
-    navigate('/listarRegiao');
+  const regiao = () => {
+    navigate('/regiao');
     handleDrawerClose();
   }
 
@@ -351,23 +351,23 @@ const HomePage = () => {
               </TreeItem>
 
               <TreeItem nodeId="Gesner" label="Gesner">
-              <ListItemButton onClick={() => listarJustificativaItem()}>
+              <ListItemButton onClick={() => jstificativaItem()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Listar Justificativa Item"} />
+                  <ListItemText primary={"Justificativa do Item"} />
                 </ListItemButton>                
-                <ListItemButton onClick={() => listarMunicipios()}>
+                <ListItemButton onClick={() => municipios()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Listar Municipios"} />
+                  <ListItemText primary={"Municipios"} />
                 </ListItemButton>
-                <ListItemButton onClick={() => listarRegiao()}>
+                <ListItemButton onClick={() => regiao()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Listar Regiao"} />
+                  <ListItemText primary={"Regiao"} />
                 </ListItemButton>
               </TreeItem>
 
