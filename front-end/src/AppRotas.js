@@ -41,7 +41,6 @@ const AppRotas = () => {
       <AuthProvider>
         <HomePage />
         <Routes>
-
           <Route exact path="/" element={<LoginPage />} />       
           <Route exact path="/parametrosLeilao" element={<Private><ParametroLeilao /></Private>}/>
           <Route exact path="/home" element={<Private><Inicial/></Private>}/>
@@ -58,7 +57,6 @@ const AppRotas = () => {
           <Route exact path="/regiao" element={<Private> <Regiao /> </Private>} />
           <Route exact path="/justificativaItem" element={<Private><JustificativaItem /> </Private>} />
           <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
-
         </Routes>
       </AuthProvider>
     </BrowserRouter>
@@ -66,4 +64,3 @@ const AppRotas = () => {
 };
 
 export default AppRotas;
-
