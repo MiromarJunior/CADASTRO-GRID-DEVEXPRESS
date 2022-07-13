@@ -176,7 +176,7 @@ const Acesso = () => {
     } else if (valor === "DEL_USRO") {
       return <span>Excluir Usuário <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_USRO") {
-      return <span>Listar Usuários <ListIcon style={{ color: "green" }} /></span>
+      return <span>Listar Todos os Usuários <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "ADM_USRO") {
       return <span>Administrador Usuários </span>
     } else if (valor === "ADD_SGRA") {

@@ -88,10 +88,28 @@ const HomePage = () => {
   const { logout, nomeUser } = useContext(AuthContext);
   const [displayAcessoGeral, setDisplayAcessoGeral] = useState("none");
   const [displayAcessoSGRA, setDisplayAcessoSGRA] = useState("none");
+  const [displayAcessoSac, setDisplayAcessoSac] = useState("none");
+  const [displayAcessoReg, setDisplayAcessoReg] = useState("none");
+  const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
   const editarSgra = "EDIT_SGRA";
+
+  const listaSac = "LIST_SACMONT";
+  const incluirSac = "ADD_SACMONT";
+  const excluirSac = "DEL_SACMONT";
+  const editarSac = "EDIT_SACMONT";
+
+  const listaReg = "LIST_REGIAO";
+  const incluirReg = "ADD_REGIAO";
+  const excluirReg = "DEL_REGIAO";
+  const editarReg = "EDIT_REGIAO";
+
+  const listaJust = "LIST_JUSTIFICATIVA";
+  const incluirJust = "ADD_JUSTIFICATIVA";
+  const excluirJust = "DEL_JUSTIFICATIVA";
+  const editarJust = "EDIT_JUSTIFICATIVA";
 
   useEffect(() => {
     if (nomeUser()) {
@@ -110,9 +128,28 @@ const HomePage = () => {
                 if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                   setDisplayAcessoGeral("");
                   setDisplayAcessoSGRA("");
-                } else if ( listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
+                  setDisplayAcessoSac("");
+                  setDisplayAcessoReg("");
+                  setDisplayAcessoJust("");
+
+                }
+                if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
                 }
+                if (listaSac === ac || incluirSac === ac || excluirSac === ac || editarSac === ac) {
+                  setDisplayAcessoSac("");
+                }
+                if (listaReg === ac || incluirReg === ac || excluirReg === ac || editarReg === ac) {
+                  setDisplayAcessoReg("");
+                }
+                if (listaJust === ac || incluirJust === ac || excluirJust === ac || editarJust === ac) {
+                  setDisplayAcessoJust("");
+                }
+
+
+
+
+
               });
             }
           })
@@ -298,11 +335,11 @@ const HomePage = () => {
                     <ListItemText primary={"Parametros do Leilão"} />
                   </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
+                <ListItem disablePadding style={{ display: displayAcessoSac }}  >
                   <ListItemButton onClick={() => sacmontadoras()}>
-                     <ListItemIcon>
+                    <ListItemIcon>
                       <ListIcon />
-                    </ListItemIcon> 
+                    </ListItemIcon>
                     <ListItemText primary={"SAC Montadoras"} />
                   </ListItemButton>
                 </ListItem>
@@ -331,33 +368,42 @@ const HomePage = () => {
                 </ListItem>
 
               </TreeItem>
-             
 
-              
+
+
 
               <TreeItem nodeId="Gesner" label="Gesner">
-              <ListItemButton onClick={() => jstificativaItem()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Justificativa do Item"} />
-                </ListItemButton>                
-                <ListItemButton onClick={() => municipios()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Municipios"} />
-                </ListItemButton>
-                <ListItemButton onClick={() => regiao()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Regiao"} />
-                </ListItemButton>
+
+                <ListItem disablePadding style={{ display: displayAcessoJust }} >
+                  <ListItemButton onClick={() => jstificativaItem()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Justificativa do Item"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => municipios()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Municipios"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoReg }} >
+                  <ListItemButton onClick={() => regiao()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Regiao"} />
+                  </ListItemButton>
+                </ListItem>
+
               </TreeItem>
 
             </TreeItem>
-
           </TreeView>
 
           <Divider />
@@ -374,7 +420,7 @@ const HomePage = () => {
           ))}
         </List> */}
 
-          <ListItem disablePadding >
+          <ListItem disablePadding  style={{marginTop : "10em"}}>
             <ListItemButton onClick={logout}>
               <ListItemIcon>
                 <ExitToAppTwoToneIcon />
