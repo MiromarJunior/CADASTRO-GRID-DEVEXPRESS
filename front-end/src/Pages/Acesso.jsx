@@ -201,8 +201,15 @@ const Acesso = () => {
       return <span>Excluir Justificativa do Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_JUSTIFICATIVA") {
       return <span>Listar Justificativa do Item <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "LIST_SACMONT") {
+      return <span>Listar SAC Montadoras <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_SACMONT") {
+      return <span>Editar SAC Montadoras <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_SACMONT") {
+      return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_SACMONT") {
+      return <span>Listar SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
     else { return valor }
 
   }
