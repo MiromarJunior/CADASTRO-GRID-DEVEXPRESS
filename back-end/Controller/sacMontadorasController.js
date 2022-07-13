@@ -59,7 +59,7 @@ router.post("/saveSac", async (req, res) => {
     emailCont = lista.SCMN_EMAIL,
     nrCelCont = lista.SCMN_TELEFONE,
     idCont = lista.ID_SAC_MONTADORAS;
-
+  console.log(lista);
   if (acessoGeral) {
     try {
       jwt.verify(token, SECRET, async (err, decoded) => {
@@ -69,14 +69,14 @@ router.post("/saveSac", async (req, res) => {
           res.send("erroLogin").end();
         } else {
           if (idCont) {
+            
             await connection.execute(
               `
               UPDATE  SAC_MONTADORAS
-                 SET  SCMN_MARCA            ='${nomeCont}',
-                      SCMN_EMAIL            ='${emailCont}',
-                      SCMN_TELEFONE         ='${apenasNr(nrCelCont)}',
-                      ID_SAC_MONTADORAS     = "01",
-              
+                 SET  SCMN_MARCA ='${nomeCont}',
+                      SCMN_EMAIL ='${emailCont}',
+                      SCMN_TELEFONE ='${apenasNr(nrCelCont)}'
+               where  ID_SAC_MONTADORAS ='${idCont}'
                `,
 
               [],
@@ -121,4 +121,58 @@ router.post("/saveSac", async (req, res) => {
   }
 });
 
+router.post("/excluirSac", async (req, res) => {
+  const {idCont, token, acessoGeral
+  } = req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+
+  let deleteSql = "";
+  
+  if (acessoGeral) {
+      jwt.verify(token, SECRET, async (err, decoded) => {
+          if (err) {
+              console.error(err, "err");
+              erroAcesso = "erroLogin";
+              res.send("erroLogin").end();
+
+          } else {
+
+              deleteSql = (
+                  ` 
+                  DELETE FROM SAC_MONTADORAS 
+                  WHERE  ID_SAC_MONTADORAS = ${idCont}
+                  `
+              )
+          }
+      })
+
+      try {
+          await connection.execute(deleteSql
+              ,
+              [],
+              {
+                  outFormat: oracledb.OUT_FORMAT_OBJECT,
+                  autoCommit: true
+              });
+
+          res.send("sucesso").status(200).end();
+      } catch (error) {
+          console.error('Erro ao Ecluir Cadastro', error);
+          res.send("erroSalvar").status(500);
+
+      } finally {
+          if (connection) {
+              try {
+                  await connection.close();
+
+              } catch (error) {
+                  console.error(error);
+              }
+          }
+      }
+
+  } else {
+      res.send("semAcesso").status(200).end();
+  }
+});
 module.exports = router;
