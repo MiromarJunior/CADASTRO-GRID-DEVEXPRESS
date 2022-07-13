@@ -39,6 +39,8 @@ const ParametroLeilao = () => {
             acessoGeral            
         }
 
+        console.log('Iury', dados);
+
     }
 
     
