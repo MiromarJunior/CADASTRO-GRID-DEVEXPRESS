@@ -32,7 +32,9 @@ import Input from "@mui/material/Input";
 import Select from "@mui/material/Select";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+
 import {saveSac, getSacMontadorasID, deleteSacMontadorasID,} from "../../Service/sacMontadorasService";
+
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 // import { validaDescricao } from "../../Service/utilServiceFrontEnd";
 
@@ -134,6 +136,7 @@ const SacMontadoras = () => {
             res.data.forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
+
                 listaSacMontadorasID();
 
               }
@@ -142,7 +145,9 @@ const SacMontadoras = () => {
         })
         .catch((err) => {
           console.error(err);
+
           window.alert("Erro ao buscar Usuário SAC!!");
+
         });
     };
 
@@ -150,9 +155,11 @@ const SacMontadoras = () => {
   }, []);
 
 
+
   const cadastraSacMontadoras = (lista) => {
     let dados = { lista, token, acessoGeral };
     console.log(dados);
+
     saveSac(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -165,8 +172,10 @@ const SacMontadoras = () => {
           alert("Preencha todos os Campos obrigatorios!!!");
         } else if (res.data === "erroSalvar") {
           alert("Erro a tentar salvar ou alterar!!!");
+
         }else if (res.data === "sucesso"){
           alert("Cadastrado com sucesso !")
+
         }
 
         listaSacMontadorasID();
@@ -177,8 +186,10 @@ const SacMontadoras = () => {
       });
   };
 
+
   const deletarSacMontadoras = (idCont) => {
     let dados = {token,acessoGeral, idCont: parseInt(idCont),
+
     };
     deleteSacMontadorasID(dados)
       .then((res) => {
@@ -199,7 +210,9 @@ const SacMontadoras = () => {
       })
       .catch((err) => {
         console.error("Erro ao Excluir Cadastro ", err);
+
         window.alert("Erro ao Excluir !!!");
+
       });
   };
 
@@ -232,7 +245,9 @@ const SacMontadoras = () => {
     },
     {
       name: "SCMN_TELEFONE",
+
       title: `TELEFONE SAC  *`,
+
       required: true,
     },
     {
@@ -271,11 +286,13 @@ const SacMontadoras = () => {
           ...row,
         })),
       ];
+
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_SAC_MONTADORAS)) {
           cadastraSacMontadoras(changedRows[i]);
          
         }}
+
     }
     if (changed) {
       changedRows = rows.map((row) =>
@@ -283,20 +300,26 @@ const SacMontadoras = () => {
       );
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
+
           
            if (changedRows[i].SCMN_MARCA === "") {
+
             window.alert("Favor Preencher campo Marca!");
           } else {
             cadastraSacMontadoras(changedRows[i]);
           }
+
          }
+
       }
     }
     if (deleted) {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter((row) => deletedSet.has(row.id));
+
       let idCont = parseInt(changedRows.map(l => l.ID_SAC_MONTADORAS));
       deletarSacMontadoras(idCont);
+
       // setRows(changedRows);
     }
     setRows(changedRows);
