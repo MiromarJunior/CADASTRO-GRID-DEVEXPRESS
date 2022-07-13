@@ -379,7 +379,7 @@ const HomePage = () => {
           ))}
         </List> */}
 
-          <ListItem disablePadding style={{ marginTop: 300 }}>
+          <ListItem disablePadding >
             <ListItemButton onClick={logout}>
               <ListItemIcon>
                 <ExitToAppTwoToneIcon />

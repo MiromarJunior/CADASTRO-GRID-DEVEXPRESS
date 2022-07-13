@@ -194,7 +194,7 @@ const Acesso = () => {
     } else if (valor === "LIST_REGIAO") {
       return <span>Listar Região <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "ADD_JUSTIFICATIVA") {
-      return <span>Incluir JJustificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Justificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "EDIT_JUSTIFICATIVA") {
       return <span>Alterar Justificativa do Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
     } else if (valor === "DEL_JUSTIFICATIVA") {
