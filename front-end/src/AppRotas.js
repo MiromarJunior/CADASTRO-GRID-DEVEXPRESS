@@ -54,119 +54,21 @@ const AppRotas = () => {
                 <Route exact path="/cadastroSeguradora/:idSeg" element={ <CadastroSeguradora />} />
                 <Route exact path="/listarUsuario" element={ <ListarUsuario /> } /> */}
 
-          <Route
-            exact
-            path="/parametrosLeilao"
-            element={
-              <Private>
-                <ParametroLeilao />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/home"
-            element={
-              <Private>
-                <Inicial />
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/listarGrupoItem"
-            element={
-              <Private>
-                <ListarGrupoItem />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/ListarSubGrupoItem/:idGrupo"
-            element={
-              <Private>
-                <ListarSubGrupoItem />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/listarCategMsgs"
-            element={
-              <Private>
-                <ListarCategMsgs />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/acessos/:idGa/:grAce/:grMen"
-            element={
-              <Private>
-                <Acesso />
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/gruposDeAcesso"
-            element={
-              <Private>
-                <GrupoDeAcesso />
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/listarSeguradora"
-            element={
-              <Private>
-                <ListarSeguradora />
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/cadastroSeguradora/:idSeg"
-            element={
-              <Private>
-                {" "}
-                <CadastroSeguradora />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/listarUsuario"
-            element={
-              <Private>
-                <ListarUsuario />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/marcaVeiculo"
-            element={
-              <Private>
-                <MarcaVeiculo />{" "}
-              </Private>
-            }
-          />
-          <Route
-            exact
-            path="/sacmontadoras"
-            element={
-              <Private>
-                <SacMontadoras />{" "}
-              </Private>
-            }
-          />
-
-          <Route exact path="/regiao" element={<Private> <Regiao /> </Private>} />
-          <Route exact path="/justificativaItem" element={<Private><JustificativaItem /> </Private>} />
-          <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
+          <Route exact path="/parametrosLeilao" element={ <Private> {" "} <ParametroLeilao />{" "} </Private>} />
+          <Route exact path="/home" element={ <Private> <Inicial /> </Private> }/>
+          <Route exact path="/listarGrupoItem" element={ <Private> <ListarGrupoItem />{" "} </Private> } />
+          <Route exact path="/ListarSubGrupoItem/:idGrupo" element={ <Private> <ListarSubGrupoItem />{" "} </Private> } />
+          <Route exact path="/listarCategMsgs" element={ <Private> <ListarCategMsgs />{" "} </Private> } />
+          <Route exact path="/acessos/:idGa/:grAce/:grMen" element={ <Private>  <Acesso /> </Private> }/>
+          <Route exact path="/gruposDeAcesso" element={ <Private>  <GrupoDeAcesso /> </Private> } />
+          <Route exact path="/listarSeguradora" element={ <Private> <ListarSeguradora /> </Private> } />
+          <Route exact path="/cadastroSeguradora/:idSeg" element={ <Private> {" "} <CadastroSeguradora />{" "} </Private> } />
+          <Route exact path="/listarUsuario" element={ <Private> <ListarUsuario />{" "} </Private> } />
+          <Route exact path="/marcaVeiculo" element={ <Private> <MarcaVeiculo />{" "} </Private> } />
+          <Route exact path="/sacmontadoras" element={ <Private> <SacMontadoras />{" "} </Private> } />
+          <Route exact path="/regiao" element={ <Private> {" "} <Regiao />{" "} </Private> } />
+          <Route exact path="/justificativaItem" element={ <Private> <JustificativaItem />{" "} </Private> } />
+          <Route exact path="/municipios" element={ <Private> <Municipios />{" "} </Private> } />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
@@ -174,4 +76,3 @@ const AppRotas = () => {
 };
 
 export default AppRotas;
-

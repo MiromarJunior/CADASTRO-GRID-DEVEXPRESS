@@ -51,14 +51,14 @@ router.post("/listarSac", async (req, res) => {
   }
 });
 
-router.post("/cadastrarSac", async (req, res) => {
-  const { token, idSeg, sacmontadoras, acessoGeral } = req.body;
+router.post("/saveSac", async (req, res) => {
+  const { lista, token, idSeg, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
 
-  let nomeCont = sacmontadoras.SCMN_MARCA,
-    emailCont = sacmontadoras.SCMN_EMAIL,
-    nrCelCont = sacmontadoras.SCMN_TELEFONE,
-    idCont = sacmontadoras.ID_SAC_MONTADORAS;
+  let nomeCont = lista.SCMN_MARCA,
+    emailCont = lista.SCMN_EMAIL,
+    nrCelCont = lista.SCMN_TELEFONE,
+    idCont = lista.ID_SAC_MONTADORAS;
 
   if (acessoGeral) {
     try {
@@ -75,9 +75,8 @@ router.post("/cadastrarSac", async (req, res) => {
                  SET  SCMN_MARCA            ='${nomeCont}',
                       SCMN_EMAIL            ='${emailCont}',
                       SCMN_TELEFONE         ='${apenasNr(nrCelCont)}',
-                      ID_SAC_MONTADORAS     ='${idSeg}'
-               WHERE  ID_SAC_MONTADORAS     ='${idCont}'
-
+                      ID_SAC_MONTADORAS     = "01",
+              
                `,
 
               [],
@@ -96,7 +95,7 @@ router.post("/cadastrarSac", async (req, res) => {
               )
               VALUES(
                 SEQ_SECO.NEXTVAL,
-                '${nomeCont}','${emailCont}','${nrCelCont}','${idSeg}'
+                '${nomeCont}','${emailCont}','${nrCelCont}'
               )`,
               [],
               { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true }
