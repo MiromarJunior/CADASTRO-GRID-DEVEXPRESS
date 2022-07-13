@@ -7,7 +7,7 @@ const { default : axios} = require("axios");
 const baseURL = process.env.REACT_APP_API_URL;
 
 const saveJustificativaItem = data=>{
-    return axios.post(`${baseURL}cadastrarSac`,data);
+    return axios.post(`${baseURL}cadastrarJustificativaItem`,data);
 } 
 
 const getJustificativaItem = data=>{
