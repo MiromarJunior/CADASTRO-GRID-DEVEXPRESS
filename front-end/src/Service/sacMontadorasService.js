@@ -7,21 +7,16 @@ const { default: axios } = require("axios");
 const baseURL = process.env.REACT_APP_API_URL;
 
 const saveSac = (data) => {
-  // return axios.post(`${baseURL}cadastrarUsuario`, data);
-  return axios.post(`${baseURL}cadastrarSac`, data);
+  return axios.post(`${baseURL}saveSac`, data);
 };
 
-const getSacMontadoras = (data) => {
+const getSacMontadorasID = (data) => {
   return axios.post(`${baseURL}listarSac`, data);
 };
-const deleteSac = (data) => {
+const deleteSacMontadorasID = (data) => {
   return axios.post(`${baseURL}excluirSac`, data);
 };
 
 const api = axios.create({ baseURL });
 
-module.exports = {
-  saveSac,
-  getSacMontadoras,
-  deleteSac,
-};
+module.exports = { saveSac, getSacMontadorasID, deleteSacMontadorasID };

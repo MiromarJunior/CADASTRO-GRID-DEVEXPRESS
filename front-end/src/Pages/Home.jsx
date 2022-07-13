@@ -344,7 +344,7 @@ const HomePage = () => {
                     {/* <ListItemIcon>
                       <PersonIcon />
                     </ListItemIcon> */}
-                    <ListItemText primary={"📞SAC Montadoras"} />
+                    <ListItemText primary={"📞SAC Montadoras📞"} />
                   </ListItemButton>
                 </ListItem>
               </TreeItem>
