@@ -118,9 +118,16 @@ const SacMontadoras = () => {
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
-
   const navigate = useNavigate();
 
+  const [displayEDIT, setDisplayEDIT] = useState("none");
+  const [displayDEL, setDisplayDEL] = useState("none");
+  const [displayADD, setDisplayADD] = useState("none");
+  const listaSacMont = "LIST_SACMONT";
+  const incluirSacMont = "ADD_SACMONT";
+  const excluirSacMont = "DEL_SACMONT";
+  const editarSacMont = "EDIT_SACMONT";
+  
   useEffect(() => {
     const acessoMenuUser = async () => {
       let dados = { token, usuario: nomeUser() };
@@ -137,8 +144,20 @@ const SacMontadoras = () => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
 
+                setDisplayADD("");   
+                setDisplayDEL("");  
+                setDisplayEDIT("");
+
                 listaSacMontadorasID();
 
+              } else if(incluirSacMont === ac){
+                setDisplayADD("");
+              }else if(listaSacMont === ac){
+                listaSacMontadorasID();
+              }else if(excluirSacMont === ac){
+                setDisplayDEL("");
+              }else if(editarSacMont === ac){
+                setDisplayEDIT("");
               }
             });
           }
