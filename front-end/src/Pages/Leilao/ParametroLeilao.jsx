@@ -77,6 +77,7 @@ const ParametroLeilao = () => {
             percAltLeilao, encerraAnt, tempoAlt, 
             acessoGeral            
         }
+
         saveParametroLeilao(dados)
         .then((res)=>{
             if (res.data === "erroLogin") {
