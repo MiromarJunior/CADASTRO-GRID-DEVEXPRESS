@@ -40,6 +40,8 @@ const ParametroLeilao = () => {
         }
         console.log(dados);
 
+        console.log('Iury', dados);
+
     }
 
     
