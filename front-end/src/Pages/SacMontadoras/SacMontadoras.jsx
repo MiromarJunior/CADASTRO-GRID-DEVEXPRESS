@@ -33,7 +33,7 @@ import Select from "@mui/material/Select";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 
-import {saveSac, getSacMontadorasID, deleteSacMontadorasID,} from "../../Service/sacMontadorasService";
+import { saveSac, getSacMontadorasID, deleteSacMontadorasID, } from "../../Service/sacMontadorasService";
 
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 // import { validaDescricao } from "../../Service/utilServiceFrontEnd";
@@ -127,7 +127,7 @@ const SacMontadoras = () => {
   const incluirSacMont = "ADD_SACMONT";
   const excluirSacMont = "DEL_SACMONT";
   const editarSacMont = "EDIT_SACMONT";
-  
+
   useEffect(() => {
     const acessoMenuUser = async () => {
       let dados = { token, usuario: nomeUser() };
@@ -144,19 +144,19 @@ const SacMontadoras = () => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
 
-                setDisplayADD("");   
-                setDisplayDEL("");  
+                setDisplayADD("");
+                setDisplayDEL("");
                 setDisplayEDIT("");
 
                 listaSacMontadorasID();
 
-              } else if(incluirSacMont === ac){
+              } else if (incluirSacMont === ac) {
                 setDisplayADD("");
-              }else if(listaSacMont === ac){
+              } else if (listaSacMont === ac) {
                 listaSacMontadorasID();
-              }else if(excluirSacMont === ac){
+              } else if (excluirSacMont === ac) {
                 setDisplayDEL("");
-              }else if(editarSacMont === ac){
+              } else if (editarSacMont === ac) {
                 setDisplayEDIT("");
               }
             });
@@ -192,7 +192,7 @@ const SacMontadoras = () => {
         } else if (res.data === "erroSalvar") {
           alert("Erro a tentar salvar ou alterar!!!");
 
-        }else if (res.data === "sucesso"){
+        } else if (res.data === "sucesso") {
           alert("Cadastrado com sucesso !")
 
         }
@@ -207,7 +207,8 @@ const SacMontadoras = () => {
 
 
   const deletarSacMontadoras = (idCont) => {
-    let dados = {token,acessoGeral, idCont: parseInt(idCont),
+    let dados = {
+      token, acessoGeral, idCont: parseInt(idCont),
 
     };
     deleteSacMontadorasID(dados)
@@ -286,11 +287,11 @@ const SacMontadoras = () => {
         Object.keys(row).length
           ? row
           : {
-              ID_SAC_MONTADORAS: null,
-              SCMN_MARCA: "",
-              SCMN_TELEFONE: "",
-              SCMN_EMAIL: "",
-            }
+            ID_SAC_MONTADORAS: null,
+            SCMN_MARCA: "",
+            SCMN_TELEFONE: "",
+            SCMN_EMAIL: "",
+          }
       )
     );
   const commitChanges = ({ added, changed, deleted }) => {
@@ -309,8 +310,9 @@ const SacMontadoras = () => {
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_SAC_MONTADORAS)) {
           cadastraSacMontadoras(changedRows[i]);
-         
-        }}
+
+        }
+      }
 
     }
     if (changed) {
@@ -320,15 +322,15 @@ const SacMontadoras = () => {
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
 
-          
-           if (changedRows[i].SCMN_MARCA === "") {
+
+          if (changedRows[i].SCMN_MARCA === "") {
 
             window.alert("Favor Preencher campo Marca!");
           } else {
             cadastraSacMontadoras(changedRows[i]);
           }
 
-         }
+        }
 
       }
     }
@@ -346,7 +348,7 @@ const SacMontadoras = () => {
   return (
     <div className="container-fluid">
       <h3 id="titulos">SAC Montadoras: </h3>
-      {}
+      { }
       <div className="container">
         <Paper>
           <Grid rows={rows} columns={columns}>
@@ -364,7 +366,7 @@ const SacMontadoras = () => {
               addedRows={addedRows}
               onAddedRowsChange={changeAddedRows}
               onCommitChanges={commitChanges}
-              // defaultEditingRowIds={}
+            // defaultEditingRowIds={}
             />
 
             <Table />

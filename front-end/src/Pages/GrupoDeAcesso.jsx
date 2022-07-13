@@ -133,6 +133,7 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoGeral] = useState(["ACESSOGERAL"]);
   const [botaoAcessoRegiao] = useState(["ACESSOREGIAO"]);
   const [botaoAcessoJust] = useState(["ACESSOJUSTIFICATIVA"]);
+  const [botaoAcessoSac] = useState(["ACESSOSAC"]);
   
   
   const [pageSizes] = useState([5, 10, 15, 0]);
@@ -311,6 +312,10 @@ const GrupoDeAcesso = () => {
       name: "ACESSOJUSTIFICATIVA", title: "ACESSO JUST. ITEM",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOSAC", title: "ACESSO SAC ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
 
 
 
@@ -331,6 +336,7 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOSGRA', width: 150 },
     { columnName: 'ACESSOGERAL', width: 150 },
     { columnName: 'ACESSOREGIAO', width: 150 },
+    { columnName: 'ACESSOSAC', width: 150 },
     { columnName: 'ACESSOJUSTIFICATIVA', width: 180 },
 
   ])
@@ -489,6 +495,21 @@ const GrupoDeAcesso = () => {
 
     />
   )
+  const BotaoAcessoSac = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/SACMONT`)}>SAC MONTADORA</button>
+
+    </div>
+
+  )
+  const BotaoAcessoSacProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoSac}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
 
 
   
@@ -519,6 +540,9 @@ const GrupoDeAcesso = () => {
             />
             <BotaoAcessoJustProv
               for={botaoAcessoJust}
+            />
+            <BotaoAcessoSacProv
+              for={botaoAcessoSac}
             />
 
 

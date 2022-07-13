@@ -110,12 +110,7 @@ const HomePage = () => {
                 if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                   setDisplayAcessoGeral("");
                   setDisplayAcessoSGRA("");
-                } else if (
-                  listaSgra === ac ||
-                  incluirSgra === ac ||
-                  excluirSgra === ac ||
-                  editarSgra === ac
-                ) {
+                } else if ( listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
                 }
               });
