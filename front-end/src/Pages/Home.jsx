@@ -328,15 +328,7 @@ const HomePage = () => {
                 </ListItem>
 
               </TreeItem>
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
-                <ListItemButton onClick={() => marcaVeiculo()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Marca Veículo"} />
-                </ListItemButton>
-
-              </TreeItem>
+             
 
               <TreeItem nodeId="SAC" label="SAC">
                 <ListItem disablePadding>

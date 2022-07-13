@@ -32,12 +32,13 @@ const ParametroLeilao = () => {
 
     const cadastrarParametros = ()=>{
         const dados = {
-            token,pontuacaoInicial, horasL, horasExtend, horaIniL, horaFimL, tempoAbertAft,
+            token,pontuacaoInicial, horasL, horasExtend : horasExtend.replace(":","") , horaIniL, horaFimL, tempoAbertAft,
             qtdHorasValSef, horarioAtend, feriado, qtdVencedores, criticaPed, limiteApr,
             percLimite, limiteCot, qtdHorasBO, prazoBO, horasTotalCot, horasTotalLei, tempoRecalculo,
             percAltLeilao, encerraAnt, tempoAlt, 
             acessoGeral            
         }
+        console.log(dados);
 
     }
 
@@ -133,9 +134,10 @@ const ParametroLeilao = () => {
 
 
 
-<button style={{marginBottom : "1em"}} className="btn btn-outline-primary margemRight">SALVAR</button>
-<button style={{marginBottom : "1em"}} className="btn btn-outline-danger">SAIR</button>
             </Box>
+            
+<button onClick={()=>cadastrarParametros()} style={{marginBottom : "1em"}} className="btn btn-outline-primary margemRight">SALVAR</button>
+<button style={{marginBottom : "1em"}} className="btn btn-outline-danger">SAIR</button>
            
 
 
