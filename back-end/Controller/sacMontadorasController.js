@@ -157,7 +157,7 @@ router.post("/excluirSac", async (req, res) => {
 
           res.send("sucesso").status(200).end();
       } catch (error) {
-          console.error('Erro ao Ecluir Justificativa do Item', error);
+          console.error('Erro ao Ecluir Cadastro', error);
           res.send("erroSalvar").status(500);
 
       } finally {
