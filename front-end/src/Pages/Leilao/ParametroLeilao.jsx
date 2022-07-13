@@ -1,6 +1,8 @@
 import { Box, Checkbox, FormControlLabel, FormGroup, TextField } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Autenticação/validacao";
+import { saveParametroLeilao } from "../../Service/parametroLeilaoService";
+import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 const ParametroLeilao = () => {
     const token = localStorage.getItem("token");
@@ -14,7 +16,7 @@ const ParametroLeilao = () => {
     const [tempoAbertAft, setTempoAbertAft] = useState("");
     const [qtdHorasValSef, setQtdHorasValSef] = useState("");
     const [horarioAtend, setHorarioAtend] = useState("");
-    const [feriado, setFeriado] = useState(false);
+    const [feriado, setFeriado] = useState("");
     const [qtdVencedores, setQtdVencedores] = useState("");
     const [criticaPed, setCriticaPed] = useState("");
     const [limiteApr, setLimiteApr] = useState("");
@@ -28,21 +30,81 @@ const ParametroLeilao = () => {
     const [encerraAnt, setEncerraAnt] = useState("");
     const [percAltLeilao, setPercAltLeilao] = useState("");
     const [tempoAlt, setTempoAlt] = useState("");
-    const [acessoGeral, setAcessogeral] = useState(true);
+    const [acessoGeral, setAcessogeral] = useState();
+
+    useEffect(() => {
+        const acessoMenuUser = async () => {
+          let dados = { token, usuario: nomeUser() };
+          await getAcessoUserMenu(dados)
+            .then((res) => {
+              if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              }
+              else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");    
+              } else {
+                (res.data).forEach((ac) => {    
+                  if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                    setAcessogeral(true);
+                                    
+                  }
+                })
+              }
+    
+            })
+            .catch((err) => {
+              console.error(err);
+              window.alert("Erro ao buscar Usuário - Parametro leilão !!")
+            })
+        }
+    
+        acessoMenuUser();
+    
+        //eslint-disable-next-line
+      }, [logout, token, nomeUser]);
+
+
 
     const cadastrarParametros = ()=>{
         const dados = {
-            token,pontuacaoInicial, horasL, horasExtend : horasExtend.replace(":","") , horaIniL, horaFimL, tempoAbertAft,
-            qtdHorasValSef, horarioAtend, feriado, qtdVencedores, criticaPed, limiteApr,
-            percLimite, limiteCot, qtdHorasBO, prazoBO, horasTotalCot, horasTotalLei, tempoRecalculo,
+            token,pontuacaoInicial,horasL : horasL.replace(":","") , horasExtend : horasExtend.replace(":","") , 
+            horaIniL : horaIniL.replace(":","") , horaFimL : horaFimL.replace(":","") , tempoAbertAft,
+            qtdHorasValSef, horarioAtend  , feriado : (feriado ? feriado : "Nao"), qtdVencedores, criticaPed, limiteApr,
+            percLimite, limiteCot, qtdHorasBO, prazoBO, horasTotalCot : horasTotalCot.replace(":","") , 
+            horasTotalLei : horasTotalLei.replace(":","") , tempoRecalculo,
             percAltLeilao, encerraAnt, tempoAlt, 
             acessoGeral            
         }
-        console.log(dados);
+        saveParametroLeilao(dados)
+        .then((res)=>{
+            if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              }
+              else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");    
+              } else if (res.data === "sucesso") {
+                window.alert("Parametro cadastrado com sucesso !!");      
+              }
+              else if (res.data === "sucessoU") {
+                window.alert("Parametro atualizado excluído com sucesso !!");       
+              }   
+              else {
+                window.alert(" erro ao tentar cadastrar Parametros");
+              }
+        })
+        .catch((erro)=>{
+            console.error("Erro paramentro leilão",erro);
+            window.alert("Erro ao tentar Cadastrar Paraemtro de leilão");
+        })
+       
 
     }
 
-    
+ 
 
 
 
@@ -77,14 +139,12 @@ const ParametroLeilao = () => {
                 <hr />
 
                 <label id="titulosLabel">Horário de Atendimento para tela fale Conosco</label>
-                <TextField required label="Horário" error={horarioAtend.length > 0 ? false : true} disabled={!acessoGeral} id="" value={horarioAtend ? horarioAtend : "00:00"} onChange={(e) => setHorarioAtend(e.target.value)} type={"time"} />
-                <button style={{ marginTop: "1.2em", border: "0", backgroundColor: "white" }}> até as </button>
-                <TextField required label="Horário" error={horarioAtend.length > 0 ? false : true} disabled={!acessoGeral} id="" value={horarioAtend ? horarioAtend : "00:00"} onChange={(e) => setHorarioAtend(e.target.value)} type={"time"} />
-                <hr />
+                <TextField required label="Horário" error={horarioAtend.length > 0 ? false : true} disabled={!acessoGeral} id="" value={horarioAtend ? horarioAtend : "00:00 até as 00:00"} onChange={(e) => setHorarioAtend(e.target.value)} type={"text"} />
+                    <hr />
 
                 <label id="titulosLabel">Feriado</label>
                 <FormGroup>
-                   <FormControlLabel onChange={(e) => setFeriado((feriado ? false : true))} control={<Checkbox />} label="Facultativo/Feriado" checked={feriado} />
+                   <FormControlLabel onChange={(e) => setFeriado((feriado === "Sim" ? "Nao" : "Sim"))} control={<Checkbox />} value={feriado === "Sim" ? "Sim" : "Nao"} label="Facultativo/Feriado" checked={feriado === "Sim" ? true : false} />
                 </FormGroup>
                 <hr />
 

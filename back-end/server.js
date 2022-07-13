@@ -8,22 +8,9 @@ require("dotenv").config();
 const port = 5000;
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: [
-      process.env.URL_FRONT_END,
-      process.env.URL_FRONT_END4,
-      process.env.URL_FRONT_END2,
-      process.env.URL_FRONT_END3,
-    ],
-  })
-);
+app.use( cors({origin: [process.env.URL_FRONT_END, process.env.URL_FRONT_END4, process.env.URL_FRONT_END2, process.env.URL_FRONT_END3] }));
 
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+app.use(  express.urlencoded({extended: true }));
 
 app.listen(port, () => {
   let usuarioRotas = require("./Controller/usuarioController");
@@ -55,11 +42,12 @@ app.listen(port, () => {
 
   let regiaoRotas = require('./Controller/regiaoController');
   app.use('/', regiaoRotas);
-
-  console.log("Servidor online na porta  : ", port);
   
   let sacMontadoraRotas = require("./Controller/sacMontadorasController");
   app.use("/", sacMontadoraRotas);
+
+  let parametrosLeilao = require("./Controller/parametrosLeilaoController");
+  app.use("/", parametrosLeilao);
 
   console.log("Servidor online na porta  : ", port);
 });
