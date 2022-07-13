@@ -38,9 +38,8 @@ const ParametroLeilao = () => {
             percAltLeilao, encerraAnt, tempoAlt, 
             acessoGeral            
         }
+        
         console.log(dados);
-
-        console.log('Iury', dados);
 
     }
 
