@@ -38,68 +38,6 @@ import { saveSac, getSacMontadorasID, deleteSacMontadorasID, } from "../../Servi
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 // import { validaDescricao } from "../../Service/utilServiceFrontEnd";
 
-const DeleteButton = ({ onExecute }) => (
-  <IconButton
-    onClick={() => {
-      // eslint-disable-next-line
-      if (window.confirm("Deseja excluir este Cadastro ?")) {
-        onExecute();
-      }
-    }}
-    title="Excluir Cadastro SAC"
-    size="large"
-  >
-    <DeleteForeverOutlinedIcon style={{ color: "red" }} />
-  </IconButton>
-);
-
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: "center" }}>
-    <IconButton
-      size="large"
-      color="primary"
-      onClick={onExecute}
-      title="Novo Cadastro SAC"
-    >
-      <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
-    </IconButton>
-  </div>
-);
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Cadastro SAC" size="large">
-    <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Salvar alterações" size="large">
-    <SaveIcon />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton
-    color="secondary"
-    onClick={onExecute}
-    title="Cancelar alterações"
-    size="large"
-  >
-    <CancelIcon />
-  </IconButton>
-);
-const commandComponents = {
-  add: AddButton,
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton,
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return <CommandButton onExecute={onExecute} />;
-};
 
 const TableComponentTitle = ({ style, ...restProps }) => (
   <TableHeaderRow.Content
@@ -119,7 +57,7 @@ const SacMontadoras = () => {
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
   const navigate = useNavigate();
-
+  const [acessoCad, setAcessoCad] = useState(false);
   const [displayEDIT, setDisplayEDIT] = useState("none");
   const [displayDEL, setDisplayDEL] = useState("none");
   const [displayADD, setDisplayADD] = useState("none");
@@ -152,10 +90,12 @@ const SacMontadoras = () => {
 
               } else if (incluirSacMont === ac) {
                 setDisplayADD("");
+                setAcessoCad(true);
               } else if (listaSacMont === ac) {
                 listaSacMontadorasID();
               } else if (excluirSacMont === ac) {
                 setDisplayDEL("");
+                setAcessoCad(true);
               } else if (editarSacMont === ac) {
                 setDisplayEDIT("");
               }
@@ -176,8 +116,8 @@ const SacMontadoras = () => {
 
 
   const cadastraSacMontadoras = (lista) => {
-    let dados = { lista, token, acessoGeral };
-    console.log(dados);
+    let dados = { lista, token, acessoGeral: acessoCad };
+    if (displayADD ===""){
 
     saveSac(dados)
       .then((res) => {
@@ -203,14 +143,16 @@ const SacMontadoras = () => {
         console.error("Erro ao Cadastrar Dados SAC", err);
         window.alert("Erro ao cadastrar !!");
       });
+    }
   };
 
 
   const deletarSacMontadoras = (idCont) => {
     let dados = {
-      token, acessoGeral, idCont: parseInt(idCont),
+      token, acessoGeral : acessoCad, idCont: parseInt(idCont),
 
     };
+    if (displayDEL=== ""){
     deleteSacMontadorasID(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -219,6 +161,7 @@ const SacMontadoras = () => {
           window.location.reload();
         } else if (res.data === "semAcesso") {
           alert("Usuário sem permissão !!!");
+          listaSacMontadorasID();
         } else if (res.data === "campoNulo") {
           alert("Preencha todos os Campos obrigatorios!!!");
         } else if (res.data === "erroSalvar") {
@@ -234,6 +177,9 @@ const SacMontadoras = () => {
         window.alert("Erro ao Excluir !!!");
 
       });
+    } else {listaSacMontadorasID()
+           alert("Usuário sem permissão !!!");
+    }
   };
 
   const listaSacMontadorasID = async () => {
@@ -276,7 +222,70 @@ const SacMontadoras = () => {
       required: true,
     },
   ];
-
+  const DeleteButton = ({ onExecute }) => (
+    <IconButton style={{display: displayDEL}}
+      onClick={() => {
+        // eslint-disable-next-line
+        if (window.confirm("Deseja excluir este Cadastro ?")) {
+          onExecute();
+        }
+      }}
+      title="Excluir Cadastro SAC"
+      size="large"
+    >
+      <DeleteForeverOutlinedIcon style={{ color: "red" }} />
+    </IconButton>
+  );
+  
+  const AddButton = ({ onExecute }) => (
+    <div style={{ textAlign: "center" }}>
+      <IconButton style={{display: displayADD}}
+        size="large"
+        color="primary"
+        onClick={onExecute}
+        title="Novo Cadastro SAC"
+      >
+        <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
+      </IconButton>
+    </div>
+  );
+  
+  const EditButton = ({ onExecute }) => (
+    <IconButton style={{display: displayEDIT}}
+       onClick={onExecute} title="Alterar Cadastro SAC" size="large">
+      <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
+    </IconButton>
+  );
+  
+  const CommitButton = ({ onExecute }) => (
+    <IconButton onClick={onExecute} title="Salvar alterações" size="large">
+      <SaveIcon />
+    </IconButton>
+  );
+  
+  const CancelButton = ({ onExecute }) => (
+    <IconButton
+      color="secondary"
+      onClick={onExecute}
+      title="Cancelar alterações"
+      size="large"
+    >
+      <CancelIcon />
+    </IconButton>
+  );
+  const commandComponents = {
+    add: AddButton,
+    edit: EditButton,
+    delete: DeleteButton,
+    commit: CommitButton,
+    cancel: CancelButton,
+  };
+  
+  const Command = ({ id, onExecute }) => {
+    const CommandButton = commandComponents[id];
+    return <CommandButton onExecute={onExecute} />;
+  };
+  
   const [rowChanges, setRowChanges] = useState({});
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
@@ -346,7 +355,7 @@ const SacMontadoras = () => {
     setRows(changedRows);
   };
   return (
-    <div className="container-fluid">
+    <div className="container-fluid" >
       <h3 id="titulos">SAC Montadoras: </h3>
       { }
       <div className="container">
