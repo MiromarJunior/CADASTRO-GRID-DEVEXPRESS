@@ -455,8 +455,5 @@ const HomePage = () => {
   );
 };
 
-//thiago 
-
-// iury
 
 export default HomePage;
