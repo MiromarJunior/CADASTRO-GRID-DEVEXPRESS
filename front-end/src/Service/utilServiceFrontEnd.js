@@ -346,3 +346,33 @@ export const criandoU = (n) => {
 
   return res;
 };
+
+export const validaNull = (p1,p2) =>{
+  if (p1.length > 0){
+    return true;
+  } else {
+    window.alert(p2);
+    return false;
+  }
+}
+
+export const validaCampo = (valor,msg1,tam,msg2) =>{
+  //função criada para validar null e tamanho campo
+  //valor = valor campo  
+  //msg1  = msg para null 
+  //tam   = tamanho do campo
+  //msg2  = msg para o tamanho quantidade
+  
+  if (valor.length > 0 ){
+    if (valor.length > tam){
+      window.alert(msg2);
+      return false;
+    }
+    else{
+      return true;
+      }  
+  } else {
+    window.alert(msg1);
+    return false;
+  }
+}
