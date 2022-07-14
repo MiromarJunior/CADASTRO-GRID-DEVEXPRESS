@@ -61,7 +61,7 @@ const AppRotas = () => {
           <Route exact path="/justificativaItem" element={<Private><JustificativaItem /> </Private>} />
           <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
           <Route exact path="/listarFornecedor" element={ <Private><ListarFornecedor /></Private> } />
-          <Route exact path="/cadastroFornecedor/:idFor" element={<Private> <CadastroFornecedor /> </Private>} />
+          <Route exact path="/cadastroFornecedor/:idFornecedor" element={<Private> <CadastroFornecedor /> </Private>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
