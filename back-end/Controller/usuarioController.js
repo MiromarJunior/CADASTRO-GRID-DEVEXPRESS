@@ -762,11 +762,13 @@ router.post("/listarAcesso", async (req, res) => {
   let grupoSql = "";
   let geralSql = "";
  
-  if(grupoMenu === "USUARIO" || grupoMenu ==="SEGURADORA"){     
+  if(grupoMenu === "USUARIO" || grupoMenu ==="SEGURADORA" || grupoMenu === "REGIAO"
+  || grupoMenu === "JUSTIFICATIVA" || grupoMenu === "SACMONT"){     
     grupoSql = `AND ACES.GRUPO_MENU = '${grupoMenu}'`;
   }else if(grupoMenu === "GERAL"){  
     geralSql = ` AND (ACGR.GRAC_CODIGO) > 0`
   }
+
 
 
   jwt.verify(token, SECRET, async (err, decoded) => {

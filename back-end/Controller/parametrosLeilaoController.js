@@ -15,22 +15,20 @@ app.use(express.json());
 //await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
 
-router.post("/cadastrarSeguradora", async(req, res)=> {
-  let {codLegado, cnpjSeguradora  , tipoPessoa,optSimples,statusSeg,
-    razaoSocial, nomeFantasia, ie, im,
-    logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
-    nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
-    remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth ,smtpSistSecure,
-    soapRetSol, soapRetNotas,idSeg, token, acessoGeral} =req.body;
+router.post("/cadastrarParametroLeilao", async(req, res)=> {
+  let {
+    token,pontuacaoInicial,horasL  , horasExtend  , 
+    horaIniL  , horaFimL  , tempoAbertAft,
+    qtdHorasValSef, horarioAtend  , feriado, qtdVencedores, criticaPed, limiteApr,
+    percLimite, limiteCot, qtdHorasBO, prazoBO, horasTotalCot  , 
+    horasTotalLei , tempoRecalculo,
+    percAltLeilao, encerraAnt, tempoAlt,idPar, 
+    acessoGeral  
+} =req.body;
 let insertSql;
-let selectSql;
 let updateSql;
-let idEstado;
-
-const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
     let connection = await oracledb.getConnection(dbConfig);  
-
     if(acessoGeral){    
 
     jwt.verify(token, SECRET, async (err, decoded) => {
@@ -41,140 +39,96 @@ const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
       } else{  
         insertSql = (
-          ` INSERT INTO SEGURADORA(ID_SEGURADORA,
-            SGRA_CNPJ,
-            SGRA_ID_LEGADO,
-            SGRA_NATUREZA_JURIDICA,
-            SGRA_NOME_FANTASIA,
-            SGRA_RAZAO_SOCIAL,
-            SGRA_OPTANTE_SIMPLES_NACIONAL,
-            SGRA_STATUS,
-            SGRA_INSCRICAO_ESTADUAL,
-            SGRA_INSCRICAO_MUNICIPAL,
-            SGRA_CEP,
-            SGRA_CIDADE,
-            ID_UNIDADE_FEDERATIVA,            
-            SGRA_NUMERO,
-            SGRA_COMPLEMENTO,
-            SGRA_BAIRRO,
-            SGRA_SMTP,
-            SGRA_PORTA,
-            SGRA_USUARIO_EMAIL,
-            SGRA_SENHA,
-            SGRA_REMETENTE,
-            SGRA_NOME_REMETENTE,
-            SGRA_SMTP_AUTH,
-            SGRA_SMTP_SECURE,
-            SGRA_RETORNO_SOLICITACAO,
-            SGRA_RETORNO_NOTAS,
-            SGRA_RUA)
-            VALUES(SEQ_SEGU.NEXTVAL, : CNPJ, :CODLEG, :TIPOP, :NOMEFAN, :RAZAOSOC, :OPTSIM,
-                :STATUSSEG, :IE, :IM, :CEP, :NOMECID, :UF, :NR, :COMPLE, :BAIRRO, :SMTPSIS,
-                :PORTASIST, :EMAILSIS, :SENHAEMAILSIS, :REMETE, :NOMEREME, :SMTPAUTH,
-                :SMTPSECURE, :SOAPSOL, :SOAPNOT, :LOGR
+          ` 
+          INSERT INTO PARAMETROS_LEILAO
+  (ID_PARAMETROS_LEILAO,
+   PALE_RANKING_PONTUACAO_INICIAL,
+   PALE_HORAS,
+   PALE_HORAS_EXTENDIDAS,
+   PALE_HORARIO_INICIO,
+   PALE_HORARIO_FIM,
+   PALE_TEMPO_ABERTURA_AFTER,
+   PALE_QTDE_HORAS_VALID_SEFAZ,
+   PALE_HORARIO_ATEND_FALE_CONOSC,
+   PALE_FACULTATIVO_FERIADO,
+   PALE_QTDE_VENCEDORES_GENUINOS,
+   PALE_PORC_AJ_PRC_CRIT_PEDIDO,
+   PALE_PORC_AJ_PRC_LIMITE_APROV,
+   PALE_PORC_AJ_PRC_PERC_LIMITE,
+   PALE_PORC_AJ_PRC_LIMITE_COTA,
+   PALE_PARAM_BO_QTDE_HORAS,
+   PALE_PARAM_BO_QTDE_DIAS,
+   PALE_ONLINE_HORAS_COTACAO,
+   PALE_ONLINE_HORAS_LEILAO,
+   PALE_ONLINE_TEMPO_RECALCULO,
+   PALE_ONLINE_TEMPO_ENCER_ANTEC,
+   PALE_ONLINE_PERC_ALT_LEILAO,
+   PALE_ONLINE_TEMPO_ALT)
+VALUES
+  (SEQ_PALE.NEXTVAL,'${pontuacaoInicial}','${horasL}', TO_CHAR('${horasExtend}', '0000'), '${horaIniL}', '${horaFimL}','${tempoAbertAft}',
+  '${qtdHorasValSef}', '${horarioAtend}', '${feriado}', '${qtdVencedores}', '${criticaPed}', '${limiteApr}','${percLimite}', '${limiteCot}',
+  '${qtdHorasBO}', '${prazoBO}', '${horasTotalCot}', '${horasTotalLei}', '${tempoRecalculo}', '${encerraAnt}', '${percAltLeilao}',
+  '${tempoAlt}' )          
             
-            
-            )
           `
         )
 
         updateSql = (
-          ` UPDATE SEGURADORA
-          SET SGRA_ID_LEGADO = :CODL,       
-          SGRA_NATUREZA_JURIDICA = :NATJ,
-          SGRA_NOME_FANTASIA = :NMFANT,
-          SGRA_RAZAO_SOCIAL = :RZSOC,
-          SGRA_OPTANTE_SIMPLES_NACIONAL = :OPTS,
-          SGRA_STATUS = :STSEG,
-          SGRA_INSCRICAO_ESTADUAL = :INE,
-          SGRA_INSCRICAO_MUNICIPAL = :INM,
-          SGRA_CEP =:CP,
-          SGRA_CIDADE = :NMCID,
-          ID_UNIDADE_FEDERATIVA = :UNIF,            
-          SGRA_NUMERO = :LGNR,
-          SGRA_COMPLEMENTO = :COMS,
-          SGRA_BAIRRO = :BRR,
-          SGRA_SMTP = :SS,
-          SGRA_PORTA = :SST,
-          SGRA_USUARIO_EMAIL = :USMAIL,
-          SGRA_SENHA = :SNEM,
-          SGRA_REMETENTE = :REM,
-          SGRA_NOME_REMETENTE = :NMREM,
-          SGRA_SMTP_AUTH = :SSMM,
-          SGRA_SMTP_SECURE = :SSSC,
-          SGRA_RETORNO_SOLICITACAO = :RESO,
-          SGRA_RETORNO_NOTAS = :RENS,
-          SGRA_RUA = :RLO
-          WHERE ID_SEGURADORA = :SEGI
+          ` UPDATE PARAMETROS_LEILAO
+          SET PALE_RANKING_PONTUACAO_INICIAL = '${pontuacaoInicial}',
+          PALE_HORAS = '${horasL}',
+          PALE_HORAS_EXTENDIDAS = '${horasExtend}',
+          PALE_HORARIO_INICIO = ${horaIniL}',
+          PALE_HORARIO_FIM = '${horaFimL}',
+          PALE_TEMPO_ABERTURA_AFTER = '${tempoAbertAft}',
+          PALE_QTDE_HORAS_VALID_SEFAZ = '${qtdHorasValSef}', 
+          PALE_HORARIO_ATEND_FALE_CONOSC = '${horarioAtend}',
+          PALE_FACULTATIVO_FERIADO '${feriado}',
+          PALE_QTDE_VENCEDORES_GENUINOS = '${qtdVencedores}', 
+          PALE_PORC_AJ_PRC_CRIT_PEDIDO = '${criticaPed}', 
+          PALE_PORC_AJ_PRC_LIMITE_APROV = '${limiteApr}',
+          PALE_PORC_AJ_PRC_PERC_LIMITE = '${percLimite}',
+          PALE_PORC_AJ_PRC_LIMITE_COTA = '${limiteCot}',
+          PALE_PARAM_BO_QTDE_HORAS ='${qtdHorasBO}',
+          PALE_PARAM_BO_QTDE_DIAS = '${prazoBO}',
+          PALE_ONLINE_HORAS_COTACAO ='${horasTotalCot}',
+          PALE_ONLINE_HORAS_LEILAO = '${horasTotalLei}',
+          PALE_ONLINE_TEMPO_RECALCULO = '${tempoRecalculo}',
+          PALE_ONLINE_TEMPO_ENCER_ANTEC = '${encerraAnt}',
+          PALE_ONLINE_PERC_ALT_LEILAO = '${percAltLeilao}',
+          PALE_ONLINE_TEMPO_ALT = '${tempoAlt}' 
+          WHERE ID_PARAMETROS_LEILAO = ${idPar}
         `
-
-        )
-
-        selectSql =(
-          `SELECT SEG.ID_SEGURADORA FROM SEGURADORA SEG
-          WHERE SEG.SGRA_CNPJ = :CNPJsEG         
-        `
-        )                       
+        )                         
                    
       }
   });  
 
   try {  
-    let estado = await connection.execute (  
-      `
-      SELECT ID_UNIDADE_FEDERATIVA FROM UNIDADE_FEDERATIVA
-      WHERE UNFE_SIGLA = :ESF
-      `
-      ,
-      [estadoUF],
-      { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
-        autoCommit :  true
-    }); 
-     idEstado = (estado.rows).toString();  
+   
 
-    if(idSeg > 0){   
+    if(idPar > 0){   
       await connection.execute (     
        updateSql
-        ,
-        [codLegado, tipoPessoa, nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
-          smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
-          logradouro,idSeg],
+        ,[],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
           autoCommit :  true
       });
+      res.send("sucessoU").status(200).end(); 
       
     }else{
       
       await connection.execute (     
         insertSql
-        ,
-        [cnpjSeguradora,codLegado, tipoPessoa,
-          nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
-          smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
-          logradouro  ],
+        ,[],
         { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
           autoCommit :  true
       });
-
-    }
-  
-  
-
-  let result =  await connection.execute( selectSql
-    ,
-     [cnpjSeguradora ],
-     { outFormat  :  oracledb.OUT_FORMAT_OBJECT
-      
-   });   
-   res.send(result.rows).status(200).end(); 
-          
+      res.send("sucesso").status(200).end(); 
+    }          
   } catch (error) {
     
-      console.error("erro aqui",error);
+      console.error("erro ao cadastrar parametro de Leilão",error);
       res.send("erroSalvar").status(500);
       
   }finally {
@@ -195,7 +149,7 @@ const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
 });
 
-router.post("/listarSeguradora", async(req, res)=> {
+router.post("/a", async(req, res)=> {
   const {token,idSeg,   
 } =req.body;
 
@@ -254,7 +208,7 @@ router.post("/listarSeguradora", async(req, res)=> {
 
 });
 
-router.post("/excluirSeguradora", async(req, res)=> {
+router.post("/a", async(req, res)=> {
   const {token,idSeg, acessoGeral, acessoDEL  
 } =req.body;
 
@@ -342,7 +296,7 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
 
 });
 
-router.post("/cadastrarContatoSeguradora", async(req, res)=> {
+router.post("/a", async(req, res)=> {
     const {
       token,idSeg,contatos, acessoGeral   } =req.body; 
       let connection = await oracledb.getConnection(dbConfig);
@@ -454,7 +408,7 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
   
   }); 
 
-router.post("/listarContatoSeguradora", async(req, res)=> {
+router.post("/a", async(req, res)=> {
     const {token,idSeg  
   } =req.body;  
 
@@ -510,7 +464,7 @@ router.post("/listarContatoSeguradora", async(req, res)=> {
   
   });
   
-router.post("/excluirContatoSeguradora", async(req, res)=> {
+router.post("/a", async(req, res)=> {
     const {token,  idCont, acessoGeral
   } =req.body;
 

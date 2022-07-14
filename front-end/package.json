@@ -1,62 +1,62 @@
 {
-  "name": "front-end",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@devexpress/dx-react-core": "^3.0.3",
-    "@devexpress/dx-react-grid": "^3.0.3",
-    "@devexpress/dx-react-grid-bootstrap4": "^3.0.3",
-    "@devexpress/dx-react-grid-material-ui": "^3.0.3",
-    "@emotion/react": "^11.9.3",
-    "@emotion/styled": "^11.9.3",
-    "@fortawesome/fontawesome-svg-core": "^6.1.1",
-    "@fortawesome/free-regular-svg-icons": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
-    "@fortawesome/react-fontawesome": "^0.1.18",
-    "@mui/lab": "^5.0.0-alpha.87",
-    "@mui/material": "^5.8.5",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.2.0",
-    "@testing-library/user-event": "^13.5.0",
-    "ag-grid-community": "^27.3.0",
-    "ag-grid-enterprise": "^27.3.0",
-    "ag-grid-react": "^27.3.0",
-    "axios": "^0.27.2",
-    "bootstrap": "^5.2.0-beta1",
-    "cpf-cnpj-validator": "^1.0.3",
-    "react": "^18.2.0",
-    "react-bootstrap": "^2.4.0",
-    "react-bootstrap-sidebar-menu": "^2.0.1",
-    "react-burger-menu": "^3.0.8",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
-    "reactstrap": "^9.1.1",
-    "telefone": "^1.2.2",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "name": "front-end",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+      "@devexpress/dx-react-core": "^3.0.3",
+      "@devexpress/dx-react-grid": "^3.0.3",
+      "@devexpress/dx-react-grid-bootstrap4": "^3.0.3",
+      "@devexpress/dx-react-grid-material-ui": "^3.0.3",
+      "@emotion/react": "^11.9.3",
+      "@emotion/styled": "^11.9.3",
+      "@fortawesome/fontawesome-svg-core": "^6.1.1",
+      "@fortawesome/free-regular-svg-icons": "^6.1.1",
+      "@fortawesome/free-solid-svg-icons": "^6.1.1",
+      "@fortawesome/react-fontawesome": "^0.1.18",
+      "@mui/lab": "^5.0.0-alpha.87",
+      "@mui/material": "^5.8.5",
+      "@testing-library/jest-dom": "^5.16.4",
+      "@testing-library/react": "^13.2.0",
+      "@testing-library/user-event": "^13.5.0",
+      "ag-grid-community": "^27.3.0",
+      "ag-grid-enterprise": "^27.3.0",
+      "ag-grid-react": "^27.3.0",
+      "axios": "^0.27.2",
+      "bootstrap": "^5.2.0-beta1",
+      "cpf-cnpj-validator": "^1.0.3",
+      "react": "^18.2.0",
+      "react-bootstrap": "^2.4.0",
+      "react-bootstrap-sidebar-menu": "^2.0.1",
+      "react-burger-menu": "^3.0.8",
+      "react-dom": "^18.2.0",
+      "react-router-dom": "^6.3.0",
+      "react-scripts": "5.0.1",
+      "reactstrap": "^9.1.1",
+      "telefone": "^1.2.2",
+      "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test",
+      "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+      "extends": [
+        "react-app",
+        "react-app/jest"
+      ]
+    },
+    "browserslist": {
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    }
   }
-}

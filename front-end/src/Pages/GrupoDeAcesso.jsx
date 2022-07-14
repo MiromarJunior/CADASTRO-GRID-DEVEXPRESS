@@ -131,6 +131,11 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoColumn] = useState(["ACESSOUSU"]);
   const [botaoAcessoSGRA] = useState(["ACESSOSGRA"]);
   const [botaoAcessoGeral] = useState(["ACESSOGERAL"]);
+  const [botaoAcessoRegiao] = useState(["ACESSOREGIAO"]);
+  const [botaoAcessoJust] = useState(["ACESSOJUSTIFICATIVA"]);
+  const [botaoAcessoSac] = useState(["ACESSOSAC"]);
+  
+  
   const [pageSizes] = useState([5, 10, 15, 0]);
 
   const [acessoGeral, setAcessoGeral] = useState(false);
@@ -298,10 +303,27 @@ const GrupoDeAcesso = () => {
       name: "ACESSOSGRA", title: "SEGURADORAS",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+
     {
-      name: "ACESSOGERAL", title: "ACESSOGERAL",
+      name: "ACESSOREGIAO", title: "ACESSO REGIAO",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOJUSTIFICATIVA", title: "ACESSO JUST. ITEM",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    {
+      name: "ACESSOSAC", title: "ACESSO SAC ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+
+
+
+    {
+      name: "ACESSOGERAL", title: "ACESSO GERAL",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+   
 
 
 
@@ -313,6 +335,9 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOUSU', width: 110 },
     { columnName: 'ACESSOSGRA', width: 150 },
     { columnName: 'ACESSOGERAL', width: 150 },
+    { columnName: 'ACESSOREGIAO', width: 150 },
+    { columnName: 'ACESSOSAC', width: 150 },
+    { columnName: 'ACESSOJUSTIFICATIVA', width: 180 },
 
   ])
 
@@ -440,7 +465,54 @@ const GrupoDeAcesso = () => {
     />
   )
 
+  const BotaoAcessoRegiao = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/REGIAO`)}>REGIÃO</button>
 
+    </div>
+
+  )
+  const BotaoAcessoRegiaoProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoRegiao}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+  const BotaoAcessoJust = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/JUSTIFICATIVA`)}>JUST. ITEM</button>
+
+    </div>
+
+  )
+  const BotaoAcessoJustProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoJust}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+  const BotaoAcessoSac = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/SACMONT`)}>SAC MONTADORA</button>
+
+    </div>
+
+  )
+  const BotaoAcessoSacProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoSac}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+
+
+  
 
 
   return (
@@ -463,6 +535,17 @@ const GrupoDeAcesso = () => {
             <BotaoAcessoGeralProv
               for={botaoAcessoGeral}
             />
+            <BotaoAcessoRegiaoProv
+              for={botaoAcessoRegiao}
+            />
+            <BotaoAcessoJustProv
+              for={botaoAcessoJust}
+            />
+            <BotaoAcessoSacProv
+              for={botaoAcessoSac}
+            />
+
+
              <FilteringState
           
           />
