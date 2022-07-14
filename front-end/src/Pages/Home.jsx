@@ -206,6 +206,10 @@ const HomePage = () => {
     navigate('/municipios');
     handleDrawerClose();
   }
+  const listarFornecedor = () => {
+    navigate("/listarFornecedor");
+    handleDrawerClose();
+  }  
 
   const jstificativaItem = () => {
     navigate('/justificativaItem');
@@ -335,6 +339,19 @@ const HomePage = () => {
                     <ListItemText primary={"Parametros do Leilão"} />
                   </ListItemButton>
                 </ListItem>
+
+
+                <ListItem disablePadding >
+                  <ListItemButton onClick={() => listarFornecedor()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Fornecedores"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
                 <ListItem disablePadding style={{ display: displayAcessoSac }}  >
                   <ListItemButton onClick={() => sacmontadoras()}>
                     <ListItemIcon>
@@ -343,6 +360,7 @@ const HomePage = () => {
                     <ListItemText primary={"SAC Montadoras"} />
                   </ListItemButton>
                 </ListItem>
+
               </TreeItem>
 
               <TreeItem nodeId="USU" label="USUÁRIO">
@@ -436,5 +454,5 @@ const HomePage = () => {
     </div>
   );
 };
-
+//thiago tes
 export default HomePage;

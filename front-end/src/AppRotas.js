@@ -7,8 +7,10 @@ import { AuthContext, AuthProvider } from "./Autenticação/validacao";
 import HomePage from "./Pages/Home";
 import LoginPage from "./Login/Login";
 import CadastroSeguradora from "./Pages/Seguradoras/CadastroSeguradora";
+import CadastroFornecedor from "./Pages/Fornecedores/CadastroFornecedor";
 import ListarUsuario from "./Pages/Usuario/ListarUsuario";
 import ListarSeguradora from "./Pages/Seguradoras/ListarSeguradora";
+import ListarFornecedor from "./Pages/Fornecedores/ListarFornecedor";
 import Inicial from "./Pages/Inicial";
 import GrupoDeAcesso from "./Pages/GrupoDeAcesso";
 import ListarCategMsgs from "./Pages/CategoriaMensagens/ListarCategoriaMensagens";
@@ -40,6 +42,7 @@ const AppRotas = () => {
     <BrowserRouter>
       <AuthProvider>
         <HomePage />
+
         <Routes>
           <Route exact path="/" element={<LoginPage />} />       
           <Route exact path="/parametrosLeilao" element={<Private><ParametroLeilao /></Private>}/>
@@ -57,10 +60,13 @@ const AppRotas = () => {
           <Route exact path="/regiao" element={<Private> <Regiao /> </Private>} />
           <Route exact path="/justificativaItem" element={<Private><JustificativaItem /> </Private>} />
           <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
+          <Route exact path="/listarFornecedor" element={ <Private><ListarFornecedor /></Private> } />
+          <Route exact path="/cadastroFornecedor/:idFornecedor" element={<Private> <CadastroFornecedor /> </Private>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
 };
+
 
 export default AppRotas;
