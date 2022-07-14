@@ -105,10 +105,6 @@ const ParametroLeilao = () => {
 
     }
 
- 
-
-
-
     return (
         <div className="container-fluid">
             <h3 id="titulos">Parametros do Leilão</h3>
