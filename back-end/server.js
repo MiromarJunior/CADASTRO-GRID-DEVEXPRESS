@@ -14,6 +14,7 @@ app.use(  express.urlencoded({extended: true }));
 
 app.listen(port, () => {
   let usuarioRotas = require("./Controller/usuarioController");
+
   app.use("/", usuarioRotas);
 
   let seguradoraRotas = require("./Controller/seguradoraController");
@@ -34,6 +35,7 @@ app.listen(port, () => {
   let marcaVeiculoRotas = require("./Controller/marcaVeiculoController");
   app.use("/", marcaVeiculoRotas);
 
+
   let justificativaItemRotas = require('./Controller/justificativaItemController');
   app.use('/', justificativaItemRotas);
 
@@ -48,6 +50,11 @@ app.listen(port, () => {
 
   let parametrosLeilao = require("./Controller/parametrosLeilaoController");
   app.use("/", parametrosLeilao);
+  
+  let fornecedorRotas = require("./Controller/fornecedorController");
+  app.use("/",fornecedorRotas) ;
+
 
   console.log("Servidor online na porta  : ", port);
 });
+

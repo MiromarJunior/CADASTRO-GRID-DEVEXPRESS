@@ -41,9 +41,6 @@ const  formataArrayStr = (id)=>{
     return valor;
   }
 const valorLiquido = (valor, desconto)=>{
-
- 
-
     return (formataValorString(valor) - (formataValorString(valor) * (formataValorString(desconto)/100)));
 }
 
