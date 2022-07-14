@@ -189,6 +189,10 @@ const HomePage = () => {
 
    
   }
+  const listarFornecedor = () => {
+    navigate("/listarFornecedor");
+    handleDrawerClose();
+  }  
 
 
 
@@ -298,7 +302,14 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
-
+                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                  <ListItemButton onClick={() => listarFornecedor()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Fornecedores"} />
+                  </ListItemButton>
+                </ListItem>
 
 
 
