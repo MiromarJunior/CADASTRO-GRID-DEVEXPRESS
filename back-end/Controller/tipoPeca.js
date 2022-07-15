@@ -73,7 +73,7 @@ router.post("/saveTipoPeca", async (req, res) => {
               `
               UPDATE  TIPO_PECA
                  SET  TPPC_DESCRICAO ='${nomePeca}',
-                 TPPC_CLASSIFICACAO_PECAS ='${classPeca}',
+                 TPPC_CLASSIFICACAO_PECAS ='${classPeca}'
                where  ID_TIPO_PECA ='${idCont}'
                `,
 
