@@ -35,6 +35,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 
+
 const drawerWidth = 280;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -110,6 +111,8 @@ const HomePage = () => {
   const incluirJust = "ADD_JUSTIFICATIVA";
   const excluirJust = "DEL_JUSTIFICATIVA";
   const editarJust = "EDIT_JUSTIFICATIVA";
+
+  
 
   useEffect(() => {
     if (nomeUser()) {
@@ -223,6 +226,11 @@ const HomePage = () => {
 
   const sacmontadoras = () => {
     navigate("/sacmontadoras");
+    handleDrawerClose();
+  };
+
+  const tipoPeca = () => {
+    navigate("/tipoPeca");
     handleDrawerClose();
   };
 
@@ -340,6 +348,14 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
+                <ListItem disablePadding >
+                  <ListItemButton onClick={() => tipoPeca()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Tipo de Peça"} />
+                  </ListItemButton>
+                </ListItem>
 
                 <ListItem disablePadding >
                   <ListItemButton onClick={() => listarFornecedor()}>
@@ -454,5 +470,5 @@ const HomePage = () => {
     </div>
   );
 };
-// iury
+
 export default HomePage;
