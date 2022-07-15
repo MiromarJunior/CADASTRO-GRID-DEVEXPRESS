@@ -92,6 +92,8 @@ const HomePage = () => {
   const [displayAcessoReg, setDisplayAcessoReg] = useState("none");
   const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
   const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
+  const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
+  
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
@@ -116,6 +118,11 @@ const HomePage = () => {
   const incluirParamLe = "EDIT_PARAMLE";
   const excluirParamLe = "DEL_PARAMLE";
   const editarParamLe = "ADD_PARAMLE";
+
+  const listaTipoPeca = "LIST_TIPOPECA";
+  const incluirTipoPeca = "ADD_TIPOPECA";
+  const excluirTipoPeca = "DEL_TIPOPECA";
+  const editarTipoPeca = "EDIT_TIPOPECA";
 
   useEffect(() => {
     if (nomeUser()) {
@@ -154,6 +161,9 @@ const HomePage = () => {
                 }
                 if (listaParamLe === ac || incluirParamLe === ac || excluirParamLe === ac || editarParamLe === ac) {
                   setDisplayAcessoParamLe("");
+                }
+                if (listaTipoPeca === ac || incluirTipoPeca === ac || excluirTipoPeca === ac || editarTipoPeca === ac) {
+                  setDisplayAcessoTipoPeca("");
                 }
 
 
