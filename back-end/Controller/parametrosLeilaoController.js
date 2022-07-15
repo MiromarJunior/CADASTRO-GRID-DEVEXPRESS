@@ -19,14 +19,15 @@ router.post("/cadastrarParametroLeilao", async(req, res)=> {
   let {
     token,pontuacaoInicial,horasL  , horasExtend  , 
     horaIniL  , horaFimL  , tempoAbertAft,
-    qtdHorasValSef, horarioAtend  , feriado, qtdVencedores, criticaPed, limiteApr,
+    qtdHorasValSef, horarioAtendIni, horarioAtendFim  , feriado, qtdVencedores, criticaPed, limiteApr,
     percLimite, limiteCot, qtdHorasBO, prazoBO, horasTotalCot  , 
     horasTotalLei , tempoRecalculo,
-    percAltLeilao, encerraAnt, tempoAlt,idPar, 
+    percAltLeilao, encerraAnt, tempoAlt,idPar,idSeg, 
     acessoGeral  
 } =req.body;
 let insertSql;
 let updateSql;
+
 
     let connection = await oracledb.getConnection(dbConfig);  
     if(acessoGeral){    
@@ -49,7 +50,8 @@ let updateSql;
    PALE_HORARIO_FIM,
    PALE_TEMPO_ABERTURA_AFTER,
    PALE_QTDE_HORAS_VALID_SEFAZ,
-   PALE_HORARIO_ATEND_FALE_CONOSC,
+   PALE_HORARIO_ATEND_FALE_CO_INI,
+   PALE_HORARIO_ATEND_FALE_CO_FIM,
    PALE_FACULTATIVO_FERIADO,
    PALE_QTDE_VENCEDORES_GENUINOS,
    PALE_PORC_AJ_PRC_CRIT_PEDIDO,
@@ -63,12 +65,14 @@ let updateSql;
    PALE_ONLINE_TEMPO_RECALCULO,
    PALE_ONLINE_TEMPO_ENCER_ANTEC,
    PALE_ONLINE_PERC_ALT_LEILAO,
-   PALE_ONLINE_TEMPO_ALT)
+   PALE_ONLINE_TEMPO_ALT,
+   ID_SEGURADORA
+   )
 VALUES
   (SEQ_PALE.NEXTVAL,'${pontuacaoInicial}','${horasL}', TO_CHAR('${horasExtend}', '0000'), '${horaIniL}', '${horaFimL}','${tempoAbertAft}',
-  '${qtdHorasValSef}', '${horarioAtend}', '${feriado}', '${qtdVencedores}', '${criticaPed}', '${limiteApr}','${percLimite}', '${limiteCot}',
+  '${qtdHorasValSef}', '${horarioAtendIni}','${horarioAtendFim}', '${feriado}', '${qtdVencedores}', '${criticaPed}', '${limiteApr}','${percLimite}', '${limiteCot}',
   '${qtdHorasBO}', '${prazoBO}', '${horasTotalCot}', '${horasTotalLei}', '${tempoRecalculo}', '${encerraAnt}', '${percAltLeilao}',
-  '${tempoAlt}' )          
+  '${tempoAlt}','${idSeg}' )          
             
           `
         )
@@ -78,12 +82,13 @@ VALUES
           SET PALE_RANKING_PONTUACAO_INICIAL = '${pontuacaoInicial}',
           PALE_HORAS = '${horasL}',
           PALE_HORAS_EXTENDIDAS = '${horasExtend}',
-          PALE_HORARIO_INICIO = ${horaIniL}',
+          PALE_HORARIO_INICIO = '${horaIniL}',
           PALE_HORARIO_FIM = '${horaFimL}',
           PALE_TEMPO_ABERTURA_AFTER = '${tempoAbertAft}',
           PALE_QTDE_HORAS_VALID_SEFAZ = '${qtdHorasValSef}', 
-          PALE_HORARIO_ATEND_FALE_CONOSC = '${horarioAtend}',
-          PALE_FACULTATIVO_FERIADO '${feriado}',
+          PALE_HORARIO_ATEND_FALE_CO_INI = '${horarioAtendIni}',
+          PALE_HORARIO_ATEND_FALE_CO_FIM = '${horarioAtendFim}',
+          PALE_FACULTATIVO_FERIADO = '${feriado}',
           PALE_QTDE_VENCEDORES_GENUINOS = '${qtdVencedores}', 
           PALE_PORC_AJ_PRC_CRIT_PEDIDO = '${criticaPed}', 
           PALE_PORC_AJ_PRC_LIMITE_APROV = '${limiteApr}',
@@ -96,8 +101,9 @@ VALUES
           PALE_ONLINE_TEMPO_RECALCULO = '${tempoRecalculo}',
           PALE_ONLINE_TEMPO_ENCER_ANTEC = '${encerraAnt}',
           PALE_ONLINE_PERC_ALT_LEILAO = '${percAltLeilao}',
-          PALE_ONLINE_TEMPO_ALT = '${tempoAlt}' 
-          WHERE ID_PARAMETROS_LEILAO = ${idPar}
+          PALE_ONLINE_TEMPO_ALT = '${tempoAlt}',
+          ID_SEGURADORA = '${idSeg}' 
+          WHERE ID_PARAMETROS_LEILAO = '${idPar}'
         `
         )                         
                    
@@ -149,15 +155,16 @@ VALUES
 
 });
 
-router.post("/a", async(req, res)=> {
-  const {token,idSeg,   
+router.post("/listarParametroLeilaoSeg", async(req, res)=> {
+  const {token,idPar,   
 } =req.body;
 
     let connection = await oracledb.getConnection(dbConfig);
     let result;
     let selectSql = "";
-    if(idSeg > 0){
-     selectSql =  `AND ID_SEGURADORA = ${idSeg}`
+    if(idPar > 0){
+     selectSql =  `AND ID_PARAMETROS_LEILAO = ${idPar}`
+  
     }
 
 
@@ -173,8 +180,43 @@ router.post("/a", async(req, res)=> {
       } else{  
         result = await connection.execute ( 
           ` 
-          SELECT  * FROM SEGURADORA SEG, UNIDADE_FEDERATIVA UF
-          WHERE SEG.ID_UNIDADE_FEDERATIVA = UF.ID_UNIDADE_FEDERATIVA(+)
+          SELECT PL.ID_PARAMETROS_LEILAO,
+          PL.PALE_RANKING_PONTUACAO_INICIAL,
+          PL.PALE_HORAS,
+          PL.PALE_HORAS_EXTENDIDAS,
+          PL.PALE_HORARIO_INICIO,
+          PL.PALE_HORARIO_FIM,
+          PL.PALE_TEMPO_ABERTURA_AFTER,
+          PL.PALE_QTDE_HORAS_VALID_SEFAZ,
+          PL.PALE_FACULTATIVO_FERIADO,
+          PL.PALE_QTDE_VENCEDORES_GENUINOS,
+          PL.PALE_PORC_AJ_PRC_CRIT_PEDIDO,
+          PL.PALE_PORC_AJ_PRC_LIMITE_APROV,
+          PL.PALE_PORC_AJ_PRC_PERC_LIMITE,
+          PL.PALE_PORC_AJ_PRC_LIMITE_COTA,
+          PL.PALE_PARAM_BO_QTDE_HORAS,
+          PL.PALE_PARAM_BO_QTDE_DIAS,
+          PL.PALE_ONLINE_HORAS_COTACAO,
+          PL.PALE_ONLINE_HORAS_LEILAO,
+          PL.PALE_ONLINE_TEMPO_RECALCULO,
+          PL.PALE_ONLINE_TEMPO_ENCER_ANTEC,
+          PL.PALE_ONLINE_PERC_ALT_LEILAO,
+          PL.PALE_ONLINE_TEMPO_ALT,
+          PL.PALE_HORARIO_ATEND_FALE_CO_INI,
+          PL.PALE_HORARIO_ATEND_FALE_CO_FIM,
+          PL.ID_SEGURADORA,
+          TO_CHAR(PL.PALE_HORAS,'00,00') AS HORAS,
+          TO_CHAR(PL.PALE_HORAS_EXTENDIDAS,'00,00') AS HORAS_EXT,
+          TO_CHAR(PL.PALE_HORARIO_INICIO,'00,00') AS HORA_INI,
+          TO_CHAR(PL.PALE_HORARIO_FIM,'00,00') AS HORA_FIM,          
+          TO_CHAR(PL.PALE_ONLINE_HORAS_COTACAO,'00,00') AS HORAS_COT,
+          TO_CHAR(PL.PALE_ONLINE_HORAS_LEILAO,'00,00') AS HORAS_LEIL,
+          TO_CHAR(PL.PALE_HORARIO_ATEND_FALE_CO_INI,'00,00') AS HORAS_FAL_CON_IN,
+          TO_CHAR(PL.PALE_HORARIO_ATEND_FALE_CO_FIM,'00,00') AS HORAS_FAL_CON_FIM,
+          SG.SGRA_RAZAO_SOCIAL,
+          SG.SGRA_CNPJ
+          FROM PARAMETROS_LEILAO PL, SEGURADORA SG
+          WHERE PL.ID_SEGURADORA = SG.ID_SEGURADORA
           ${selectSql}
             
           `,
@@ -189,8 +231,8 @@ router.post("/a", async(req, res)=> {
   })      
       
   } catch (error) {
-      console.error(error);
-      res.send("erro de conexao").status(500);
+      console.error("erro ao listar parametros",error);
+      res.send("erroSalvar").status(500);
       
   }finally {
       if(connection){
@@ -208,8 +250,8 @@ router.post("/a", async(req, res)=> {
 
 });
 
-router.post("/a", async(req, res)=> {
-  const {token,idSeg, acessoGeral, acessoDEL  
+router.post("/excluirParametroLeilao", async(req, res)=> {
+  const {token,idPar, acessoGeral, acessoDEL  
 } =req.body;
 
 
@@ -217,7 +259,6 @@ router.post("/a", async(req, res)=> {
 
 
 let deleteSql = "";
-let deleteSql1 = "";
 
 if(acessoGeral || acessoDEL){
 
@@ -231,49 +272,22 @@ if(acessoGeral || acessoDEL){
 
         deleteSql =(
           ` 
-          DELETE FROM SEGURADORA 
-          WHERE  ID_SEGURADORA = ${idSeg}
-           
+          DELETE FROM PARAMETROS_LEILAO 
+          WHERE ID_PARAMETROS_LEILAO = ${idPar}           
           `
-
-        )
-
-        deleteSql1 = (
-          ` 
-          DELETE FROM SEGURADORA_CONTATO SE
-WHERE SE.ID_SEGURADORA =  ${idSeg}
-           
-          `
-
-        )
-
-
-
-
-
-
-     
-        
-         
-                    
+        )                            
       }
   })  
   try {
-  await connection.execute( deleteSql1
-    ,
-     [],
+ 
+   let result = await connection.execute( 
+    deleteSql
+    ,[],
      { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-       autoCommit : true
-    
+       autoCommit : true    
    });
-   await connection.execute( deleteSql
-    ,
-     [],
-     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-       autoCommit : true
-    
-   });
-   res.send("sucesso").status(200).end();  
+   result.rowsAffected > 0 ? res.send("sucesso").status(200).end() : res.send("erroSalvar").status(200).end();
+     
   } catch (error) {
       console.error(error);
       res.send("erro de conexao").status(500);

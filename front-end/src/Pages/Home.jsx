@@ -35,6 +35,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 
+
 const drawerWidth = 280;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -91,6 +92,9 @@ const HomePage = () => {
   const [displayAcessoSac, setDisplayAcessoSac] = useState("none");
   const [displayAcessoReg, setDisplayAcessoReg] = useState("none");
   const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
+  const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
+  const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
+  
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
@@ -110,6 +114,16 @@ const HomePage = () => {
   const incluirJust = "ADD_JUSTIFICATIVA";
   const excluirJust = "DEL_JUSTIFICATIVA";
   const editarJust = "EDIT_JUSTIFICATIVA";
+
+  const listaParamLe = "LIST_PARAMLE";
+  const incluirParamLe = "EDIT_PARAMLE";
+  const excluirParamLe = "DEL_PARAMLE";
+  const editarParamLe = "ADD_PARAMLE";
+
+  const listaTipoPeca = "LIST_TIPOPECA";
+  const incluirTipoPeca = "ADD_TIPOPECA";
+  const excluirTipoPeca = "DEL_TIPOPECA";
+  const editarTipoPeca = "EDIT_TIPOPECA";
 
   useEffect(() => {
     if (nomeUser()) {
@@ -131,6 +145,7 @@ const HomePage = () => {
                   setDisplayAcessoSac("");
                   setDisplayAcessoReg("");
                   setDisplayAcessoJust("");
+                  setDisplayAcessoParamLe("");
 
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
@@ -144,6 +159,12 @@ const HomePage = () => {
                 }
                 if (listaJust === ac || incluirJust === ac || excluirJust === ac || editarJust === ac) {
                   setDisplayAcessoJust("");
+                }
+                if (listaParamLe === ac || incluirParamLe === ac || excluirParamLe === ac || editarParamLe === ac) {
+                  setDisplayAcessoParamLe("");
+                }
+                if (listaTipoPeca === ac || incluirTipoPeca === ac || excluirTipoPeca === ac || editarTipoPeca === ac) {
+                  setDisplayAcessoTipoPeca("");
                 }
 
 
@@ -194,7 +215,7 @@ const HomePage = () => {
     handleDrawerClose();
   };
   const parametrosDeLeilao = () => {
-    navigate("/parametrosLeilao");
+    navigate("/listarparametrosLeilao");
     handleDrawerClose();
   }
   const marcaVeiculo = () => {
@@ -223,6 +244,11 @@ const HomePage = () => {
 
   const sacmontadoras = () => {
     navigate("/sacmontadoras");
+    handleDrawerClose();
+  };
+
+  const tipoPeca = () => {
+    navigate("/tipoPeca");
     handleDrawerClose();
   };
 
@@ -331,7 +357,7 @@ const HomePage = () => {
                   <ListItemText primary={"Marca Veículo"} />
                 </ListItemButton>
 
-                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                <ListItem disablePadding style={{ display: displayAcessoParamLe }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
                     <ListItemIcon>
                       <ListIcon />
@@ -340,6 +366,14 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
+                <ListItem disablePadding  style={{ display: displayAcessoTipoPeca }}>
+                  <ListItemButton onClick={() => tipoPeca()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Tipo de Peça"} />
+                  </ListItemButton>
+                </ListItem>
 
                 <ListItem disablePadding >
                   <ListItemButton onClick={() => listarFornecedor()}>
@@ -454,5 +488,5 @@ const HomePage = () => {
     </div>
   );
 };
-//thiago tes
+
 export default HomePage;
