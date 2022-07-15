@@ -5,7 +5,7 @@ const cors = require("cors");
 //   default: SacMontadoras,
 // } = require("../front-end/src/Pages/SacMontadoras/sacMontadoras");
 require("dotenv").config();
-const port = 5004;
+const port = 5000;
 app.use(express.json());
 
 app.use( cors({origin: [process.env.URL_FRONT_END, process.env.URL_FRONT_END4, process.env.URL_FRONT_END2, process.env.URL_FRONT_END3] }));
