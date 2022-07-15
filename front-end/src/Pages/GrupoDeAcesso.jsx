@@ -136,6 +136,8 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoSac] = useState(["ACESSOSAC"]);  
   const [botaoAcessoParamLe] = useState(["ACESSOPARAMLE"]);  
   const [botaoAcessoTipoPeca] = useState(["ACESSOTIPOPECA"]);  
+  const [botaoAcessoFornecedor] = useState(["ACESSOFORNECEDOR"]);  
+  
   
   
    
@@ -298,32 +300,36 @@ const GrupoDeAcesso = () => {
 
     { name: 'GRAC_DESCRICAO', title: "GRUPO" },
     {
-      name: 'ACESSOUSU', title: "USUÁRIO",
+      name: 'ACESSOUSU', title: "Usuário",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
     {
-      name: "ACESSOSGRA", title: "SEGURADORAS",
+      name: "ACESSOSGRA", title: "Seguradora",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
 
     {
-      name: "ACESSOREGIAO", title: "ACESSO REGIAO",
+      name: "ACESSOREGIAO", title: "Região",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
     {
-      name: "ACESSOJUSTIFICATIVA", title: "ACESSO JUST. ITEM",
+      name: "ACESSOJUSTIFICATIVA", title: "Justificativa Item",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
     {
-      name: "ACESSOSAC", title: "ACESSO SAC ",
+      name: "ACESSOSAC", title: "Sac Montadora ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
     {
-      name: "ACESSOPARAMLE", title: "ACESSO PARAM LEILÃO ",
+      name: "ACESSOPARAMLE", title: "Parametro de Leilão ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
     {
-      name: "ACESSOTIPOPECA", title: "ACESSO TIPO PEÇA ",
+      name: "ACESSOTIPOPECA", title: "Tipo de Peça ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    {
+      name: "ACESSOFORNECEDOR", title: "Fornecedores ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
 
@@ -350,6 +356,7 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOJUSTIFICATIVA', width: 180 },
     { columnName: 'ACESSOPARAMLE', width: 200 },
     { columnName: 'ACESSOTIPOPECA', width: 200 },
+    { columnName: 'ACESSOFORNECEDOR', width: 200 },
 
   ])
 
@@ -552,7 +559,24 @@ const GrupoDeAcesso = () => {
 
     />
   )
-  
+  const BotaoAcessoFornecedor = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/FORNECEDOR`)}>FORNECEDOR</button>
+
+    </div>
+
+  )
+  const BotaoAcessoFornecedorProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoFornecedor}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+
+
+
 
 
   return (
@@ -589,6 +613,9 @@ const GrupoDeAcesso = () => {
             />
             <BotaoAcessoTipoPecaProv
              for={botaoAcessoTipoPeca}
+            />
+             <BotaoAcessoFornecedorProv
+             for={botaoAcessoFornecedor}
             />
 
 

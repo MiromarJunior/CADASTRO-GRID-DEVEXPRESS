@@ -25,8 +25,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 
-const getRowId = row => row.id;
-const ListarFornecedor = () => {
+
+
+    const getRowId = row => row.id;
+    const ListarFornecedor = () => {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();     
     const { logout, nomeUser } = useContext(AuthContext);
@@ -35,15 +37,14 @@ const ListarFornecedor = () => {
     let token = localStorage.getItem("token");  
     const [acessoGeral, setAcessoGeral] = useState(false);    
     const [acessoDEL, setAcessoDEL] = useState(false);
-     const [defaultHiddenColumnNames] = useState(['nova']);   
+    const [defaultHiddenColumnNames] = useState(['nova']);   
     const [acessoADD, setAcessoADD] = useState(false);
     const [displayEDIT, setDisplayEDIT] = useState("none");
     const [displayDEL, setDisplayDEL] = useState("none");
-    const listaForn = "LIST_FORN";
-    const incluirForn = "ADD_FORN";  
-    const excluirForn = "DEL_FORN";
-    const editarForn = "EDIT_FORN";
-
+    const listaForn = "LIST_FORNECEDOR";
+    const incluirForn = "ADD_FORNECEDOR";  
+    const excluirForn = "DEL_FORNECEDOR";
+    const editarForn = "EDIT_FORNECEDOR";
 
     useEffect(() => {     
         const acessoMenuUser = async ()=>{          
@@ -73,8 +74,9 @@ const ListarFornecedor = () => {
                 window.alert("Erro ao Listar Fornecedores !!")
               })
           }
-          acessoMenuUser();    
-    }, [logout, token]);
+          acessoMenuUser();  
+          // eslint-disable-next-line  
+    }, [logout, token,nomeUser]);
 
     const listarFornecedores = async () => {
         let dados = { token };
@@ -146,7 +148,7 @@ const ListarFornecedor = () => {
   const columns  =
   (     acessoGeral || acessoADD ?
     
-           [{ name: 'FORN_CNPJ', title: `CNPJ` },
+        [{ name: 'FORN_CNPJ', title: `CNPJ` },
         { name: 'FORN_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
         { name: 'FORN_CIDADE', title: "CIDADE" },        
         {name: "ALTERACAO", title: BotaoAd,

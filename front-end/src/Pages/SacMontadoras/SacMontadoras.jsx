@@ -358,7 +358,7 @@ const SacMontadoras = () => {
     <div className="container-fluid" >
       <h3 id="titulos">SAC Montadoras: </h3>
       { }
-      <div className="container">
+      <div className="container-fluid">
         <Paper>
           <Grid rows={rows} columns={columns}>
             <SortingState />

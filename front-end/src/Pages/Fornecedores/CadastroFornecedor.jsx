@@ -19,7 +19,7 @@ import {
     TableColumnResizing,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoForID, getContatoFornecedor, getFornecedor, saveContatoFornecedor, saveFornecedor } from "../../Service/fornecedorService";
-import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure, validaCampo } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCNPJ, validaCampo } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -28,7 +28,35 @@ import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { Box, MenuItem, TextField } from "@mui/material";
+import { Box, Input, MenuItem, Select, TextField } from "@mui/material";
+
+
+const FuncaoFormatter = ({ value }) => value ? value : "";
+
+const FuncaoEditor = ({ value, onValueChange }) => (
+  <Select 
+    input={<Input />}
+    value={value}
+    onChange={event => onValueChange(event.target.value)}
+    style={{ width: '100%' }}
+  >
+    <MenuItem value="">
+    </MenuItem>
+    <MenuItem value="Administrativo">Administrativo</MenuItem>
+    <MenuItem value="Financeiro">Financeiro</MenuItem>
+    <MenuItem value="Gerente">Gerente</MenuItem>
+    <MenuItem value="Vendedor">Vendedor</MenuItem>
+  </Select> 
+);
+
+const FuncaoProvider = props => (
+ 
+  <DataTypeProvider
+    formatterComponent={FuncaoFormatter}
+    editorComponent={FuncaoEditor}
+    {...props}
+  /> 
+);
 
 //const { format } = require('telefone');
 const emailV = /\S+@\S+\.\S+/;
@@ -98,6 +126,7 @@ const Command = ({ id, onExecute }) => {
     );
 };
 
+let acessoGeral = false;
 
 const CadastroFornecedor = () => {
     const { logout, nomeUser } = useContext(AuthContext);
@@ -137,45 +166,63 @@ const CadastroFornecedor = () => {
     const [listaUF, setListaUF] = useState([]);
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [rowChanges, setRowChanges] = useState({});
-    const [acessoGeral, setAcessoGeral] = useState(false);
+    //const [acessoGeral, setAcessoGeral] = useState(false);
+    //const [acessoCAD, setAcessoCAD] = useState(false);
+    //verificar
+   
+    const [frcoFuncaoColumns] = useState(['FRCO_FUNCAO']);
+    const listaFornec = "LIST_FORNECEDOR";
+    const incluirFornec = "ADD_FORNECEDOR";
+    const excluirFornec = "DEL_FORNECEDOR";
+    const editarFornec = "EDIT_FORNECEDOR";
     const [acessoCAD, setAcessoCAD] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");
-    const editarSgra = "EDIT_SGRA";
-
 
     useEffect(() => {
         const acessoMenuUser = async () => {
-            let dados = { token, usuario: nomeUser() };
-            await getAcessoUserMenu(dados)
-                .then((res) => {
-                    if (res.data === "erroLogin") {
-                        window.alert("Sessão expirada, Favor efetuar um novo login !!");
-                        logout();
-                        window.location.reload();
-                    }
-                    else if (res.data === "semAcesso") {
-                        window.alert("Usuário sem permissão !!!");
-
-                    } else {
-                        (res.data).forEach((ac) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || editarSgra === ac) {
-                                setAcessoGeral(true);
-                                setAcessoCAD(true);
-                                setDisplayAcesso("");
-                            }
-                        })
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                    window.alert("Erro ao buscar Usuário !!")
-                })
-        }
+          let dados = { token, usuario: nomeUser() };
+          await getAcessoUserMenu(dados)
+            .then((res) => {
+              if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              } else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");
+              } else {
+                res.data.forEach((ac) => {
+                  if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                    acessoGeral = true;
+                    setAcessoCAD(true);
+                    buscarFornecedores();
+                    setDisplayAcesso("");
+                    
+                  } else if (incluirFornec === ac) {
+                    setAcessoCAD(true);
+                    setDisplayAcesso("");
+                  } else if (listaFornec === ac) {
+                    buscarFornecedores();
+                  } else if (excluirFornec === ac) {
+                    setAcessoCAD(true);
+                  } else if (editarFornec === ac) {
+                    buscarFornecedores();
+                    setDisplayAcesso("");
+                  }
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+    
+              window.alert("Erro ao buscar Usuário SAC!!");
+    
+            });
+        };
+    
         acessoMenuUser();
-        buscarContatos(idFornecedorN);
-
-        //eslint-disable-next-line
-    }, [idFornecedor, idFornecedorN, logout, nomeUser, token]);
+        buscarContatos(idFornecedorN); 
+        // eslint-disable-next-line
+      }, [idFornecedorN,logout,nomeUser, token]);
 
     useEffect(() => {
         const buscaUnidadeFederativa = async () => {
@@ -198,7 +245,6 @@ const CadastroFornecedor = () => {
     }, [logout, token]);
 
 
-    useEffect(() => {
         const buscarFornecedores = async () => {
 
             if (idFornecedor > 0) {
@@ -220,10 +266,7 @@ const CadastroFornecedor = () => {
                             alert("Erro a tentar salvar ou alterar!!!");
                         } else {
 
-
                             res.data.forEach((l) => {
-
-
                                 setFornCnpj(l.FORN_CNPJ);
                                 setFornIdLegado(l.FORN_ID_LEGADO);
                                 setFornNaturezaJuridica(l.FORN_NATUREZA_JURIDICA);
@@ -260,7 +303,7 @@ const CadastroFornecedor = () => {
             }
         }
         buscarFornecedores();
-    }, [idFornecedor, logout, token])
+
     const buscarContatos = async (idFornecedorN) => {
         const dados = { token, idFornecedor: idFornecedorN, acessoGeral }
         await getContatoFornecedor(dados)
@@ -289,8 +332,8 @@ const CadastroFornecedor = () => {
     }
 
     const salvarFornecedor = () => {
-
-        const dados = {
+   
+       const dados = {
 
             fornCnpj: apenasNr(fornCnpj), fornIdLegado: apenasNr(fornIdLegado), fornNaturezaJuridica,
             fornNomeFantasia, fornRazaoSocial, fornOptanteSimplesNacional, fornStatus, fornSituacao,
@@ -501,36 +544,37 @@ const CadastroFornecedor = () => {
                     if (changedRows[i].FRCO_NOME === "" || changedRows[i].FRCO_NOME.length > 64) {
                         window.alert("Campo Nome com tamanho inválido");
                     }
-                    else if (changedRows[i].FRCO_FUNCAO === "" || changedRows[i].FRCO_FUNCAO.length > 64) {
-                        window.alert("Campo Função com tamanho inválido");
-                    }
+                     else if (changedRows[i].FRCO_FUNCAO === "" || changedRows[i].FRCO_FUNCAO.length > 64) {
+                         window.alert("Campo Função com tamanho inválido");
+                     }
                     else if (changedRows[i].FRCO_DEPARTAMENTO === "" || changedRows[i].FRCO_DEPARTAMENTO.length > 12) {
                         window.alert("Campo Departamento com tamanho inválido");
                     }
-                    else if (!emailV.test(changedRows[i].FRCO_EMAIL) || changedRows[i].FRCO_EMAIL.length > 128) {
+                    else if (!emailV.test(changedRows[i].FRCO_EMAIL)) {
                         window.alert("Email Contato inválido");
                     }
-                    else if (changedRows[i].FRCO_URL === "" || changedRows[i].FRCO_URL.length > 256) {
-                        window.alert("Campo URL com tamanho inválido");
-                    }
-                    else if (changedRows[i].FRCO_CELULAR_DDD === "" || isNaN(changedRows[i].FRCO_CELULAR_DDD) || changedRows[i].SGCO_CELULAR_DDD.length > 3) {
+                    // else if (changedRows[i].FRCO_URL === "" || changedRows[i].FRCO_URL.length > 256) {
+                    //     window.alert("Campo URL com tamanho inválido");
+                    // }
+                    else if (changedRows[i].FRCO_CELULAR_DDD === "" || isNaN(changedRows[i].FRCO_CELULAR_DDD) || changedRows[i].FRCO_CELULAR_DDD.length > 3) {
                         window.alert("Campo Celular DDD inválido");
                     }
-                    else if (changedRows[i].FRCO_CELULAR_NUMERO === "" || isNaN(changedRows[i].FRCO_CELULAR_NUMERO) || changedRows[i].SGCO_CELULAR_NUMERO.length > 10) {
+                    else if (changedRows[i].FRCO_CELULAR_NUMERO === "" || isNaN(changedRows[i].FRCO_CELULAR_NUMERO) || changedRows[i].FRCO_CELULAR_NUMERO.length > 10) {
                         window.alert("Campo Celular NR inválido");
                     }
-                    else if (changedRows[i].FRCO_CELULAR_OPERADORA === "" || changedRows[i].FRCO_CELULAR_OPERADORA.length > 20) {
-                        window.alert("Campo Operadora  com tamanho inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_DDD === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_DDD) || changedRows[i].SGCO_FONE_COMERCIAL_DDD.length > 3) {
-                        window.alert("Campo Fone Comercial DDD inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_NUMERO === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_NUMERO) || changedRows[i].SGCO_FONE_COMERCIAL_NUMERO.length > 10) {
-                        window.alert("Campo Fone Comercial NR  inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_RAMAL === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_RAMAL) || changedRows[i].SGCO_FONE_COMERCIAL_RAMAL.length > 5) {
-                        window.alert("Campo Fone Comercial Ramal  inválido");
-                    } else {
+                    // else if (changedRows[i].FRCO_CELULAR_OPERADORA === "" || changedRows[i].FRCO_CELULAR_OPERADORA.length > 20) {
+                    //     window.alert("Campo Operadora  com tamanho inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_DDD === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_DDD) || changedRows[i].FRCO_FONE_COMERCIAL_DDD.length > 3) {
+                    //     window.alert("Campo Fone Comercial DDD inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_NUMERO === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_NUMERO) || changedRows[i].FRCO_FONE_COMERCIAL_NUMERO.length > 10) {
+                    //     window.alert("Campo Fone Comercial NR  inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_RAMAL === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_RAMAL) || changedRows[i].FRCO_FONE_COMERCIAL_RAMAL.length > 5) {
+                    //     window.alert("Campo Fone Comercial Ramal  inválido");
+                    // } 
+                    else {
                         salvarContato(changedRows[i]);
                         buscarContatos();
                     }
@@ -546,36 +590,37 @@ const CadastroFornecedor = () => {
                     if (changedRows[i].FRCO_NOME === "" || changedRows[i].FRCO_NOME.length > 64) {
                         window.alert("Campo Nome com tamanho inválido");
                     }
-                    else if (changedRows[i].FRCO_FUNCAO === "" || changedRows[i].FRCO_FUNCAO.length > 64) {
-                        window.alert("Campo Função com tamanho inválido");
-                    }
-                    else if (changedRows[i].FRCO_DEPARTAMENTO === "" || changedRows[i].FRCO_DEPARTAMENTO.length > 12) {
-                        window.alert("Campo Departamento com tamanho inválido");
-                    }
-                    else if (!emailV.test(changedRows[i].FRCO_EMAIL) || changedRows[i].FRCO_EMAIL.length > 128) {
-                        window.alert("Email Contato inválido");
-                    }
-                    else if (changedRows[i].FRCO_URL === "" || changedRows[i].FRCO_URL.length > 256) {
-                        window.alert("Campo URL com tamanho inválido");
-                    }
-                    else if (changedRows[i].FRCO_CELULAR_DDD === "" || isNaN(changedRows[i].FRCO_CELULAR_DDD) || changedRows[i].SGCO_CELULAR_DDD.length > 3) {
-                        window.alert("Campo Celular DDD inválido");
-                    }
-                    else if (changedRows[i].FRCO_CELULAR_NUMERO === "" || isNaN(changedRows[i].FRCO_CELULAR_NUMERO) || changedRows[i].SGCO_CELULAR_NUMERO.length > 10) {
-                        window.alert("Campo Celular NR inválido");
-                    }
-                    else if (changedRows[i].FRCO_CELULAR_OPERADORA === "" || changedRows[i].FRCO_CELULAR_OPERADORA.length > 20) {
-                        window.alert("Campo Operadora  com tamanho inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_DDD === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_DDD) || changedRows[i].SGCO_FONE_COMERCIAL_DDD.length > 3) {
-                        window.alert("Campo Fone Comercial DDD inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_NUMERO === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_NUMERO) || changedRows[i].SGCO_FONE_COMERCIAL_NUMERO.length > 10) {
-                        window.alert("Campo Fone Comercial NR  inválido");
-                    }
-                    else if (changedRows[i].FRCO_FONE_COMERCIAL_RAMAL === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_RAMAL) || changedRows[i].SGCO_FONE_COMERCIAL_RAMAL.length > 5) {
-                        window.alert("Campo Fone Comercial Ramal  inválido");
-                    } else {
+                     else if (changedRows[i].FRCO_FUNCAO === "" || changedRows[i].FRCO_FUNCAO.length > 64) {
+                         window.alert("Campo Função com tamanho inválido");
+                     }
+                     else if (changedRows[i].FRCO_DEPARTAMENTO === "" || changedRows[i].FRCO_DEPARTAMENTO.length > 12) {
+                         window.alert("Campo Departamento com tamanho inválido");
+                     }
+                     else if (!emailV.test(changedRows[i].FRCO_EMAIL) ) {
+                         window.alert("Email Contato inválido");
+                     }
+                    //  else if (changedRows[i].FRCO_URL === "" || changedRows[i].FRCO_URL.length > 256) {
+                    //      window.alert("Campo URL com tamanho inválido");
+                    //  }
+                     else if (changedRows[i].FRCO_CELULAR_DDD === "" || isNaN(changedRows[i].FRCO_CELULAR_DDD) || changedRows[i].FRCO_CELULAR_DDD.length > 3) {
+                         window.alert("Campo Celular DDD inválido");
+                     }
+                     else if (changedRows[i].FRCO_CELULAR_NUMERO === "" || isNaN(changedRows[i].FRCO_CELULAR_NUMERO) || changedRows[i].FRCO_CELULAR_NUMERO.length > 10) {
+                         window.alert("Campo Celular NR inválido");
+                     }
+                    // else if (changedRows[i].FRCO_CELULAR_OPERADORA === "" || changedRows[i].FRCO_CELULAR_OPERADORA.length > 20) {
+                    //     window.alert("Campo Operadora  com tamanho inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_DDD === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_DDD) || changedRows[i].FRCO_FONE_COMERCIAL_DDD.length > 3) {
+                    //     window.alert("Campo Fone Comercial DDD inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_NUMERO === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_NUMERO) || changedRows[i].FRCO_FONE_COMERCIAL_NUMERO.length > 10) {
+                    //     window.alert("Campo Fone Comercial NR  inválido");
+                    // }
+                    // else if (changedRows[i].FRCO_FONE_COMERCIAL_RAMAL === "" || isNaN(changedRows[i].FRCO_FONE_COMERCIAL_RAMAL) || changedRows[i].FRCO_FONE_COMERCIAL_RAMAL.length > 5) {
+                    //     window.alert("Campo Fone Comercial Ramal  inválido");
+                    // } 
+                    else {
                         salvarContato(changedRows[i]);
                         buscarContatos();
                     }
@@ -639,19 +684,18 @@ const CadastroFornecedor = () => {
                         <TextField required label="Situação" error={fornSituacao.length < 1 || fornSituacao.length > 12 ? true : false} disabled={!acessoCAD} maxLength={12} id="fornSituacao" type="text" onChange={(e) => setFornSituacao(e.target.value)} value={fornSituacao} style={{ maxWidth: "10em" }} />
                         <TextField required label="Inscrição Estadual" error={fornInscricaoEstadual.length > 20 ? true : false} disabled={!acessoCAD} maxLength={20} type="text" onChange={(e) => setFornInscricaoEstadual(e.target.value)} value={fornInscricaoEstadual} />
                         <TextField required label="Inscrição Municipal" error={fornInscricaoMunicipal.length > 20 ? true : false} disabled={!acessoCAD} maxLength={20} type="text" onChange={(e) => setFornInscricaoMunicipal(e.target.value)} value={fornInscricaoMunicipal} />
+                        <TextField required label="CEP" error={fornCep.length < 1 || fornCep.length > 10 ? true : false} disabled={!acessoCAD} id="cep" type="text" onChange={(e) => setFornCep(e.target.value)} value={fornCep} style={{ maxWidth: "11em" }}></TextField>
+                        <Button disabled={!acessoCAD} onClick={(e) => buscaCepOnline(e)} style={{ padding: "13px", marginTop: "11px" }} > BUSCAR CEP  </Button>
                         <TextField required select error={estadoUF.length < 1 ? true : false} label={"UF"} disabled={!acessoCAD} id="uf" onChange={(e) => setEstadoUF(e.target.value)} value={estadoUF} style={{ maxWidth: "6em" }} >
                             {listaUF.map((l) =>
                                 <MenuItem key={l.ID_UNIDADE_FEDERATIVA} value={l.UNFE_SIGLA}>{l.UNFE_SIGLA}</MenuItem>
                             )}
                         </TextField>
-                        <TextField required label="CEP" error={fornCep.length < 1 || fornCep.length > 10 ? true : false} disabled={!acessoCAD} id="cep" type="text" onChange={(e) => setFornCep(e.target.value)} value={fornCep} style={{ maxWidth: "11em" }}></TextField>
-                        <Button disabled={!acessoCAD} onClick={(e) => buscaCepOnline(e)} style={{ padding: "13px", marginTop: "11px" }} > BUSCAR CEP  </Button>
                         <TextField required label="Cidade" error={fornCidade.length < 1 || fornCidade.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="cidade" type="text" onChange={(e) => setFornCidade(e.target.value)} value={fornCidade} />
                         <TextField required label="Bairro" error={fornBairro.length < 1 || fornBairro.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="bairro" type="text" onChange={(e) => setFornBairro(e.target.value)} value={fornBairro} />
                         <TextField required label="Logradouro" error={fornRua.length < 1 || fornRua.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="lograd" type="text" onChange={(e) => setFornRua(e.target.value)} value={fornRua} style={{ minWidth: "25em" }} />
                         <TextField required label="NR" error={fornNumero.length < 1 || fornNumero.length > 10 ? true : false} disabled={!acessoCAD} maxLength={10} id="nrLograd" type="text" onChange={(e) => setFornNumero(e.target.value)} value={fornNumero} style={{ maxWidth: "11em" }} />
                         <TextField required label="Complemento" error={fornComplemento.length < 1 || fornComplemento.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="compl" type="text" onChange={(e) => setFornComplemento(e.target.value)} value={fornComplemento} style={{ minWidth: "25em" }} />
-                    
                         <TextField required label="Grupo Economico" error={fornGrupoEconomico.length < 1 || fornGrupoEconomico.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="grpeconomico" type="text" onChange={(e) => setFornGrupoEconomico(e.target.value)} value={fornGrupoEconomico} style={{ minWidth: "25em" }} />
                         <TextField required label="Hora Saida 1" error={fornHorarioSaida1.length < 1 || fornHorarioSaida1.length > 4 ? true : false} disabled={!acessoCAD} id="hr1" type="text" onChange={(e) => setFornHorarioSaida1(e.target.value)} value={fornHorarioSaida1} style={{ maxWidth: "11em" }}></TextField>
                         <TextField required label="Hora Saida 2" error={fornHorarioSaida2.length < 1 || fornHorarioSaida2.length > 4 ? true : false} disabled={!acessoCAD} id="hr2" type="text" onChange={(e) => setFornHorarioSaida2(e.target.value)} value={fornHorarioSaida2} style={{ maxWidth: "11em" }}></TextField>
@@ -660,7 +704,11 @@ const CadastroFornecedor = () => {
                             <MenuItem value={"Sim"} >Sim</MenuItem>
                             <MenuItem value={"Nao"}>Não</MenuItem>
                         </TextField>
-                        <TextField required label="Tipo Peça" error={fornTipoPeca.length < 1 || fornTipoPeca.length > 8 ? true : false} disabled={!acessoCAD} maxLength={128} id="tipopeca" type="text" onChange={(e) => setFornTipoPeca(e.target.value)} value={fornTipoPeca} style={{ minWidth: "25em" }} />
+                        <TextField required select label={"Tipo Peça"} disabled={!acessoCAD} id="tipopeca" value={fornTipoPeca} onChange={(e) => setFornTipoPeca(e.target.value)} style={{ maxWidth: "25em" }}>
+                            <MenuItem value={"Genuína"}>Genuína</MenuItem>
+                            <MenuItem value={"Original"}>Original</MenuItem> 
+                            <MenuItem value={"Paralela"}>Paralela</MenuItem> 
+                        </TextField>
                         <TextField required label="Faturamento Minimo" error={fornFaturamentoMinimo.length < 1 || fornFaturamentoMinimo.length > 10 ? true : false} disabled={!acessoCAD} id="fatmin" type="text" onChange={(e) => setFornFaturamentoMinimo(e.target.value)} value={fornFaturamentoMinimo} style={{ maxWidth: "11em" }}></TextField>
                         <TextField required label="Latitude" error={fornLatitude.length < 1 || fornLatitude.length > 8 ? true : false} disabled={!acessoCAD} id="latitude" type="text" onChange={(e) => setFornLatitude(e.target.value)} value={fornLatitude} style={{ maxWidth: "11em" }}></TextField>
                         <TextField required label="Longitude" error={fornLongitude.length < 1 || fornLongitude.length > 8 ? true : false} disabled={!acessoCAD} id="longitude" type="text" onChange={(e) => setFornLongitude(e.target.value)} value={fornLongitude} style={{ maxWidth: "11em" }}></TextField>
@@ -673,7 +721,7 @@ const CadastroFornecedor = () => {
 
                 <hr style={{ width: "100%" }} />
                 <div className="form-group col-md-7" style={{ display: displayCont }}   >
-                    <h3 id="titulo" >{acessoGeral || acessoCAD ? "Cadastrar Contato" : "Visualizar Contato"} </h3>
+                    <h3 id="titulos" style={{marginLeft:"15em"}} >{acessoGeral || acessoCAD ? "Cadastrar Contato" : "Visualizar Contato"} </h3>
                 </div>
 
                 <div style={{ display: displayCont }} className="form-group col-md-12"    >
@@ -684,6 +732,9 @@ const CadastroFornecedor = () => {
                         >
                             <ValidaNumberProv
                                 for={validaNumber}
+                            />
+                            <FuncaoProvider
+                                for={frcoFuncaoColumns}
                             />
 
                             <EditingState

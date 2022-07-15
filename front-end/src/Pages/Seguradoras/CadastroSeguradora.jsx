@@ -245,7 +245,7 @@ useEffect(()=>{
                             setIE(l.SGRA_INSCRICAO_ESTADUAL);
                             setIM(l.SGRA_INSCRICAO_MUNICIPAL);
                             setNomeCidade(l.SGRA_CIDADE);
-                            setEstadoUF(l.UNFE_SIGLA);
+                            setEstadoUF(l.UNFE_SIGLA.toString());
                             setLogradouro(l.SGRA_RUA);
                             setNrLogradouro(l.SGRA_NUMERO);
                             setSmtpSist(l.SGRA_SMTP);
