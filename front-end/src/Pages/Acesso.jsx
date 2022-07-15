@@ -150,12 +150,6 @@ const Acesso = () => {
       })
   }
 
-
-
-
-
-
-
   const alteraAcesso = (valor) => {
     if (valor === "ACESSO_MASTER") {
       return "ACESSO GERAL"
@@ -209,10 +203,39 @@ const Acesso = () => {
       return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_SACMONT") {
       return <span>Listar SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    } else if (valor === "LIST_PARAMLE") {
+      return <span>Listar Parametros de Leilão <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_PARAMLE") {
+      return <span>Editar Parametros de Leilão <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_PARAMLE") {
+      return <span>Excluir Parametros de Leilão <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_PARAMLE") {
+      return <span>Listar Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
+
+
+
+
+
+
+
     else { return valor }
 
   }
+
+  let gr = "";
+  if(grMen === "PARAMLE"){gr = "Parametros de leilão"}
+  else if(grMen ==="USUARIO" ){ gr = "Usuário"}
+  else if(grMen ==="SEGURADORA" ){ gr = "Seguradoras"}
+  else if(grMen ==="REGIAO" ){ gr = "Região"}
+  else if(grMen ==="JUSTIFICATIVA" ){ gr = "Justificativa do Item"}
+  else if(grMen ==="SACMONT" ){ gr = "Sac Montadora"}
+  else if(grMen ==="GERAL" ){ gr = "Permitidos"}
+
+
+
+
+
   const columns = ([
     {
       name: 'ACES_DESCRICAO', title: "ACESSO",
@@ -222,28 +245,16 @@ const Acesso = () => {
       name: 'ACESSOL', title: "ATIVO",
       getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
     },
-
-
-
   ])
 
   const [defaultColumnWidths] = useState([
     { columnName: 'ACES_DESCRICAO', width: 400 },
     { columnName: 'ACESSOL', width: 200 },
-
-
   ]);
-
-
-
 
   const [filteringStateColumnExtensions] = useState([
     { columnName: 'ALTERACAO', filteringEnabled: false, editingEnabled: false },
   ]);
-
-
-
-
 
 
   const BotaoAcessos = ({ value }) => (
@@ -282,7 +293,7 @@ const Acesso = () => {
   return (
 
     <div className="container-fluid " style={{ display: displayAcesso }} >
-      <h3 id="titulos"> Controle de Acessos {grMen} do grupo {grAce}</h3>
+      <h3 id="titulos"> Controle de Acessos {gr} do grupo {grAce}</h3>
       <button style={{ marginBottom: "5px" }} className="btn btn-outline-primary btnAcessoGr" onClick={(e) => navigate("/gruposDeAcesso")} >VOLTAR</button>
       <div className="card  "    >
         <Paper>

@@ -91,6 +91,7 @@ const HomePage = () => {
   const [displayAcessoSac, setDisplayAcessoSac] = useState("none");
   const [displayAcessoReg, setDisplayAcessoReg] = useState("none");
   const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
+  const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
@@ -110,6 +111,11 @@ const HomePage = () => {
   const incluirJust = "ADD_JUSTIFICATIVA";
   const excluirJust = "DEL_JUSTIFICATIVA";
   const editarJust = "EDIT_JUSTIFICATIVA";
+
+  const listaParamLe = "LIST_PARAMLE";
+  const incluirParamLe = "EDIT_PARAMLE";
+  const excluirParamLe = "DEL_PARAMLE";
+  const editarParamLe = "ADD_PARAMLE";
 
   useEffect(() => {
     if (nomeUser()) {
@@ -131,6 +137,7 @@ const HomePage = () => {
                   setDisplayAcessoSac("");
                   setDisplayAcessoReg("");
                   setDisplayAcessoJust("");
+                  setDisplayAcessoParamLe("");
 
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
@@ -144,6 +151,9 @@ const HomePage = () => {
                 }
                 if (listaJust === ac || incluirJust === ac || excluirJust === ac || editarJust === ac) {
                   setDisplayAcessoJust("");
+                }
+                if (listaParamLe === ac || incluirParamLe === ac || excluirParamLe === ac || editarParamLe === ac) {
+                  setDisplayAcessoParamLe("");
                 }
 
 
@@ -194,7 +204,7 @@ const HomePage = () => {
     handleDrawerClose();
   };
   const parametrosDeLeilao = () => {
-    navigate("/parametrosLeilao");
+    navigate("/listarparametrosLeilao");
     handleDrawerClose();
   }
   const marcaVeiculo = () => {
@@ -331,7 +341,7 @@ const HomePage = () => {
                   <ListItemText primary={"Marca Veículo"} />
                 </ListItemButton>
 
-                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                <ListItem disablePadding style={{ display: displayAcessoParamLe }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
                     <ListItemIcon>
                       <ListIcon />

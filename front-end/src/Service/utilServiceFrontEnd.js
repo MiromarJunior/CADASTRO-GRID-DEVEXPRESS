@@ -346,3 +346,9 @@ export const criandoU = (n) => {
 
   return res;
 };
+
+export const formatHrLeilao = (valor) =>{
+  
+    return valor.replace(",",":").replace(" ","");
+   
+}
