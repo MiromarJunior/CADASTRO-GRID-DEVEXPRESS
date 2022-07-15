@@ -81,7 +81,7 @@ const SacMontadoras = () => {
             res.data.forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
-
+                setAcessoCad(true);
                 setDisplayADD("");
                 setDisplayDEL("");
                 setDisplayEDIT("");

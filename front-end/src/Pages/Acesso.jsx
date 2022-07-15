@@ -229,8 +229,6 @@ const Acesso = () => {
       return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
 
-
-
     else { return valor }
 
   }
