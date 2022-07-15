@@ -203,6 +203,14 @@ const Acesso = () => {
       return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_SACMONT") {
       return <span>Listar SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    } else if (valor === "LIST_FORNECEDOR") {
+      return <span>Listar Fornecedor <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_FORNECEDOR") {
+      return <span>Editar Fornecedor <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_FORNECEDOR") {
+      return <span>Excluir Fornecedor <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_FORNECEDOR") {
+      return <span>Listar Fornecedor <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "LIST_PARAMLE") {
       return <span>Listar Parametros de Leilão <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_PARAMLE") {
@@ -220,8 +228,6 @@ const Acesso = () => {
     } else if (valor === "ADD_TIPOPECA") {
       return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
-
 
 
 
