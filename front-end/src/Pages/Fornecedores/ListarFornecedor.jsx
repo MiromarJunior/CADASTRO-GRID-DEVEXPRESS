@@ -25,8 +25,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 
-const getRowId = row => row.id;
-const ListarFornecedor = () => {
+
+
+    const getRowId = row => row.id;
+    const ListarFornecedor = () => {
     const [rows, setRows] = useState([]);
     const navigate = useNavigate();     
     const { logout, nomeUser } = useContext(AuthContext);
@@ -43,7 +45,6 @@ const ListarFornecedor = () => {
     const incluirForn = "ADD_FORN";  
     const excluirForn = "DEL_FORN";
     const editarForn = "EDIT_FORN";
-
 
     useEffect(() => {     
         const acessoMenuUser = async ()=>{          
@@ -146,7 +147,7 @@ const ListarFornecedor = () => {
   const columns  =
   (     acessoGeral || acessoADD ?
     
-           [{ name: 'FORN_CNPJ', title: `CNPJ` },
+        [{ name: 'FORN_CNPJ', title: `CNPJ` },
         { name: 'FORN_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
         { name: 'FORN_CIDADE', title: "CIDADE" },        
         {name: "ALTERACAO", title: BotaoAd,

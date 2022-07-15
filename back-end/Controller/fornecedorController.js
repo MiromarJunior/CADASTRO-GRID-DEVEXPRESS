@@ -102,7 +102,7 @@ let idEstado;
                           FORN_INSCRICAO_MUNICIPAL      = :FORN_INSCRICAO_MUNICIPAL,   
                           FORN_CEP                      = :FORN_CEP,                   
                           FORN_CIDADE                   = :FORN_CIDADE,               
-                          ID_UNIDADE_FEDERATIVA         = :ID_UNIDADE_FEDERATIVA       
+                          ID_UNIDADE_FEDERATIVA         = :ID_UNIDADE_FEDERATIVA,       
                           FORN_RUA                      = :FORN_RUA,                
                           FORN_NUMERO                   = :FORN_NUMERO,               
                           FORN_COMPLEMENTO              = :FORN_COMPLEMENTO,           
@@ -487,10 +487,10 @@ router.post("/listarContatoFornecedor", async(req, res)=> {
   });
   
 router.post("/excluirContatoFornecedor", async(req, res)=> {
-    const {token,  idFornecedor_contato
+    const {token,  idCont
   } =req.body;
   
-      let connection = await oracledb.getConnection(dbConfig);
+  let connection = await oracledb.getConnection(dbConfig);
   
   let deleteSql = "";
   
@@ -505,13 +505,15 @@ router.post("/excluirContatoFornecedor", async(req, res)=> {
           deleteSql =(
             ` 
             DELETE FROM FORNECEDOR_CONTATO 
-            WHERE  ID_FORNECEDOR_CONTATO = ${idFornecedor_contato}
-|           `  
+            WHERE  ID_FORNECEDOR_CONTATO = ${idCont}
+            `  
           )
                         
         }
     })  
     try {
+      console.log(deleteSql);
+    
     await connection.execute( deleteSql
       ,
        [],
