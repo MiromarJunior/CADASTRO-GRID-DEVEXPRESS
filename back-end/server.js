@@ -57,6 +57,9 @@ app.listen(port, () => {
   let tipoPecas = require("./Controller/tipoPeca");
   app.use("/",tipoPecas);
 
+  let statusItem = require("./Controller/tipoPeca");
+  app.use("/",statusItem);
+
   console.log("Servidor online na porta  : ", port);
 });
 
