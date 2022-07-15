@@ -23,6 +23,7 @@ import SacMontadoras from "./Pages/SacMontadoras/SacMontadoras";
 import Regiao from "./Pages/Regiao/Regiao";
 import JustificativaItem from "./Pages/JustificativaItem/JustificativaItem";
 import Municipios from "./Pages/Municipios/Municipios";
+import TipoPeca from "./Pages/TipoPeca/TipoPeca";
 import ListarParametroLeilao from "./Pages/Leilao/ListarParametroLeilao";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
@@ -60,6 +61,7 @@ const AppRotas = () => {
           <Route exact path="/listarUsuario" element={<Private><ListarUsuario/></Private>}/>
           <Route exact path="/marcaVeiculo" element={<Private><MarcaVeiculo/></Private>}/>
           <Route exact path="/sacmontadoras" element={<Private> <SacMontadoras /></Private>}/>
+          <Route exact path="/tipoPeca" element={<Private> <TipoPeca /> </Private>} />
           <Route exact path="/regiao" element={<Private> <Regiao /> </Private>} />
           <Route exact path="/justificativaItem" element={<Private><JustificativaItem /> </Private>} />
           <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
