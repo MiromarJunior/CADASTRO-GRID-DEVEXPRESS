@@ -19,7 +19,7 @@ import {
     TableColumnResizing,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoForID, getContatoFornecedor, getFornecedor, saveContatoFornecedor, saveFornecedor } from "../../Service/fornecedorService";
-import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCodLEG, validaNomeFANT, validaOpSIMPLES, validaStatusSEG, validaTipoPESSOA, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure, validaCampo } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -126,11 +126,8 @@ const CadastroFornecedor = () => {
     const [fornMultimarcas, setFornMultimarcas] = useState("");
     const [fornTipoPeca, setFornTipoPeca] = useState("");
     const [fornFaturamentoMinimo, setFornFaturamentoMinimo] = useState("");
-    const [fornLatitude, setfornLatitude] = useState("");
+    const [fornLatitude, setFornLatitude] = useState("");
     const [fornLongitude, setFornLongitude] = useState("");
-
-
-
     const { idFornecedor } = useParams();
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
@@ -250,9 +247,9 @@ const CadastroFornecedor = () => {
                                 setFornHorarioSaida2(l.FORN_HORARIO_SAIDA2);
                                 setFornHorarioSaida3(l.FORN_HORARIO_SAIDA3);
                                 setFornMultimarcas(l.FORN_MULTIMARCAS);
-                                //  setFornNaturezaJuridica(l.FORN_TIPO_PECA);                        
+                                setFornTipoPeca(l.FORN_TIPO_PECA);                        
                                 setFornFaturamentoMinimo(l.FORN_FATURAMENTO_MINIMO);
-                                setfornLatitude(l.FORN_LATITUDE);
+                                setFornLatitude(l.FORN_LATITUDE);
                                 setFornLongitude(l.FORN_LONGITUDE);
                             })
                         }
@@ -302,41 +299,24 @@ const CadastroFornecedor = () => {
             fornBairro, fornGrupoEconomico, fornHorarioSaida1, fornHorarioSaida2, fornHorarioSaida3, fornMultimarcas,
             fornTipoPeca, fornFaturamentoMinimo, fornLatitude, fornLongitude, token, idFornecedor: idFornecedorN, acessoGeral
 
-            //codLegado: apenasNr(codLegado), cnpjSeguradora: apenasNr(cnpjSeguradora),
-            //tipoPessoa, optSimples, statusSeg,
-            //razaoSocial, nomeFantasia, ie: apenasNr(ie), im: apenasNr(im),
-            //logradouro, complemento, bairro, estadoUF, nrLogradouro, cep: apenasNr(cep),
-            //nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
-            //remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
-            //soapRetSol, soapRetNotas,token, idSeg: idSegN,  acessoGeral
         };
 
-
-
-        if (validaRAZAO(fornRazaoSocial) &&
-            //validaNomeFANT() &&
+        if ( 
             validaCNPJ(fornCnpj) &&
-            //validaCodLEG() &&
-            validaTipoPESSOA(fornNaturezaJuridica) &&
-            validaOpSIMPLES(fornOptanteSimplesNacional) &&
-            validaStatusSEG(fornStatus) &&
-            validaCEP(fornCep) &&
-            validaUF(estadoUF)
-            //validaCIDADE() &&
-            //validaBAIRRO() &&
-            //validaLOGRAD() &&
-            //validaNRLOGRAD() &&
-            //validaCOMPL() &&
-            //validaSMTP() &&
-            //validaPORTA() &&
-            //validaEMAIL() &&
-            //validaSEMAIL() &&
-            //validaREMET() &&
-            //validaNREMET() &&
-            //validaSOAPRET() &&
-            //validaSOAPNOT() &&
-            //validaSMTPAuth() &&
-            //validaSMTPSecure()
+            validaCampo(fornIdLegado,'Código Legado Obrigatório',64,'Tamanho campo Código Legado invalido')&&
+            validaCampo(fornNaturezaJuridica,'Natureza Juridica Obrigatório',12,'Tamanho campo Natureza Juridica invalido')&&
+            validaCampo(fornNomeFantasia,'Nome Fantasia Obrigatório',64,'Tamanho campo Nome Fantasia invalido')&&
+            validaCampo(fornRazaoSocial,'Razão Social Obrigatório',128,'Tamanho campo Razão invalido')&&
+            validaCampo(fornOptanteSimplesNacional,'Optante Simples Nacional Obrigatório',3,'Tamanho campo Optante Simples Nacional invalido')&&
+            validaCampo(fornStatus,'Status Obrigatório',7,'Tamanho campo Status invalido')&&
+            validaCampo(fornSituacao,'Situação Obrigatório',12,'Tamanho campo Situação invalido')&&
+            validaCampo(fornCep,'CEP Obrigatório',8,'Tamanho campo CEP invalido')&&
+            validaCampo(fornCidade,'Cidade Obrigatório',64,'Tamanho campo Cidade invalido')&&
+            validaCampo(fornRua,'Rua Obrigatório',128,'Tamanho campo Rua invalido')&&
+            validaCampo(estadoUF,'UF Obrigatório',2,'Tamanho campo UF invalido')&&
+            validaCampo(fornNumero,'Numero Obrigatório',10,'Tamanho campo Numero invalido')&&
+            validaCampo(fornComplemento,'Complemento Obrigatório',64,'Tamanho campo Complemento invalido')&&
+            validaCampo(fornBairro,'Bairro Obrigatório',64,'Tamanho campo Bairro invalido')
 
         ) {
             saveFornecedor(dados)
@@ -355,8 +335,6 @@ const CadastroFornecedor = () => {
                     else if (res.data === "erroSalvar") {
                         alert("Erro a tentar salvar ou alterar!!!");
                     }
-
-
                     else {
                         if (idFornecedorN > 0) {
                             window.alert("Fornecedor Alterada com Sucesso!!!");
@@ -440,11 +418,6 @@ const CadastroFornecedor = () => {
                     if (data.erro) {
                         window.alert("CEP não encontrado")
                     } else {
-                        //setBairro(data.bairro);
-                        //setEstadoUF(data.uf);
-                        //setLogradouro(data.logradouro);
-                        //setNomeCidade(data.localidade);
-
                         setFornBairro(data.bairro);
                         setEstadoUF(data.uf);
                         setFornRua(data.logradouro);
@@ -678,6 +651,20 @@ const CadastroFornecedor = () => {
                         <TextField required label="Logradouro" error={fornRua.length < 1 || fornRua.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="lograd" type="text" onChange={(e) => setFornRua(e.target.value)} value={fornRua} style={{ minWidth: "25em" }} />
                         <TextField required label="NR" error={fornNumero.length < 1 || fornNumero.length > 10 ? true : false} disabled={!acessoCAD} maxLength={10} id="nrLograd" type="text" onChange={(e) => setFornNumero(e.target.value)} value={fornNumero} style={{ maxWidth: "11em" }} />
                         <TextField required label="Complemento" error={fornComplemento.length < 1 || fornComplemento.length > 64 ? true : false} disabled={!acessoCAD} maxLength={64} id="compl" type="text" onChange={(e) => setFornComplemento(e.target.value)} value={fornComplemento} style={{ minWidth: "25em" }} />
+                    
+                        <TextField required label="Grupo Economico" error={fornGrupoEconomico.length < 1 || fornGrupoEconomico.length > 128 ? true : false} disabled={!acessoCAD} maxLength={128} id="grpeconomico" type="text" onChange={(e) => setFornGrupoEconomico(e.target.value)} value={fornGrupoEconomico} style={{ minWidth: "25em" }} />
+                        <TextField required label="Hora Saida 1" error={fornHorarioSaida1.length < 1 || fornHorarioSaida1.length > 4 ? true : false} disabled={!acessoCAD} id="hr1" type="text" onChange={(e) => setFornHorarioSaida1(e.target.value)} value={fornHorarioSaida1} style={{ maxWidth: "11em" }}></TextField>
+                        <TextField required label="Hora Saida 2" error={fornHorarioSaida2.length < 1 || fornHorarioSaida2.length > 4 ? true : false} disabled={!acessoCAD} id="hr2" type="text" onChange={(e) => setFornHorarioSaida2(e.target.value)} value={fornHorarioSaida2} style={{ maxWidth: "11em" }}></TextField>
+                        <TextField required label="Hora Saida 3" error={fornHorarioSaida3.length < 1 || fornHorarioSaida3.length > 4 ? true : false} disabled={!acessoCAD} id="hr3" type="text" onChange={(e) => setFornHorarioSaida3(e.target.value)} value={fornHorarioSaida3} style={{ maxWidth: "11em" }}></TextField>
+                        <TextField required select error={fornMultimarcas.length < 1 ? true : false} label="Multimarcas" disabled={!acessoCAD} id="multmarca" value={fornMultimarcas} onChange={(e) => setFornMultimarcas(e.target.value)} style={{ maxWidth: "11em" }}>
+                            <MenuItem value={"Sim"} >Sim</MenuItem>
+                            <MenuItem value={"Nao"}>Não</MenuItem>
+                        </TextField>
+                        <TextField required label="Tipo Peça" error={fornTipoPeca.length < 1 || fornTipoPeca.length > 8 ? true : false} disabled={!acessoCAD} maxLength={128} id="tipopeca" type="text" onChange={(e) => setFornTipoPeca(e.target.value)} value={fornTipoPeca} style={{ minWidth: "25em" }} />
+                        <TextField required label="Faturamento Minimo" error={fornFaturamentoMinimo.length < 1 || fornFaturamentoMinimo.length > 10 ? true : false} disabled={!acessoCAD} id="fatmin" type="text" onChange={(e) => setFornFaturamentoMinimo(e.target.value)} value={fornFaturamentoMinimo} style={{ maxWidth: "11em" }}></TextField>
+                        <TextField required label="Latitude" error={fornLatitude.length < 1 || fornLatitude.length > 8 ? true : false} disabled={!acessoCAD} id="latitude" type="text" onChange={(e) => setFornLatitude(e.target.value)} value={fornLatitude} style={{ maxWidth: "11em" }}></TextField>
+                        <TextField required label="Longitude" error={fornLongitude.length < 1 || fornLongitude.length > 8 ? true : false} disabled={!acessoCAD} id="longitude" type="text" onChange={(e) => setFornLongitude(e.target.value)} value={fornLongitude} style={{ maxWidth: "11em" }}></TextField>
+                   
                     </div>
                 </Box>
             </div>
