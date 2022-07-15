@@ -2,6 +2,7 @@ import Paper from "@mui/material/Paper";
 
 import {
   
+  DataTypeProvider,
   EditingState,
   FilteringState,
   IntegratedFiltering,
@@ -32,6 +33,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { saveTipoPeca, getTipoPeca, deleteTipoPeca, } from "../../Service/tipoPeca";
 
 import { getAcessoUserMenu } from "../../Service/usuarioService";
+import { Input, MenuItem, Select } from "@mui/material";
 // import { validaDescricao } from "../../Service/utilServiceFrontEnd";
 
 

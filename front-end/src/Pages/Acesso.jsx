@@ -252,21 +252,21 @@ const Acesso = () => {
   else if(grMen ==="STATUSITEM" ){ gr = "Status de Item"}
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
   else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
+  else if(grMen ==="STATUSITEM" ){ gr = "Status Item"}
 
 
 
 
 
   const columns = ([
-    {
-      name: 'ACES_DESCRICAO', title: "ACESSO",
-      getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),
+    { name: 'ACES_DESCRICAO', title: "ACESSO", 
+    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)), 
     },
     {
       name: 'ACESSOL', title: "ATIVO",
       getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
     },
-  ])
+    ])
 
   const [defaultColumnWidths] = useState([
     { columnName: 'ACES_DESCRICAO', width: 400 },

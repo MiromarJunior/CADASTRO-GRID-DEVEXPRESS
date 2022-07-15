@@ -137,6 +137,7 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoParamLe] = useState(["ACESSOPARAMLE"]);  
   const [botaoAcessoTipoPeca] = useState(["ACESSOTIPOPECA"]);  
   const [botaoAcessoFornecedor] = useState(["ACESSOFORNECEDOR"]);  
+  const [botaoAcessoStatusItem] = useState(["ACESSOSTATUSITEM"]);  
   
   
   
@@ -332,6 +333,10 @@ const GrupoDeAcesso = () => {
       name: "ACESSOFORNECEDOR", title: "Fornecedores ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOSTATUSITEM", title: "Status Item ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
 
 
 
@@ -357,6 +362,7 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOPARAMLE', width: 200 },
     { columnName: 'ACESSOTIPOPECA', width: 200 },
     { columnName: 'ACESSOFORNECEDOR', width: 200 },
+    { columnName: 'ACESSOSTATUSITEM', width: 200 },
 
   ])
 
@@ -574,7 +580,21 @@ const GrupoDeAcesso = () => {
 
     />
   )
+  const BotaoAcessoStatusItem = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/STATUSITEM`)}>STATUS ITEM</button>
 
+    </div>
+
+  )
+  const BotaoAcessoStatusItemProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoStatusItem}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
 
 
 
@@ -616,6 +636,9 @@ const GrupoDeAcesso = () => {
             />
              <BotaoAcessoFornecedorProv
              for={botaoAcessoFornecedor}
+            />
+            <BotaoAcessoStatusItemProv
+             for={botaoAcessoStatusItem}
             />
 
 

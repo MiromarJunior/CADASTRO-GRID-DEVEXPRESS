@@ -95,6 +95,7 @@ const HomePage = () => {
   const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
   const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
   const [displayAcessoFornecedor, setDisplayAcessoFornecedor] = useState("none");
+  const [displayAcessoStatusItem, setDisplayAcessoStatusItem] = useState("none");
   
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
@@ -131,6 +132,11 @@ const HomePage = () => {
   const excluirFornecedor = "DEL_FORNECEDOR";
   const editarFornecedor = "EDIT_FORNECEDOR";
 
+  const listaStatusItem = "LIST_STIT";
+  const incluirStatusItem = "ADD_STIT";
+  const excluirStatusItem = "DEL_STIT";
+  const editarStatusItem = "EDIT_STIT";
+
   useEffect(() => {
     if (nomeUser()) {
       const acessoMenuUser = async () => {
@@ -154,6 +160,7 @@ const HomePage = () => {
                   setDisplayAcessoParamLe("");
                   setDisplayAcessoTipoPeca("");
                   setDisplayAcessoFornecedor("");
+                  setDisplayAcessoStatusItem("")
 
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
@@ -176,6 +183,9 @@ const HomePage = () => {
                 }
                 if (listaFornecedor === ac || incluirFornecedor === ac || excluirFornecedor === ac || editarFornecedor === ac) {
                   setDisplayAcessoFornecedor("");
+                }
+                if (listaStatusItem === ac || incluirStatusItem === ac || excluirStatusItem === ac || editarStatusItem === ac) {
+                  setDisplayAcessoStatusItem("");
                 }
 
 
@@ -260,6 +270,11 @@ const HomePage = () => {
 
   const tipoPeca = () => {
     navigate("/tipoPeca");
+    handleDrawerClose();
+  };
+
+  const statusItem = () => {
+    navigate("/statusItem");
     handleDrawerClose();
   };
 
@@ -360,6 +375,18 @@ const HomePage = () => {
                   </ListItemIcon>
                   <ListItemText primary={"Grupo do Item"} />
                 </ListItemButton>
+
+                <ListItem disablePadding style={{ display: displayAcessoStatusItem }}>
+                  <ListItemButton onClick={() => statusItem()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Status Item"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
 
                 <ListItemButton onClick={() => marcaVeiculo()}>
                   <ListItemIcon>
