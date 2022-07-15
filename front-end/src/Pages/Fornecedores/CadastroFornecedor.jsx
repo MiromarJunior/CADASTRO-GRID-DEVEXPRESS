@@ -19,7 +19,7 @@ import {
     TableColumnResizing,
 } from '@devexpress/dx-react-grid-material-ui';
 import { deleteContatoForID, getContatoFornecedor, getFornecedor, saveContatoFornecedor, saveFornecedor } from "../../Service/fornecedorService";
-import { apenasNr, validaCNPJ, validaEMAIL, validaRAZAO, validaCEP, validaUF, validaCIDADE, validaBAIRRO, validaLOGRAD, validaNRLOGRAD, validaCOMPL, validaSMTP, validaPORTA, validaSEMAIL, validaREMET, validaNREMET, validaSOAPRET, validaSOAPNOT, validaSMTPAuth, validaSMTPSecure, validaCampo } from "../../Service/utilServiceFrontEnd";
+import { apenasNr, validaCNPJ, validaCampo } from "../../Service/utilServiceFrontEnd";
 import { getUnidadeFederativa } from "../../Service/enderecoService";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -126,6 +126,7 @@ const Command = ({ id, onExecute }) => {
     );
 };
 
+let acessoGeral = false;
 
 const CadastroFornecedor = () => {
     const { logout, nomeUser } = useContext(AuthContext);
@@ -165,47 +166,63 @@ const CadastroFornecedor = () => {
     const [listaUF, setListaUF] = useState([]);
     const [editingRowIds, getEditingRowIds] = useState([]);
     const [rowChanges, setRowChanges] = useState({});
-    const [acessoGeral, setAcessoGeral] = useState(false);
+    //const [acessoGeral, setAcessoGeral] = useState(false);
+    //const [acessoCAD, setAcessoCAD] = useState(false);
+    //verificar
+   
+    const [frcoFuncaoColumns] = useState(['FRCO_FUNCAO']);
+    const listaFornec = "LIST_FORNECEDOR";
+    const incluirFornec = "ADD_FORNECEDOR";
+    const excluirFornec = "DEL_FORNECEDOR";
+    const editarFornec = "EDIT_FORNECEDOR";
     const [acessoCAD, setAcessoCAD] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");
-    //verificar
-    const editarSgra = "EDIT_SGRA";
-    const [frcoFuncaoColumns] = useState(['FRCO_FUNCAO']);
-    
 
     useEffect(() => {
         const acessoMenuUser = async () => {
-            let dados = { token, usuario: nomeUser() };
-            await getAcessoUserMenu(dados)
-                .then((res) => {
-                    if (res.data === "erroLogin") {
-                        window.alert("Sessão expirada, Favor efetuar um novo login !!");
-                        logout();
-                        window.location.reload();
-                    }
-                    else if (res.data === "semAcesso") {
-                        window.alert("Usuário sem permissão !!!");
-
-                    } else {
-                        (res.data).forEach((ac) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || editarSgra === ac) {
-                                setAcessoGeral(true);
-                                setAcessoCAD(true);
-                                setDisplayAcesso("");
-                            }
-                        })
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                    window.alert("Erro ao buscar Usuário !!")
-                })
-        }
+          let dados = { token, usuario: nomeUser() };
+          await getAcessoUserMenu(dados)
+            .then((res) => {
+              if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              } else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");
+              } else {
+                res.data.forEach((ac) => {
+                  if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                    acessoGeral = true;
+                    setAcessoCAD(true);
+                    buscarFornecedores();
+                    setDisplayAcesso("");
+                    
+                  } else if (incluirFornec === ac) {
+                    setAcessoCAD(true);
+                    setDisplayAcesso("");
+                  } else if (listaFornec === ac) {
+                    buscarFornecedores();
+                  } else if (excluirFornec === ac) {
+                    setAcessoCAD(true);
+                  } else if (editarFornec === ac) {
+                    buscarFornecedores();
+                    setDisplayAcesso("");
+                  }
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+    
+              window.alert("Erro ao buscar Usuário SAC!!");
+    
+            });
+        };
+    
         acessoMenuUser();
-        buscarContatos(idFornecedorN);
-
-        //eslint-disable-next-line
-    }, [idFornecedor, idFornecedorN, logout, nomeUser, token]);
+        buscarContatos(idFornecedorN); 
+        // eslint-disable-next-line
+      }, [idFornecedorN,logout,nomeUser, token]);
 
     useEffect(() => {
         const buscaUnidadeFederativa = async () => {
@@ -228,7 +245,6 @@ const CadastroFornecedor = () => {
     }, [logout, token]);
 
 
-    useEffect(() => {
         const buscarFornecedores = async () => {
 
             if (idFornecedor > 0) {
@@ -250,10 +266,7 @@ const CadastroFornecedor = () => {
                             alert("Erro a tentar salvar ou alterar!!!");
                         } else {
 
-
                             res.data.forEach((l) => {
-
-
                                 setFornCnpj(l.FORN_CNPJ);
                                 setFornIdLegado(l.FORN_ID_LEGADO);
                                 setFornNaturezaJuridica(l.FORN_NATUREZA_JURIDICA);
@@ -290,7 +303,7 @@ const CadastroFornecedor = () => {
             }
         }
         buscarFornecedores();
-    }, [idFornecedor, logout, token])
+
     const buscarContatos = async (idFornecedorN) => {
         const dados = { token, idFornecedor: idFornecedorN, acessoGeral }
         await getContatoFornecedor(dados)
@@ -708,7 +721,7 @@ const CadastroFornecedor = () => {
 
                 <hr style={{ width: "100%" }} />
                 <div className="form-group col-md-7" style={{ display: displayCont }}   >
-                    <h3 id="titulo" >{acessoGeral || acessoCAD ? "Cadastrar Contato" : "Visualizar Contato"} </h3>
+                    <h3 id="titulos" style={{marginLeft:"15em"}} >{acessoGeral || acessoCAD ? "Cadastrar Contato" : "Visualizar Contato"} </h3>
                 </div>
 
                 <div style={{ display: displayCont }} className="form-group col-md-12"    >
