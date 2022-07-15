@@ -211,9 +211,15 @@ const Acesso = () => {
       return <span>Excluir Parametros de Leilão <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_PARAMLE") {
       return <span>Listar Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }else if (valor === "LIST_TIPOPECA") {
+      return <span>Listar Tipo de Peças <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_TIPOPECA") {
+      return <span>Editar Tipo de Peças <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_TIPOPECA") {
+      return <span>Excluir Tipo de Peças <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_TIPOPECA") {
+      return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
-
 
 
 
@@ -230,6 +236,7 @@ const Acesso = () => {
   else if(grMen ==="REGIAO" ){ gr = "Região"}
   else if(grMen ==="JUSTIFICATIVA" ){ gr = "Justificativa do Item"}
   else if(grMen ==="SACMONT" ){ gr = "Sac Montadora"}
+  else if(grMen ==="TIPOPECA" ){ gr = "Tipo de peças"}
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
 
 

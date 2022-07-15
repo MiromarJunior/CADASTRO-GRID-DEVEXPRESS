@@ -366,7 +366,7 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
-                <ListItem disablePadding >
+                <ListItem disablePadding  style={{ display: displayAcessoTipoPeca }}>
                   <ListItemButton onClick={() => tipoPeca()}>
                     <ListItemIcon>
                       <ListIcon />

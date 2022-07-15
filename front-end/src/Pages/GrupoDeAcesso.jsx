@@ -135,6 +135,9 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoJust] = useState(["ACESSOJUSTIFICATIVA"]);
   const [botaoAcessoSac] = useState(["ACESSOSAC"]);  
   const [botaoAcessoParamLe] = useState(["ACESSOPARAMLE"]);  
+  const [botaoAcessoTipoPeca] = useState(["ACESSOTIPOPECA"]);  
+  
+  
    
   const [pageSizes] = useState([5, 10, 15, 0]);
   const [acessoGeral, setAcessoGeral] = useState(false);
@@ -319,6 +322,10 @@ const GrupoDeAcesso = () => {
       name: "ACESSOPARAMLE", title: "ACESSO PARAM LEILÃO ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOTIPOPECA", title: "ACESSO TIPO PEÇA ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
 
 
 
@@ -342,6 +349,7 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOSAC', width: 150 },
     { columnName: 'ACESSOJUSTIFICATIVA', width: 180 },
     { columnName: 'ACESSOPARAMLE', width: 200 },
+    { columnName: 'ACESSOTIPOPECA', width: 200 },
 
   ])
 
@@ -529,7 +537,21 @@ const GrupoDeAcesso = () => {
 
     />
   )
+  const BotaoAcessoTipoPeca = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/TIPOPECA`)}>TIPO DE PEÇAS</button>
 
+    </div>
+
+  )
+  const BotaoAcessoTipoPecaProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoTipoPeca}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
   
 
 
@@ -563,8 +585,10 @@ const GrupoDeAcesso = () => {
               for={botaoAcessoSac}
             />
             <BotaoAcessoParamLeProv
-            for={botaoAcessoParamLe}
-            
+            for={botaoAcessoParamLe}            
+            />
+            <BotaoAcessoTipoPecaProv
+             for={botaoAcessoTipoPeca}
             />
 
 
