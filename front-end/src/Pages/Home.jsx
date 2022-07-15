@@ -94,6 +94,7 @@ const HomePage = () => {
   const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
   const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
   const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
+  const [displayAcessoFornecedor, setDisplayAcessoFornecedor] = useState("none");
   
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
@@ -125,6 +126,11 @@ const HomePage = () => {
   const excluirTipoPeca = "DEL_TIPOPECA";
   const editarTipoPeca = "EDIT_TIPOPECA";
 
+  const listaFornecedor = "LIST_FORNECEDOR";
+  const incluirFornecedor = "ADD_FORNECEDOR";
+  const excluirFornecedor = "DEL_FORNECEDOR";
+  const editarFornecedor = "EDIT_FORNECEDOR";
+
   useEffect(() => {
     if (nomeUser()) {
       const acessoMenuUser = async () => {
@@ -146,6 +152,8 @@ const HomePage = () => {
                   setDisplayAcessoReg("");
                   setDisplayAcessoJust("");
                   setDisplayAcessoParamLe("");
+                  setDisplayAcessoTipoPeca("");
+                  setDisplayAcessoFornecedor("");
 
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
@@ -165,6 +173,9 @@ const HomePage = () => {
                 }
                 if (listaTipoPeca === ac || incluirTipoPeca === ac || excluirTipoPeca === ac || editarTipoPeca === ac) {
                   setDisplayAcessoTipoPeca("");
+                }
+                if (listaFornecedor === ac || incluirFornecedor === ac || excluirFornecedor === ac || editarFornecedor === ac) {
+                  setDisplayAcessoFornecedor("");
                 }
 
 
@@ -375,7 +386,7 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
-                <ListItem disablePadding >
+                <ListItem disablePadding style={{ display: displayAcessoFornecedor }} >
                   <ListItemButton onClick={() => listarFornecedor()}>
                     <ListItemIcon>
                       <ListIcon />

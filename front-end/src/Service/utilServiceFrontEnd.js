@@ -369,9 +369,9 @@ export const validaCampo = (valor,msg1,tam,msg2) =>{
   //msg1  = msg para null 
   //tam   = tamanho do campo
   //msg2  = msg para o tamanho quantidade
-  
-  if (valor.length > 0 ){
-    if (valor.length > tam){
+
+  if (valor.toString().length > 0 ){
+    if (valor.toString().length > tam){
       window.alert(msg2);
       return false;
     }

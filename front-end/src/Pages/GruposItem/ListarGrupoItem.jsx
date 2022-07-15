@@ -310,8 +310,8 @@ const ListarGrupoItem = () => {
 
   return (
     <div className="container-fluid">
-      <h3 id="titulos">Grupo do Item​</h3>
-      <div className="container">
+      <h3 id="titulos">Grupo do Item​ </h3>
+      <div className="container-fluid">
         <Paper>
           <Grid rows={rows} columns={columns}>
             <SortingState columnExtensions={editingStateColumns} />
