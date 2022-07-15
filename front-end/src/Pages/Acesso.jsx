@@ -244,6 +244,7 @@ const Acesso = () => {
   else if(grMen ==="SACMONT" ){ gr = "Sac Montadora"}
   else if(grMen ==="TIPOPECA" ){ gr = "Tipo de peças"}
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
+  else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
 
 
 
@@ -306,7 +307,7 @@ const Acesso = () => {
   return (
 
     <div className="container-fluid " style={{ display: displayAcesso }} >
-      <h3 id="titulos"> Controle de Acessos {gr} do grupo {grAce}</h3>
+      <h3 id="titulos"> Controle de Acessos {gr} <br/>do Grupo de Acesso {grAce}</h3>
       <button style={{ marginBottom: "5px" }} className="btn btn-outline-primary btnAcessoGr" onClick={(e) => navigate("/gruposDeAcesso")} >VOLTAR</button>
       <div className="card  "    >
         <Paper>
