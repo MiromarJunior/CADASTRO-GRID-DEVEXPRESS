@@ -146,6 +146,7 @@ const HomePage = () => {
                   setDisplayAcessoReg("");
                   setDisplayAcessoJust("");
                   setDisplayAcessoParamLe("");
+                  setDisplayAcessoTipoPeca("");
 
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {

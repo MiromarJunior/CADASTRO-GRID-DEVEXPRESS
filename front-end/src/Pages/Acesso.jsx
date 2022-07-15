@@ -220,8 +220,8 @@ const Acesso = () => {
     } else if (valor === "ADD_TIPOPECA") {
       return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
-
+// teste iury1
+// teste iury2 
 
 
 
