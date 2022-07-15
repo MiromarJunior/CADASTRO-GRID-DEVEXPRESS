@@ -384,3 +384,9 @@ export const validaCampo = (valor,msg1,tam,msg2) =>{
   }
 }
 
+
+
+export const formataVirgPont = (valor)=>{
+  let v = Number(valor).toFixed(2);  
+  return v.toString().replace(".",",");
+}

@@ -141,7 +141,7 @@ const CadastroParametroLeilao = () => {
             setHorarioAtendFim(formatHrLeilao(l.HORAS_FAL_CON_FIM));
             setFeriado(l.PALE_FACULTATIVO_FERIADO);
             setQtdVencedores(l.PALE_QTDE_VENCEDORES_GENUINOS);
-            setCriticaPed(l.PALE_PORC_AJ_PRC_CRIT_PEDIDO);
+            setCriticaPed( l.PALE_PORC_AJ_PRC_CRIT_PEDIDO);
             setLimiteApr(l.PALE_PORC_AJ_PRC_LIMITE_APROV);
             setPercLimite(l.PALE_PORC_AJ_PRC_PERC_LIMITE);
             setLImiteCot(l.PALE_PORC_AJ_PRC_LIMITE_COTA);
@@ -189,7 +189,8 @@ const CadastroParametroLeilao = () => {
           window.alert("Parametro cadastrado com sucesso !!");
         }
         else if (res.data === "sucessoU") {
-          window.alert("Parametro atualizado excluído com sucesso !!");
+          window.alert("Parametro atualizado com sucesso !!");
+          navigate("/listarparametrosLeilao")
         }
         else {
           window.alert(" erro ao tentar cadastrar Parametros");
@@ -197,7 +198,7 @@ const CadastroParametroLeilao = () => {
       })
       .catch((erro) => {
         console.error("Erro paramentro leilão", erro);
-        window.alert("Erro ao tentar Cadastrar Paraemtro de leilão");
+        window.alert("Erro ao tentar Cadastrar Parametro de leilão");
       })
 
 
@@ -216,7 +217,7 @@ const CadastroParametroLeilao = () => {
         autoComplete="off"
       >
 
-        <TextField required id="" error={idSeg ? false : true} disabled={!acessoGeral} label="Seguradora" select value={idSeg} onChange={(e) => setIdSeg(e.target.value)} style={{ minWidth: "40em" }}   >
+        <TextField required id="" error={idSeg ? false : true} disabled={!acessoGeral} label="Seguradora" select value={idSeg.toString()} onChange={(e) => setIdSeg(e.target.value)} style={{ minWidth: "40em" }}   >
           {listaSeg.map(l =>
             <MenuItem key={l.ID_SEGURADORA} value={l.ID_SEGURADORA}>{l.SGRA_RAZAO_SOCIAL}  CNPJ {l.SGRA_CNPJ ? cnpj.format(l.SGRA_CNPJ) : ""}</MenuItem>
           )}
@@ -256,7 +257,7 @@ const CadastroParametroLeilao = () => {
         <hr />
 
         <label id="titulosLabel">Ajuste de Preço</label>
-        <TextField required label="Critica de Pedidos   %" error={criticaPed ? false : true} disabled={!acessoGeral} id="" value={(criticaPed ? criticaPed : "")} onChange={(e) => setCriticaPed(e.target.value)} type={"number"} />
+        <TextField required label="Critica de Pedidos   0,00 %" error={criticaPed ? false : true} disabled={!acessoGeral} id="" value={(criticaPed ? criticaPed : "")} onChange={(e) => setCriticaPed(e.target.value)} type={"number"} />
         <TextField required label="Limite Aprovados    %" error={limiteApr > 0 ? false : true} disabled={!acessoGeral} id="" value={limiteApr ? limiteApr : ""} onChange={(e) => setLimiteApr(e.target.value)} type={"number"} />
         <TextField required label="Percentual Limite   %" error={percLimite > 0 ? false : true} disabled={!acessoGeral} id="" value={percLimite ? percLimite : ""} onChange={(e) => setPercLimite(e.target.value)} type={"number"} />
         <TextField required label="Limite Cotação    %" error={limiteCot ? false : true} disabled={!acessoGeral} id="" value={limiteCot ? limiteCot : ""} onChange={(e) => setLImiteCot(e.target.value)} type={"number"} />

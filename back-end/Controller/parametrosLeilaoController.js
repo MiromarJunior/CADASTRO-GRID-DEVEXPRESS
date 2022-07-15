@@ -6,7 +6,7 @@ const oracledb = require("oracledb");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const dbConfig = require("../ConfigDB/configDB.js");
-const { apenasNr } = require("../Service/utilServiceBackEnd.js");
+const { apenasNr, formataVirgPont } = require("../Service/utilServiceBackEnd.js");
 
 
 const app = express();
@@ -27,7 +27,6 @@ router.post("/cadastrarParametroLeilao", async(req, res)=> {
 } =req.body;
 let insertSql;
 let updateSql;
-
 
     let connection = await oracledb.getConnection(dbConfig);  
     if(acessoGeral){    
@@ -69,7 +68,7 @@ let updateSql;
    ID_SEGURADORA
    )
 VALUES
-  (SEQ_PALE.NEXTVAL,'${pontuacaoInicial}','${horasL}', TO_CHAR('${horasExtend}', '0000'), '${horaIniL}', '${horaFimL}','${tempoAbertAft}',
+  (SEQ_PALE.NEXTVAL,'${pontuacaoInicial}','${horasL}', '${horasExtend}', '${horaIniL}', '${horaFimL}','${tempoAbertAft}',
   '${qtdHorasValSef}', '${horarioAtendIni}','${horarioAtendFim}', '${feriado}', '${qtdVencedores}', '${criticaPed}', '${limiteApr}','${percLimite}', '${limiteCot}',
   '${qtdHorasBO}', '${prazoBO}', '${horasTotalCot}', '${horasTotalLei}', '${tempoRecalculo}', '${encerraAnt}', '${percAltLeilao}',
   '${tempoAlt}','${idSeg}' )          
@@ -90,7 +89,7 @@ VALUES
           PALE_HORARIO_ATEND_FALE_CO_FIM = '${horarioAtendFim}',
           PALE_FACULTATIVO_FERIADO = '${feriado}',
           PALE_QTDE_VENCEDORES_GENUINOS = '${qtdVencedores}', 
-          PALE_PORC_AJ_PRC_CRIT_PEDIDO = '${criticaPed}', 
+          PALE_PORC_AJ_PRC_CRIT_PEDIDO = '${formataVirgPont(criticaPed)}', 
           PALE_PORC_AJ_PRC_LIMITE_APROV = '${limiteApr}',
           PALE_PORC_AJ_PRC_PERC_LIMITE = '${percLimite}',
           PALE_PORC_AJ_PRC_LIMITE_COTA = '${limiteCot}',

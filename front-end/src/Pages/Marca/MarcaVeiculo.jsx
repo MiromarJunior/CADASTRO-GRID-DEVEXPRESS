@@ -75,7 +75,7 @@ const MarcaVeiculo = () => {
                     alert("Erro ao tentar listar marcas!!!");
                 }
                 else {
-                    console.log(res.data);
+                    
                     (res.data).forEach((item, index) => (item.id = index));
                     return setRows(res.data);
                 }
@@ -123,7 +123,7 @@ const MarcaVeiculo = () => {
 
 
     return (<div>
-        <h1 id="titulos">Marca Veículo</h1>
+        <h1 id="titulos">Marca Veículo - Em desenvolvimento</h1>
         <div className="card">
             <Grid
                 rows={rows}

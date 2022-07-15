@@ -1,7 +1,7 @@
 import Paper from "@mui/material/Paper";
 
 import {
-  DataTypeProvider,
+  
   EditingState,
   FilteringState,
   IntegratedFiltering,
@@ -16,10 +16,9 @@ import {
   TableEditRow,
   TableEditColumn,
   TableFilterRow,
-  TableColumnResizing,
+  
 } from "@devexpress/dx-react-grid-material-ui";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
@@ -27,10 +26,7 @@ import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import IconButton from "@mui/material/IconButton";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import MenuItem from "@mui/material/MenuItem";
-import Input from "@mui/material/Input";
-import Select from "@mui/material/Select";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 
 
 import { saveTipoPeca, getTipoPeca, deleteTipoPeca, } from "../../Service/tipoPeca";
@@ -56,7 +52,6 @@ const TipoPeca = () => {
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
-  const navigate = useNavigate();
   const [acessoCad, setAcessoCad] = useState(false);
   const [displayEDIT, setDisplayEDIT] = useState("none");
   const [displayDEL, setDisplayDEL] = useState("none");
@@ -111,8 +106,8 @@ const TipoPeca = () => {
     };
 
     acessoMenuUser();
-  }, []);
-
+    // eslint-disable-next-line
+  }, [logout,nomeUser,token]);
 
 
   const cadastrarTipoPeca = (lista) => {
@@ -340,7 +335,6 @@ const TipoPeca = () => {
     if (deleted) {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter((row) => deletedSet.has(row.id));
-
       let idCont = parseInt(changedRows.map(l => l.ID_TIPO_PECA));
       deletarTipoPecas(idCont);
 
@@ -352,7 +346,7 @@ const TipoPeca = () => {
     <div className="container-fluid" >
       <h3 id="titulos">Tipo Peça: </h3>
       { }
-      <div className="container">
+      <div className="container-fluid">
         <Paper>
           <Grid rows={rows} columns={columns}>
             <SortingState />

@@ -49,7 +49,7 @@ const AppRotas = () => {
           <Route exact path="/" element={<LoginPage />} />       
           <Route exact path="/cadastrarparametrosLeilao/:idPar" element={<Private><CadastroParametroLeilao /></Private>}/>
           <Route exact path="/listarparametrosLeilao" element={<Private><ListarParametroLeilao /></Private>}/>
-
+          <Route exact path="/*" element={ <Private><Inicial /></Private> } />
           <Route exact path="/home" element={<Private><Inicial/></Private>}/>
           <Route exact path="/listarGrupoItem" element={<Private><ListarGrupoItem /></Private>}/>
           <Route exact path="/ListarSubGrupoItem/:idGrupo" element={<Private><ListarSubGrupoItem /></Private>}/>
