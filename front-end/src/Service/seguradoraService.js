@@ -6,7 +6,7 @@ Pagina utiliza axios para fazer a ligação entre back-end e front-end das chama
 
 const { default : axios} = require("axios");
 
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = (process.env.REACT_APP_API_URL || process.env.REACT_APP_API_URL2) ;
 
 const saveSeguradora = data=>{
     return axios.post(`${baseURL}cadastrarSeguradora`,data);

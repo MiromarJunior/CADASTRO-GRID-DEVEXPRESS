@@ -347,6 +347,13 @@ export const criandoU = (n) => {
   return res;
 };
 
+
+export const formatHrLeilao = (valor) =>{
+  
+    return valor.replace(",",":").replace(" ","");
+   
+}
+
 export const validaNull = (p1,p2) =>{
   if (p1.length > 0){
     return true;
@@ -376,3 +383,4 @@ export const validaCampo = (valor,msg1,tam,msg2) =>{
     return false;
   }
 }
+
