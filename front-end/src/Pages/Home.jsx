@@ -35,6 +35,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 
+
 const drawerWidth = 280;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -236,6 +237,11 @@ const HomePage = () => {
     handleDrawerClose();
   };
 
+  const tipoPeca = () => {
+    navigate("/tipoPeca");
+    handleDrawerClose();
+  };
+
   return (
     <div style={{ display: nomeUser() ? "" : "none" }}>
       <Box sx={{ display: "flex" }}>
@@ -350,6 +356,14 @@ const HomePage = () => {
                   </ListItemButton>
                 </ListItem>
 
+                <ListItem disablePadding >
+                  <ListItemButton onClick={() => tipoPeca()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Tipo de Peça"} />
+                  </ListItemButton>
+                </ListItem>
 
                 <ListItem disablePadding >
                   <ListItemButton onClick={() => listarFornecedor()}>
@@ -464,5 +478,5 @@ const HomePage = () => {
     </div>
   );
 };
-//thiago tes
+
 export default HomePage;
