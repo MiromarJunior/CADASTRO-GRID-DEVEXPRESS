@@ -45,7 +45,45 @@ const TableComponentTitle = ({ style, ...restProps }) => (
     }}
   />
 );
+const TipoPecaFormatter = ({ value }) => value ? value : "";
 
+const TipoPecaEditor = ({ value, onValueChange }) => (
+    <Select
+      input={<Input />}
+      value={value}
+      onChange={event => onValueChange(event.target.value)}
+      style={{ width: '100%' }}
+    >
+    
+      <MenuItem value="">
+        
+      </MenuItem>
+      
+      <MenuItem value="Liberado">
+        Liberado
+      </MenuItem>
+      {/* <MenuItem value="Cancelado">
+        Cancelado
+      </MenuItem>
+      <MenuItem value="Inativo">
+        Inativo
+      </MenuItem>
+      <MenuItem value="Defeito">
+        Defeito
+      </MenuItem> */}
+    </Select>
+  );
+  
+  const TipoPecaProvider = props => (
+ 
+    <DataTypeProvider
+      formatterComponent={TipoPecaFormatter}
+      editorComponent={TipoPecaEditor}
+      {...props}
+    /> 
+  );
+  
+  
 let acessoGeral = false;
 
 const TipoPeca = () => {
@@ -56,6 +94,7 @@ const TipoPeca = () => {
   const [displayEDIT, setDisplayEDIT] = useState("none");
   const [displayDEL, setDisplayDEL] = useState("none");
   const [displayADD, setDisplayADD] = useState("none");
+  const [booleanColumns] = useState(['TPPC_CLASSIFICACAO_PECAS']);
   const listaTipoPec = "LIST_TIPOPECA";
   const incluirTipoPec = "ADD_TIPOPECA";
   const excluirTipoPec = "DEL_TIPOPECA";
@@ -76,7 +115,7 @@ const TipoPeca = () => {
             res.data.forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
-
+                setAcessoCad(true);
                 setDisplayADD("");
                 setDisplayDEL("");
                 setDisplayEDIT("");
@@ -321,9 +360,8 @@ const TipoPeca = () => {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
 
 
-          if (changedRows[i].TPPC_DESCRICAO === "") {
-
-            window.alert("Favor Preencher o campo Descrição!");
+          if (changedRows[i].TPPC_CLASSIFICACAO_PECAS === "" ){
+              window.alert("Favor Definir a Classificação nas Peças!");
           } else {
             cadastrarTipoPeca(changedRows[i]);
           }
@@ -351,7 +389,10 @@ const TipoPeca = () => {
           <Grid rows={rows} columns={columns}>
             <SortingState />
             <FilteringState
-              defaultFilters={[{ columnName: "TPPC_DESCRICAO", value: "" }]}
+              defaultFilters={[{ columnName: "TPPC_CLASSIFICACAO_PECAS", value: "" }]}
+            />
+            <TipoPecaProvider
+              for={booleanColumns}
             />
             <IntegratedFiltering />
             <IntegratedSorting />

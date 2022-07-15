@@ -11,7 +11,7 @@ const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 const app = express();
 app.use(express.json());
 
-router.post("/listarTipoPeca", async (req, res) => {
+router.post("/listarStatusItem", async (req, res) => {
   const { token } = req.body;
 
   let connection = await oracledb.getConnection(dbConfig);
@@ -27,7 +27,7 @@ router.post("/listarTipoPeca", async (req, res) => {
       } else {
         result = await connection.execute(
           `
-          select * from TIPO_PECA
+          select * from STATUS_ITEM
 
           `,
           [],
@@ -51,13 +51,15 @@ router.post("/listarTipoPeca", async (req, res) => {
   }
 });
 
-router.post("/saveTipoPeca", async (req, res) => {
+router.post("/saveStatusItem", async (req, res) => {
   const { lista, token, idSeg, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
 
-  let nomePeca = lista.TPPC_DESCRICAO,
-    classPeca = lista.TPPC_CLASSIFICACAO_PECAS,
-    idCont = lista.ID_TIPO_PECA;
+  let codigoStit = lista.STIT_CODIGO,
+    descStit = lista.STIT_DESCRICAO,
+    respStit = lista.STIT_RESPONSAVEL,
+    concstit = lista.STIT_CONCEITO,
+    idCont = lista.ID_STATUS_ITEM;
   console.log(lista);
   if (acessoGeral) {
     try {
@@ -71,10 +73,12 @@ router.post("/saveTipoPeca", async (req, res) => {
             
             await connection.execute(
               `
-              UPDATE  TIPO_PECA
-                 SET  TPPC_DESCRICAO ='${nomePeca}',
-                 TPPC_CLASSIFICACAO_PECAS ='${classPeca}'
-               where  ID_TIPO_PECA ='${idCont}'
+              UPDATE  STATUS_ITEM
+                 SET  STIT_CODIGO ='${codigoStit}',
+                      STIT_DESCRICAO ='${descStit}',
+                      STIT_RESPONSAVEL ='${respStit}',
+                      STIT_CONCEITO = '${concstit}'
+               where  ID_STATUS_ITEM ='${idCont}'
                `,
 
               [],
@@ -84,14 +88,17 @@ router.post("/saveTipoPeca", async (req, res) => {
           } else {
             await connection.execute(
               `
-              INSERT INTO TIPO_PECA(
-                ID_TIPO_PECA,
-                TPPC_DESCRICAO,
-                TPPC_CLASSIFICACAO_PECAS
+              INSERT INTO STATUS_ITEM (
+                ID_STATUS_ITEM,
+                STIT_CODIGO,
+                STIT_DESCRICAO,
+                STIT_RESPONSAVEL,
+                STIT_CONCEITO
+
               )
               VALUES(
                 SEQ_SECO.NEXTVAL,
-                '${nomePeca}','${classPeca}'
+                '${codigoStit}','${descStit}','${respStit}','${concstit}'
               )`,
               [],
               { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true }
@@ -117,7 +124,7 @@ router.post("/saveTipoPeca", async (req, res) => {
   }
 });
 
-router.post("/excluirTipoPeca", async (req, res) => {
+router.post("/excluirStatusItem", async (req, res) => {
   const {idCont, token, acessoGeral
   } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
@@ -135,8 +142,8 @@ router.post("/excluirTipoPeca", async (req, res) => {
 
               deleteSql = (
                   ` 
-                  DELETE FROM TIPO_PECA 
-                  WHERE  ID_TIPO_PECA = ${idCont}
+                  DELETE FROM STATUS_ITEM 
+                  WHERE  ID_STATUS_ITEM = ${idCont}
                   `
               )
           }

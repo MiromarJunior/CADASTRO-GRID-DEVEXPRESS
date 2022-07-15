@@ -227,9 +227,15 @@ const Acesso = () => {
       return <span>Excluir Tipo de Peças <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_TIPOPECA") {
       return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }else if (valor === "LIST_STIT") {
+      return <span>Listar Status de Item <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_STIT") {
+      return <span>Editar Status de Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_STIT") {
+      return <span>Excluir Status de Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_STIT") {
+      return <span>Listar Status de Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
-
 
     else { return valor }
 
@@ -243,6 +249,7 @@ const Acesso = () => {
   else if(grMen ==="JUSTIFICATIVA" ){ gr = "Justificativa do Item"}
   else if(grMen ==="SACMONT" ){ gr = "Sac Montadora"}
   else if(grMen ==="TIPOPECA" ){ gr = "Tipo de peças"}
+  else if(grMen ==="STATUSITEM" ){ gr = "Status de Item"}
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
   else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
 

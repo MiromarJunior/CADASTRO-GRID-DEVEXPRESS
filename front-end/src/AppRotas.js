@@ -25,6 +25,7 @@ import JustificativaItem from "./Pages/JustificativaItem/JustificativaItem";
 import Municipios from "./Pages/Municipios/Municipios";
 import TipoPeca from "./Pages/TipoPeca/TipoPeca";
 import ListarParametroLeilao from "./Pages/Leilao/ListarParametroLeilao";
+import StatusItem from "./Pages/StatusItem/StatusItem";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
@@ -67,6 +68,7 @@ const AppRotas = () => {
           <Route exact path="/municipios" element={<Private><Municipios /> </Private>} />
           <Route exact path="/listarFornecedor" element={ <Private><ListarFornecedor /></Private> } />
           <Route exact path="/cadastroFornecedor/:idFornecedor" element={<Private> <CadastroFornecedor /> </Private>} />
+          <Route exact path="/statusItem" element={ <Private><StatusItem /></Private> } />
           
         </Routes>
       </AuthProvider>

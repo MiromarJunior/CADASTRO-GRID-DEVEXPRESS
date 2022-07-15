@@ -33,7 +33,7 @@ import Select from "@mui/material/Select";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 
-import { saveSac, getSacMontadorasID, deleteSacMontadorasID, } from "../../Service/sacMontadorasService";
+import { saveStatusItem, getStatusItem, deleteStatusItem, } from "../../Service/statusItem";
 
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 // import { validaDescricao } from "../../Service/utilServiceFrontEnd";
@@ -50,9 +50,49 @@ const TableComponentTitle = ({ style, ...restProps }) => (
   />
 );
 
+const StatusItemFormatter = ({ value }) => value ? value : "";
+
+const StatusItemEditor = ({ value, onValueChange }) => (
+    <Select
+      input={<Input />}
+      value={value}
+      onChange={event => onValueChange(event.target.value)}
+      style={{ width: '100%' }}
+    >
+    
+      <MenuItem value="">
+        
+      </MenuItem>
+      
+      <MenuItem value="Seguradora">
+        Seguradora
+      </MenuItem>
+      <MenuItem value="Mediadora">
+        Mediadora
+      </MenuItem>
+      <MenuItem value="Audatex">
+        Audatex
+      </MenuItem>
+      <MenuItem value="Cilia">
+        Cilia
+      </MenuItem>
+    </Select>
+  );
+  
+  const StatusItemProvider = props => (
+ 
+    <DataTypeProvider
+      formatterComponent={StatusItemFormatter}
+      editorComponent={StatusItemEditor}
+      {...props}
+    /> 
+  );
+  
+
+
 let acessoGeral = false;
 
-const SacMontadoras = () => {
+const StatusItem = () => {
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
@@ -61,10 +101,11 @@ const SacMontadoras = () => {
   const [displayEDIT, setDisplayEDIT] = useState("none");
   const [displayDEL, setDisplayDEL] = useState("none");
   const [displayADD, setDisplayADD] = useState("none");
-  const listaSacMont = "LIST_SACMONT";
-  const incluirSacMont = "ADD_SACMONT";
-  const excluirSacMont = "DEL_SACMONT";
-  const editarSacMont = "EDIT_SACMONT";
+  const [booleanColumns] = useState(['STIT_RESPONSAVEL']);
+  const listStatusItem = "LIST_STIT";
+  const incluirStatusItem = "ADD_STIT";
+  const excluirStatusItem = "DEL_STIT";
+  const editarStatusItem = "EDIT_STIT";
 
   useEffect(() => {
     const acessoMenuUser = async () => {
@@ -86,17 +127,17 @@ const SacMontadoras = () => {
                 setDisplayDEL("");
                 setDisplayEDIT("");
 
-                listaSacMontadorasID();
+                listaStatusItem();
 
-              } else if (incluirSacMont === ac) {
+              } else if (incluirStatusItem === ac) {
                 setDisplayADD("");
                 setAcessoCad(true);
-              } else if (listaSacMont === ac) {
-                listaSacMontadorasID();
-              } else if (excluirSacMont === ac) {
+              } else if (listStatusItem === ac) {
+                listaStatusItem();
+              } else if (excluirStatusItem === ac) {
                 setDisplayDEL("");
                 setAcessoCad(true);
-              } else if (editarSacMont === ac) {
+              } else if (editarStatusItem === ac) {
                 setDisplayEDIT("");
               }
             });
@@ -105,7 +146,7 @@ const SacMontadoras = () => {
         .catch((err) => {
           console.error(err);
 
-          window.alert("Erro ao buscar Usuário SAC!!");
+          window.alert("Erro ao buscar Usuário!!");
 
         });
     };
@@ -115,11 +156,11 @@ const SacMontadoras = () => {
 
 
 
-  const cadastraSacMontadoras = (lista) => {
+  const cadastraStatusItem = (lista) => {
     let dados = { lista, token, acessoGeral: acessoCad };
     if (displayADD ===""){
 
-    saveSac(dados)
+    saveStatusItem(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
           alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -137,7 +178,7 @@ const SacMontadoras = () => {
 
         }
 
-        listaSacMontadorasID();
+        listaStatusItem();
       })
       .catch((err) => {
         console.error("Erro ao Cadastrar Dados SAC", err);
@@ -147,13 +188,13 @@ const SacMontadoras = () => {
   };
 
 
-  const deletarSacMontadoras = (idCont) => {
+  const deletarStatusItem = (idCont) => {
     let dados = {
       token, acessoGeral : acessoCad, idCont: parseInt(idCont),
 
     };
     if (displayDEL=== ""){
-    deleteSacMontadorasID(dados)
+    deleteStatusItem(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
           alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -161,14 +202,14 @@ const SacMontadoras = () => {
           window.location.reload();
         } else if (res.data === "semAcesso") {
           alert("Usuário sem permissão !!!");
-          listaSacMontadorasID();
+          listaStatusItem();
         } else if (res.data === "campoNulo") {
           alert("Preencha todos os Campos obrigatorios!!!");
         } else if (res.data === "erroSalvar") {
           alert("Erro a tentar excluir!!!");
         } else {
           window.alert("Cadastro excluído com sucesso !!");
-          listaSacMontadorasID();
+          listaStatusItem();
         }
       })
       .catch((err) => {
@@ -177,14 +218,14 @@ const SacMontadoras = () => {
         window.alert("Erro ao Excluir !!!");
 
       });
-    } else {listaSacMontadorasID()
+    } else {listaStatusItem()
            alert("Usuário sem permissão !!!");
     }
   };
 
-  const listaSacMontadorasID = async () => {
+  const listaStatusItem = async () => {
     let dados = { token, acessoGeral };
-    await getSacMontadorasID(dados)
+    await getStatusItem(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
           window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -205,22 +246,27 @@ const SacMontadoras = () => {
 
   const columns = [
     {
-      name: "SCMN_MARCA",
-      title: `MARCA *`,
+      name: "STIT_CODIGO",
+      title: `Codigo *`,
       required: true,
     },
     {
-      name: "SCMN_TELEFONE",
+      name: "STIT_DESCRICAO",
 
-      title: `TELEFONE SAC  *`,
+      title: `Descrição  *`,
 
       required: true,
     },
     {
-      name: "SCMN_EMAIL",
-      title: `E-MAIL SAC *`,
+      name: "STIT_RESPONSAVEL",
+      title: `Responsável *`,
       required: true,
     },
+    {
+        name: "STIT_CONCEITO",
+        title: `Conceito *`,
+        required: true,
+      },
   ];
   const DeleteButton = ({ onExecute }) => (
     <IconButton style={{display: displayDEL}}
@@ -230,7 +276,7 @@ const SacMontadoras = () => {
           onExecute();
         }
       }}
-      title="Excluir Cadastro SAC"
+      title="Excluir Cadastro"
       size="large"
     >
       <DeleteForeverOutlinedIcon style={{ color: "red" }} />
@@ -243,7 +289,7 @@ const SacMontadoras = () => {
         size="large"
         color="primary"
         onClick={onExecute}
-        title="Novo Cadastro SAC"
+        title="Novo Cadastro "
       >
         <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
       </IconButton>
@@ -252,7 +298,7 @@ const SacMontadoras = () => {
   
   const EditButton = ({ onExecute }) => (
     <IconButton style={{display: displayEDIT}}
-       onClick={onExecute} title="Alterar Cadastro SAC" size="large">
+       onClick={onExecute} title="Alterar Cadastro " size="large">
       <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
     </IconButton>
   );
@@ -296,10 +342,11 @@ const SacMontadoras = () => {
         Object.keys(row).length
           ? row
           : {
-            ID_SAC_MONTADORAS: null,
-            SCMN_MARCA: "",
-            SCMN_TELEFONE: "",
-            SCMN_EMAIL: "",
+            ID_STATUS_ITEM: null,
+            STIT_CODIGO: "",
+            STIT_DESCRICAO: "",
+            STIT_RESPONSAVEL: "",
+            STIT_CONCEITO: "",
           }
       )
     );
@@ -317,8 +364,8 @@ const SacMontadoras = () => {
       ];
 
       for (let i = 0; i < changedRows.length; i++) {
-        if (!(changedRows[i].ID_SAC_MONTADORAS)) {
-          cadastraSacMontadoras(changedRows[i]);
+        if (!(changedRows[i].ID_STATUS_ITEM)) {
+            cadastraStatusItem(changedRows[i]);
 
         }
       }
@@ -332,11 +379,11 @@ const SacMontadoras = () => {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
 
 
-          if (changedRows[i].SCMN_MARCA === "") {
+          if (changedRows[i].STIT_CODIGO === "") {
 
-            window.alert("Favor Preencher campo Marca!");
+            window.alert("Favor Preencher campo Codigo!");
           } else {
-            cadastraSacMontadoras(changedRows[i]);
+            cadastraStatusItem(changedRows[i]);
           }
 
         }
@@ -347,8 +394,8 @@ const SacMontadoras = () => {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter((row) => deletedSet.has(row.id));
 
-      let idCont = parseInt(changedRows.map(l => l.ID_SAC_MONTADORAS));
-      deletarSacMontadoras(idCont);
+      let idCont = parseInt(changedRows.map(l => l.ID_STATUS_ITEM));
+      deletarStatusItem(idCont);
 
       // setRows(changedRows);
     }
@@ -356,14 +403,17 @@ const SacMontadoras = () => {
   };
   return (
     <div className="container-fluid" >
-      <h3 id="titulos">SAC Montadoras: </h3>
+      <h3 id="titulos">Status Item </h3>
       { }
       <div className="container-fluid">
         <Paper>
           <Grid rows={rows} columns={columns}>
             <SortingState />
             <FilteringState
-              defaultFilters={[{ columnName: "SCMN_MARCA", value: "" }]}
+              defaultFilters={[{ columnName: "STIT_CODIGO", value: "" }]}
+            />
+            <StatusItemProvider
+              for={booleanColumns}
             />
             <IntegratedFiltering />
             <IntegratedSorting />
@@ -399,4 +449,4 @@ const SacMontadoras = () => {
   );
 };
 
-export default SacMontadoras;
+export default StatusItem;
