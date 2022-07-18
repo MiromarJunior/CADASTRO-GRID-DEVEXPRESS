@@ -26,6 +26,7 @@ import Municipios from "./Pages/Municipios/Municipios";
 import TipoPeca from "./Pages/TipoPeca/TipoPeca";
 import ListarParametroLeilao from "./Pages/Leilao/ListarParametroLeilao";
 import StatusItem from "./Pages/StatusItem/StatusItem";
+import CadastroMarcaVeiculo from "./Pages/Marca/CadastroMarcaVeiculo";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
@@ -69,6 +70,8 @@ const AppRotas = () => {
           <Route exact path="/listarFornecedor" element={ <Private><ListarFornecedor /></Private> } />
           <Route exact path="/cadastroFornecedor/:idFornecedor" element={<Private> <CadastroFornecedor /> </Private>} />
           <Route exact path="/statusItem" element={ <Private><StatusItem /></Private> } />
+          <Route exact path="/cadastroMarcaVeiculo/:idMa" element={ <Private><CadastroMarcaVeiculo /></Private> } />
+
           
         </Routes>
       </AuthProvider>
