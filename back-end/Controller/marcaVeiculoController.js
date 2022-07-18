@@ -152,7 +152,7 @@ router.post("/cadastrarMarcaVeiculo", async (req, res) => {
 
         } else {
 
-          if (idMa) {
+          if (idMa > 0) {
             await connection.execute(`
                 UPDATE  MARCA_VEICULO
                  SET  MRVC_DESCRICAO = '${descricao}',
