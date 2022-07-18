@@ -390,3 +390,46 @@ export const formataVirgPont = (valor)=>{
   let v = Number(valor).toFixed(2);  
   return v.toString().replace(".",",");
 }
+
+export const validaHrIni = (v1,v2,msg)=>{
+  if(v1 !=="00:00" && v2 === null){
+    return true
+  } else if(v1 < v2){
+      return true
+    }  
+    else {
+      return false, window.alert(msg)
+  
+    }
+
+  }
+
+  export const validaCampoParam = (valor,msg1,tam,msg2) =>{
+    //função criada para validar null e tamanho campo
+    //valor = valor campo  
+    //msg1  = msg para null 
+    //tam   = tamanho do campo
+    //msg2  = msg para o tamanho quantidade
+      if(valor !== 0 && valor > 0 ){
+      if (valor.toString().length > 0  ){
+
+        if (valor.toString().length > tam){
+          window.alert(msg2);
+          return false;
+        }
+        else{
+          return true;
+          }  
+      } else {
+        window.alert(msg1);
+        return false;
+      }
+
+    } else {
+      window.alert(msg1);
+      return false;
+    }
+   
+  }
+  
+  

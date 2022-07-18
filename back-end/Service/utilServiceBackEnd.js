@@ -52,10 +52,9 @@ const valorLiquido = (valor, desconto)=>{
 }
 
 
-const formataVirgPont = (valor)=>{
-  let v = Number(valor).toFixed(2);  
-  return v.toString().replace(".",",");
-}
 
-module.exports ={formataVirgPont,apenasNr,formataValorString,valorLiquido,dataBR,formataArrayStr};
+
+
+
+module.exports ={apenasNr,formataValorString,valorLiquido,dataBR,formataArrayStr};
 
