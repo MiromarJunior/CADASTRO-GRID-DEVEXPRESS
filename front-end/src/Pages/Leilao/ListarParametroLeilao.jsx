@@ -6,6 +6,8 @@ import {
     IntegratedSorting,
     IntegratedFiltering,
     FilteringState,
+    PagingState,
+    IntegratedPaging,
 } from '@devexpress/dx-react-grid';
 import {
     Grid,
@@ -14,9 +16,12 @@ import {
     TableEditRow,
     TableFilterRow,
     TableColumnVisibility,
+    PagingPanel,
+    TableColumnResizing,
+    TableColumnReordering,
+    DragDropProvider,
 
 } from '@devexpress/dx-react-grid-material-ui';
-import { deleteSeguradoraID, getSeguradora } from "../../Service/seguradoraService";
 import { cnpj } from "cpf-cnpj-validator";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -35,17 +40,17 @@ const ListarParametroLeilao = () => {
     const [validCNPJ] = useState(["SGRA_CNPJ"]);
     const [editSeg] = useState(["ALTERACAO"]);
     let token = localStorage.getItem("token");
+    // const [defaultHiddenColumnNames] = useState(['nova']);
+    const [pageSizes] = useState([5, 10, 15, 0]);
     const [acessoGeral, setAcessoGeral] = useState(false);
-    const [acessoDEL, setAcessoDEL] = useState(false);
-    const [defaultHiddenColumnNames] = useState(['nova']);
     const [acessoADD, setAcessoADD] = useState(false);
     const [displayEDIT, setDisplayEDIT] = useState("none");
     const [displayDEL, setDisplayDEL] = useState("none");
 
-    const listaSgra = "LIST_SGRA";
-    const incluirSgra = "ADD_SGRA";
-    const excluirSgra = "DEL_SGRA";
-    const editarSgra = "EDIT_SGRA";
+    const listaParamLe = "LIST_PARAMLE";
+    const incluirParamLe = "ADD_PARAMLE";
+    const excluirParamLe = "DEL_PARAMLE";
+    const editarParamLe = "EDIT_PARAMLE";
 
 
     useEffect(() => {
@@ -59,16 +64,14 @@ const ListarParametroLeilao = () => {
                             setDisplayDEL("");
                             setAcessoGeral(true);
                             listarParametroLeilao();
-                        } else if (listaSgra === ac) {
+                        } else if (listaParamLe === ac) {
                             listarParametroLeilao();
-                        } else if (incluirSgra === ac) {
+                        } else if (incluirParamLe === ac) {
                             setAcessoADD(true);
-
-                        } else if (editarSgra === ac) {
+                        } else if (editarParamLe === ac) {
                             setDisplayEDIT("");
-                        } else if (excluirSgra === ac) {
+                        } else if (excluirParamLe === ac) {
                             setDisplayDEL("");
-                            setAcessoDEL(true);
                         }
                     })
                 })
@@ -111,8 +114,8 @@ const ListarParametroLeilao = () => {
     };
 
     const deletarParametroLeilao = (idPar) => {
-        if (acessoGeral || acessoDEL) {
-            let dados = { idPar, token, acessoGeral, acessoDEL };
+        if (acessoGeral || displayDEL === "") {
+            let dados = { idPar, token, acessoGeral: true };
             if (window.confirm("deseja excluir o parametro ?")) {
                 deleteParametroLeilao(dados)
                     .then((res) => {
@@ -159,57 +162,65 @@ const ListarParametroLeilao = () => {
     const columns =
         (acessoGeral || acessoADD ?
 
+            [{ name: 'PALE_RANKING_PONTUACAO_INICIAL', title: "RANKING P. INICIAL" },
+            { name: 'ID_PARAMETROS_LEILAO', title: "COD. PARÂMETRO" },
+            {
+                name: 'HORAS', title: `HORAS PADRÃO`,
+                getCellValue: row => (row.HORAS.replace(",", ":"))
+            },
+            { name: 'SGRA_RAZAO_SOCIAL', title: "SEGURADORA" },
+            { name: 'SGRA_CNPJ', title: `CNPJ` },
+            {
+                name: "ALTERACAO", title: BotaoAd,
+                getCellValue: row => (row.ID_PARAMETROS_LEILAO)
+            }
+            ]
+            :
             [
-                { name: 'ID_PARAMETROS_LEILAO', title: "CODIGO PARÂMETRO" },
+                { name: 'PALE_RANKING_PONTUACAO_INICIAL', title: "RANKING P. INICIAL" },
+                { name: 'ID_PARAMETROS_LEILAO', title: "COD. PARÂMETRO" },
                 {
                     name: 'HORAS', title: `HORAS PADRÃO`,
                     getCellValue: row => (row.HORAS.replace(",", ":"))
                 },
                 { name: 'SGRA_RAZAO_SOCIAL', title: "SEGURADORA" },
                 { name: 'SGRA_CNPJ', title: `CNPJ` },
-
-
-                {
-                    name: "ALTERACAO", title: BotaoAd,
-                    getCellValue: row => (row.ID_PARAMETROS_LEILAO)
-                }]
-            :
-            [
-                { name: 'PALE_RANKING_PONTUACAO_INICIAL', title: "RANKING PONTUAÇÃO IINICIAL" },
-                { name: 'PALE_HORAS', title: `HORAS PADRÃO` },
-                { name: 'SGRA_RAZAO_SOCIAL', title: "SEGURADORA" },
-                { name: 'SGRA_CNPJ', title: `CNPJ` },
-
                 {
                     name: "ALTERACAO", title: "Cadastro",
                     getCellValue: row => (row.ID_PARAMETROS_LEILAO)
-                }]
+                }
+            ]
 
         )
+    const [defaultColumnWidths] = useState([
+        { columnName: 'PALE_RANKING_PONTUACAO_INICIAL', width: 200 },
+        { columnName: 'ID_PARAMETROS_LEILAO', width: 180 },
+        { columnName: 'HORAS', width: 150 },
+        { columnName: 'SGRA_RAZAO_SOCIAL', width: 250 },
+        { columnName: 'SGRA_CNPJ', width: 150 },
+        { columnName: 'ALTERACAO', width: 200 },
+
+    ])
+    const defaultOrderColumns = ["PALE_RANKING_PONTUACAO_INICIAL", "ID_PARAMETROS_LEILAO", "HORAS", "SGRA_RAZAO_SOCIAL", "SGRA_CNPJ", "ALTERACAO"]
 
 
     const [editingStateColumns] = useState([
         { columnName: "ALTERACAO", editingEnabled: false, title: "" },
-        // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
+        // {columnName : "PALE_RANKING_PONTUACAO_INICIAL",widht: 300},
         // {columnName : "PRDT_VALOR",align: 'center'},
 
     ])
+
 
 
     const EditSeguradorasAdm = ({ value }) => (
         <div>
             <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display: displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastrarparametrosLeilao/${value}`)} type="button" />
             <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red", display: displayDEL }} className="margemRight" onClick={(e) => deletarParametroLeilao(value)} />
-
             <VisibilityIcon style={{ color: "green", display: (displayEDIT === "none" ? "" : "none") }} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastrarparametrosLeilao/${value}`)} type="button" />
-
         </div>
 
     )
-
-
-
-
     const EditSeguradorasProv = props => (
         <DataTypeProvider
             formatterComponent={EditSeguradorasAdm}
@@ -231,8 +242,14 @@ const ListarParametroLeilao = () => {
                     columns={columns}
                     getRowId={getRowId}
                 >
-                    <FilteringState defaultFilters={[]} />
+
+                    <FilteringState />
                     <IntegratedFiltering />
+                    <PagingState
+                        defaultCurrentPage={0}
+                        defaultPageSize={5}
+                    />
+                    <IntegratedPaging />
 
                     <SortingState
                         columnExtensions={editingStateColumns}
@@ -248,21 +265,28 @@ const ListarParametroLeilao = () => {
                     <ValidCnpjProv
                         for={validCNPJ}
                     />
-
+                    <DragDropProvider />
                     <Table
                     //  tableComponent={TableComponent}
                     />
-                    {!acessoGeral ? <TableColumnVisibility
+                    <TableColumnReordering
+                        defaultOrder={defaultOrderColumns}
+                    />
+
+                    {/* {!acessoGeral ? <TableColumnVisibility
                         defaultHiddenColumnNames={defaultHiddenColumnNames}
 
                     /> : ""
-                    }
-
+                    } */}
+                    <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
                     <TableHeaderRow
                         contentComponent={TableComponentTitle}
                         showSortingControls />
                     <TableEditRow />
                     <TableFilterRow />
+                    <PagingPanel
+                        pageSizes={pageSizes}
+                    />
 
 
                 </Grid>

@@ -94,12 +94,12 @@ const Acesso = () => {
             window.alert("Usuário sem permissão !!!");
 
           } else if (res.data === "sucesso") {
-            window.alert("Acesso cadastrado com sucesso !!");
+           // window.alert("Acesso cadastrado com sucesso !!");
             listaAcesso();
 
           }
           else if (res.data === "sucessoD") {
-            window.alert("Acesso excluído com sucesso !!");
+           // window.alert("Acesso excluído com sucesso !!");
             listaAcesso();
 
           }
@@ -202,7 +202,7 @@ const Acesso = () => {
     } else if (valor === "DEL_SACMONT") {
       return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_SACMONT") {
-      return <span>Listar SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "LIST_FORNECEDOR") {
       return <span>Listar Fornecedor <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_FORNECEDOR") {
@@ -210,7 +210,7 @@ const Acesso = () => {
     } else if (valor === "DEL_FORNECEDOR") {
       return <span>Excluir Fornecedor <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_FORNECEDOR") {
-      return <span>Listar Fornecedor <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Fornecedor <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "LIST_PARAMLE") {
       return <span>Listar Parametros de Leilão <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_PARAMLE") {
@@ -218,7 +218,7 @@ const Acesso = () => {
     } else if (valor === "DEL_PARAMLE") {
       return <span>Excluir Parametros de Leilão <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_PARAMLE") {
-      return <span>Listar Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }else if (valor === "LIST_TIPOPECA") {
       return <span>Listar Tipo de Peças <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_TIPOPECA") {
@@ -226,7 +226,7 @@ const Acesso = () => {
     } else if (valor === "DEL_TIPOPECA") {
       return <span>Excluir Tipo de Peças <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_TIPOPECA") {
-      return <span>Listar Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }else if (valor === "LIST_STIT") {
       return <span>Listar Status de Item <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_STIT") {
@@ -234,7 +234,7 @@ const Acesso = () => {
     } else if (valor === "DEL_STIT") {
       return <span>Excluir Status de Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_STIT") {
-      return <span>Listar Status de Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Status de Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
 
     else { return valor }
@@ -327,12 +327,6 @@ const Acesso = () => {
             <BotaoAcessosProv
               for={botaoAcessosL}
             />
-
-
-
-
-
-
             <EditingState
               columnExtensions={filteringStateColumnExtensions}
 
