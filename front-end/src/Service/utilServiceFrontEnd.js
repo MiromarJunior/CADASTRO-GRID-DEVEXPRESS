@@ -384,8 +384,6 @@ export const validaCampo = (valor,msg1,tam,msg2) =>{
   }
 }
 
-
-
 export const formataVirgPont = (valor)=>{
   let v = Number(valor).toFixed(2);  
   return v.toString().replace(".",",");
@@ -430,6 +428,23 @@ export const validaHrIni = (v1,v2,msg)=>{
       return false;
     }
    
+  }
+
+
+
+  export const validaTmIgm = (valor)=>{
+    const img = document.getElementById(valor);
+    const widthImg = img.clientWidth;
+    const heightImg = img.clientHeight;
+    if(valor === "logoApont"){
+
+    }else {
+      if(widthImg > 129 || heightImg > 100){
+        window.alert("Tamanho imagem inválido \n Tamanho máximo 128X100!" + widthImg +" // "+ heightImg )
+      }else{
+        window.alert("ok tamanho");
+      }
+    }
   }
   
   
