@@ -60,6 +60,15 @@ app.listen(port, () => {
   let statusItem = require("./Controller/statusItem");
   app.use("/",statusItem);
 
+  let reguladoraRotas = require("./Controller/reguladoraController");
+  app.use("/",reguladoraRotas) ;
+
+  let regionalRotas = require("./Controller/regionalController");
+  app.use("/",regionalRotas) ;
+
+  let sucursalRotas = require("./Controller/sucursalController");
+  app.use("/",sucursalRotas) ;  
+
   console.log("Servidor online na porta  : ", port);
 });
 
