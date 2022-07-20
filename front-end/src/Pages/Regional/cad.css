@@ -1,0 +1,78 @@
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+.form-inline {  
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.form-inline label {
+  margin: 5px 10px 5px 0;
+}
+
+.form-inline input {
+  vertical-align: middle;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  
+}
+
+.form-inline buttonA {
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border: 1px solid #ddd;
+  color: white;
+  cursor: pointer;
+}
+#buttonAlert {
+  background-color: rgb(243, 70, 70);  
+}
+#buttonAlert:hover {
+  background-color: rgb(252, 4, 4);  
+}
+
+#buttonInfo {
+  background-color: rgb(76, 156, 148);  
+}
+#buttonInfo:hover {
+  background-color: rgb(69, 124, 150);  
+}
+
+
+
+
+
+.form-inline buttonA:hover {
+  background-color: royalblue;
+}
+
+
+
+
+@media (max-width: 800px) {
+  .form-inline input {
+    margin: 10px 0px;
+   
+
+  }
+  
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.margemRight{
+    margin-right: 20px;
+}
+#titulo{ 
+  float:  right;
+  
+}
+
+
+
+

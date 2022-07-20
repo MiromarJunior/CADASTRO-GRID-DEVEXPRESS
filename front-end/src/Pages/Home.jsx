@@ -96,7 +96,8 @@ const HomePage = () => {
   const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
   const [displayAcessoFornecedor, setDisplayAcessoFornecedor] = useState("none");
   const [displayAcessoStatusItem, setDisplayAcessoStatusItem] = useState("none");
-  
+  const [displayAcessoRegional, setDisplayAcessoRegional] = useState("none");
+
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
@@ -137,6 +138,11 @@ const HomePage = () => {
   const excluirStatusItem = "DEL_STIT";
   const editarStatusItem = "EDIT_STIT";
 
+  const listaRegional = "LIST_REGIONAL";
+  const incluirRegional = "ADD_REGIONAL";
+  const excluirRegional = "DEL_REGIONAL";
+  const editarRegional = "EDIT_REGIONAL";
+
   useEffect(() => {
     if (nomeUser()) {
       const acessoMenuUser = async () => {
@@ -161,7 +167,7 @@ const HomePage = () => {
                   setDisplayAcessoTipoPeca("");
                   setDisplayAcessoFornecedor("");
                   setDisplayAcessoStatusItem("")
-
+                  setDisplayAcessoRegional("");
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
@@ -187,7 +193,9 @@ const HomePage = () => {
                 if (listaStatusItem === ac || incluirStatusItem === ac || excluirStatusItem === ac || editarStatusItem === ac) {
                   setDisplayAcessoStatusItem("");
                 }
-
+                if (listaRegional === ac || incluirRegional === ac || excluirRegional === ac || editarRegional === ac) {
+                  setDisplayAcessoRegional("");
+                }
 
 
 
@@ -277,6 +285,11 @@ const HomePage = () => {
     navigate("/statusItem");
     handleDrawerClose();
   };
+
+  const listarRegional = () => {
+    navigate("/listarRegional");
+    handleDrawerClose();
+  }  
 
   return (
     <div style={{ display: nomeUser() ? "" : "none" }}>
@@ -432,6 +445,15 @@ const HomePage = () => {
                     <ListItemText primary={"SAC Montadoras"} />
                   </ListItemButton>
                 </ListItem>
+
+                <ListItem disablePadding  style={{ display: displayAcessoRegional }}>
+                  <ListItemButton onClick={() => listarRegional()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Regional"} />
+                  </ListItemButton>
+                </ListItem>                
 
               </TreeItem>
 
