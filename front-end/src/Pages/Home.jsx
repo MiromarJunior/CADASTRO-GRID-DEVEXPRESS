@@ -201,9 +201,6 @@ const HomePage = () => {
                   setDisplayAcessoRegional("");
                 }
 
-
-
-
               });
             }
           })

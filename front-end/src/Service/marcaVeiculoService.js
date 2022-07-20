@@ -16,18 +16,18 @@ const deleteMarcaVeiculo = data=>{
     return axios.post(`${baseURL}excluirMarcaVeiculo`,data);
 } 
 
-// const saveMarcaVeiculo = data=>{    
-//     return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data,{headers: {
-//         "Content-Type": "multipart/form-data"
-//       },});
-   
-// } 
-
-const saveMarcaVeiculo = data=>{
-    
-    return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data);
+const saveMarcaVeiculo = data=>{    
+    return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data,{headers: {
+        "Content-Type": "multipart/form-data"
+      },});
    
 } 
+
+// const saveMarcaVeiculo = data=>{
+    
+//     return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data);
+   
+// } 
 
 
 

@@ -138,8 +138,7 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoTipoPeca] = useState(["ACESSOTIPOPECA"]);  
   const [botaoAcessoFornecedor] = useState(["ACESSOFORNECEDOR"]);  
   const [botaoAcessoStatusItem] = useState(["ACESSOSTATUSITEM"]);  
-  
-  
+  const [botaoAcessoRegional] = useState(["ACESSOREGIONAL"]);   
   
    
   const [pageSizes] = useState([5, 10, 15, 0]);
@@ -337,6 +336,10 @@ const GrupoDeAcesso = () => {
       name: "ACESSOSTATUSITEM", title: "Status Item ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOREGIONAL", title: "Regional ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
 
 
 
@@ -363,6 +366,7 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOTIPOPECA', width: 200 },
     { columnName: 'ACESSOFORNECEDOR', width: 200 },
     { columnName: 'ACESSOSTATUSITEM', width: 200 },
+    { columnName: 'ACESSOREGIONAL', width: 200 },
 
   ])
 
@@ -596,6 +600,21 @@ const GrupoDeAcesso = () => {
     />
   )
 
+  const BotaoAcessoRegional = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/REGIONAL`)}>REGIONAL</button>
+
+    </div>
+
+  )
+  const BotaoAcessoRegionalProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoRegional}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
 
 
 
@@ -639,6 +658,9 @@ const GrupoDeAcesso = () => {
             />
             <BotaoAcessoStatusItemProv
              for={botaoAcessoStatusItem}
+            />
+            <BotaoAcessoRegionalProv
+             for={botaoAcessoRegional}
             />
 
 

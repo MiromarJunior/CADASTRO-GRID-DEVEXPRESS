@@ -1,16 +1,10 @@
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-
-
 import { AuthContext } from "../Autenticação/validacao";
-
 import { Checkbox, FormControlLabel, FormGroup, Paper } from "@mui/material";
 import { getAcesso, getAcessoUserMenu, saveAcesso } from "../Service/usuarioService";
-
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
-
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering, IntegratedSorting, SortingState } from "@devexpress/dx-react-grid";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import ListIcon from '@mui/icons-material/List';
@@ -236,6 +230,21 @@ const Acesso = () => {
     } else if (valor === "ADD_STIT") {
       return <span>Incluir Status de Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
+    else if (valor === "LIST_REGIONAL") {
+      return <span>Listar Regional <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_REGIONAL") {
+      return <span>Editar Regional <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_REGIONAL") {
+      return <span>Excluir Regional <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_REGIONAL") {
+      return <span>Incluir Regional <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+
+ 
+
+
+
+
 
     else { return valor }
 
@@ -253,8 +262,6 @@ const Acesso = () => {
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
   else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
   else if(grMen ==="STATUSITEM" ){ gr = "Status Item"}
-
-
 
 
 
