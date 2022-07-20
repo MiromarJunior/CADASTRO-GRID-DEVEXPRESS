@@ -36,6 +36,7 @@ import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 
 
+
 const drawerWidth = 280;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -83,6 +84,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+
+
+
 const HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -119,9 +123,9 @@ const HomePage = () => {
   const editarJust = "EDIT_JUSTIFICATIVA";
 
   const listaParamLe = "LIST_PARAMLE";
-  const incluirParamLe = "EDIT_PARAMLE";
+  const incluirParamLe = "ADD_PARAMLE";
   const excluirParamLe = "DEL_PARAMLE";
-  const editarParamLe = "ADD_PARAMLE";
+  const editarParamLe = "EDIT_PARAMLE";
 
   const listaTipoPeca = "LIST_TIPOPECA";
   const incluirTipoPeca = "ADD_TIPOPECA";
@@ -550,3 +554,26 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+
+/**
+ * 
+ * import { useTime} from 'react-timer-hook';
+  function TempoHora() {
+    const {
+      seconds,
+      minutes,
+      hours,
+      ampm,
+    } = useTime({ format: '24-hour'});
+    if(horasL === (hours+":"+minutes)){
+  
+     return navigate("/listarparametrosLeilao");
+    }
+  
+    
+  } 
+
+
+ * 
+ */

@@ -139,6 +139,9 @@ const CadastroSeguradora = () => {
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [acessoCAD, setAcessoCAD] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");   
+    const listaSgra = "LIST_SGRA";
+    const incluirSgra = "ADD_SGRA";
+    const excluirSgra = "DEL_SGRA";
     const editarSgra = "EDIT_SGRA";
 
 
@@ -157,10 +160,16 @@ const CadastroSeguradora = () => {
 
                     } else {
                         (res.data).forEach((ac) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || editarSgra === ac) {
+                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac ) {
                                 setAcessoGeral(true);
                                 setAcessoCAD(true);
                                 setDisplayAcesso("");                                  
+                            }else if(incluirSgra === ac && idSeg ==="0"){
+                                setAcessoCAD(true);
+                                setDisplayAcesso(""); 
+                            }else if(editarSgra === ac){
+                                setAcessoCAD(true);
+                                setDisplayAcesso(""); 
                             }
 
 

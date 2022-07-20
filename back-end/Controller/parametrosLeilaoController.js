@@ -245,7 +245,7 @@ router.post("/listarParametroLeilaoSeg", async (req, res) => {
 });
 
 router.post("/excluirParametroLeilao", async (req, res) => {
-  const { token, idPar, acessoGeral, acessoDEL
+  const { token, idPar, acessoGeral
   } = req.body;
 
 
@@ -254,7 +254,7 @@ router.post("/excluirParametroLeilao", async (req, res) => {
 
   let deleteSql = "";
 
-  if (acessoGeral || acessoDEL) {
+  if (acessoGeral) {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {

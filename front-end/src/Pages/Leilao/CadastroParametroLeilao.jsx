@@ -4,9 +4,10 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
 import { formataPercLeilao, getParametroLeilao, getSegParametroLeilao, limit2, maxValperc, saveParametroLeilao } from "../../Service/parametroLeilaoService";
-import { getSeguradora } from "../../Service/seguradoraService";
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { formatHrLeilao, validaCampo, validaCampoParam, validaHrIni, validaMin } from "../../Service/utilServiceFrontEnd";
+import { formatHrLeilao, validaCampoParam, validaHrIni,  } from "../../Service/utilServiceFrontEnd";
+
+
 
 const CadastroParametroLeilao = () => {
   const token = localStorage.getItem("token");
@@ -34,11 +35,20 @@ const CadastroParametroLeilao = () => {
   const [encerraAnt, setEncerraAnt] = useState("");
   const [percAltLeilao, setPercAltLeilao] = useState("");
   const [tempoAlt, setTempoAlt] = useState("");
-  const [acessoGeral, setAcessogeral] = useState();
+  const [acessoGeral, setAcessogeral] = useState(false);
+  const [acessoCAD, setAcessoCAD] = useState(false);
   const [listaSeg, setListaSeg] = useState([]);
   const [idSeg, setIdSeg] = useState("");
   const { idPar } = useParams();
   const navigate = useNavigate();
+  const [displayADD, setDisplayADD] = useState("none");
+  const incluirParamLe = "ADD_PARAMLE";
+  const editarParamLe = "EDIT_PARAMLE";
+
+
+
+
+
 
   useEffect(() => {
     const acessoMenuUser = async () => {
@@ -56,8 +66,19 @@ const CadastroParametroLeilao = () => {
             (res.data).forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 setAcessogeral(true);
+                setAcessoCAD(true);
+                setDisplayADD("");
+              }else if(editarParamLe === ac){            
+                setDisplayADD("");
+                setAcessoCAD(true);
+              }else if(incluirParamLe === ac ){
+                if(idPar === "0"){
+                  setAcessoCAD(true);
+                  setDisplayADD("");
+                }
 
               }
+
             })
           }
         })
@@ -106,11 +127,11 @@ const CadastroParametroLeilao = () => {
 
 
 
-  }, [logout, navigate, token])
+  }, [logout, navigate, token,idPar ])
 
 
   const listarParametroLeilao = async () => {
-    let dados = { token, idPar, acessoGeral };
+    let dados = { token, idPar };
     await getParametroLeilao(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -164,15 +185,13 @@ const CadastroParametroLeilao = () => {
 
   const cadastrarParametros = () => {
 
-
-
     const dados = {
       token, pontuacaoInicial, horasL: horasL.replace(":", ""), horasExtend: horasExtend.replace(":", ""),
       horaIniL: horaIniL.replace(":", ""), horaFimL: horaFimL.replace(":", ""), tempoAbertAft,
       qtdHorasValSef, horarioAtendIni: horarioAtendIni.replace(":", ""),
       horarioAtendFim: horarioAtendFim.replace(":", ""), feriado: (feriado ? feriado : "Nao"), qtdVencedores,
       qtdHorasBO, prazoBO, horasTotalCot: horasTotalCot.replace(":", ""), horasTotalLei: horasTotalLei.replace(":", ""),
-      tempoRecalculo, encerraAnt, tempoAlt, idSeg, acessoGeral, idPar,
+      tempoRecalculo, encerraAnt, tempoAlt, idSeg, acessoGeral : (acessoGeral || acessoCAD ? true : false), idPar,
       criticaPed : formataPercLeilao(criticaPed), 
       limiteApr : formataPercLeilao(limiteApr), 
       percLimite: formataPercLeilao(percLimite),
@@ -204,7 +223,8 @@ const CadastroParametroLeilao = () => {
     validaCampoParam(tempoRecalculo,"Tempo para recalculo não pode ser vazio",4,"Valor superior ao permitido, favor corrigir \nTempo para recalculo") &&
     validaCampoParam(encerraAnt,"Encerramento antecipado em minutos não pode ser vazio",4,"Valor superior ao permitido, favor corrigir \nEncerramento antecipado em minutos") &&
     validaCampoParam(tempoAlt,"Tempo alteração em minutos não pode ser vazio",4,"Valor superior ao permitido, favor corrigir \nTempo alteração em minutos") &&
-    maxValperc(percAltLeilao,"Valor do Perc Alt leilão inválido") 
+    maxValperc(percAltLeilao,"Valor do Perc Alt leilão inválido") &&
+    (acessoGeral || acessoCAD)
        
    ){    
 
@@ -235,88 +255,87 @@ const CadastroParametroLeilao = () => {
       })
 
 
+    }else if(!acessoCAD && !acessoGeral){
+      window.alert("Usuário sem permissão !");
     }
 
 
   }
 
+
   return (
     <div className="container-fluid">
+       
+    
       <h3 id="titulos">Parametros do Leilão</h3>
 
-      <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
+      <Box component="form" sx={{'& .MuiTextField-root': { m: 1, width: '25ch' },}} noValidate autoComplete="off">
 
-        <TextField required id=""  error={idSeg ? false : true} disabled={!acessoGeral} label="Seguradora" select  onChange={(e) => setIdSeg(e.target.value)} style={{ minWidth: "40em" }} value={(idSeg.toString())}  >
+        <TextField required id=""  error={idSeg ? false : true} disabled={!acessoCAD} label="Seguradora" select  onChange={(e) => setIdSeg(e.target.value)} style={{ minWidth: "40em" }} value={(idSeg.toString())}  >
           {listaSeg.map(l =>
             <MenuItem key={l.ID_SEGURADORA} value={l.ID_SEGURADORA}>{l.SGRA_RAZAO_SOCIAL}  CNPJ {l.SGRA_CNPJ ? cnpj.format(l.SGRA_CNPJ) : " "}</MenuItem>
           )}
         </TextField>
 
         <label id="titulosLabel">Ranking</label>
-        <TextField required label="Pontuação Inicial" error={pontuacaoInicial ? false : true} disabled={!acessoGeral} id="" value={pontuacaoInicial} onChange={(e) => setPontuacaoInicial(parseInt(Number(e.target.value.substring(0, 6))))} type={"number"} />
+        <TextField required label="Pontuação Inicial" error={pontuacaoInicial ? false : true} disabled={!acessoCAD} id="" value={pontuacaoInicial} onChange={(e) => setPontuacaoInicial(parseInt(Number(e.target.value.substring(0, 6))))} type={"number"} />
         <hr />
 
         <label id="titulosLabel">Leilão</label>
-        <TextField required label="Horas" error={horasL === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horasL ? horasL : "00:00"} onChange={(e) => setHorasL(e.target.value)} type={"time"} />
-        <TextField required label="Horas Extendida" error={horasExtend === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horasExtend ? horasExtend : "00:00"} onChange={(e) => setHorasExtend(e.target.value)} type={"time"} />
-        <TextField required label="Horário Inicio" error={horaIniL === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horaIniL ? horaIniL : "00:00"} onChange={(e) => setHoraIniL(e.target.value)} type={"time"} />
-        <TextField required label="Horário Fim" error={horaFimL === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horaFimL ? horaFimL : "00:00"} onChange={(e) => setHoraFimL(e.target.value)} type={"time"} />
-        <TextField required label="Tempo Abertura After" error={tempoAbertAft ? false : true} disabled={!acessoGeral} id="" value={tempoAbertAft} onChange={(e) => setTempoAbertAft(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField required label="Horas" error={horasL === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horasL ? horasL : "00:00"} onChange={(e) => setHorasL(e.target.value)} type={"time"} />
+        <TextField required label="Horas Extendida" error={horasExtend === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horasExtend ? horasExtend : "00:00"} onChange={(e) => setHorasExtend(e.target.value)} type={"time"} />
+        <TextField required label="Horário Inicio" error={horaIniL === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horaIniL ? horaIniL : "00:00"} onChange={(e) => setHoraIniL(e.target.value)} type={"time"} />
+        <TextField required label="Horário Fim" error={horaFimL === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horaFimL ? horaFimL : "00:00"} onChange={(e) => setHoraFimL(e.target.value)} type={"time"} />
+        <TextField required label="Tempo Abertura After" error={tempoAbertAft ? false : true} disabled={!acessoCAD} id="" value={tempoAbertAft} onChange={(e) => setTempoAbertAft(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
         <label  style={{ marginTop : "1.2em" }}> em Minutos</label>
         <hr />
 
         <label id="titulosLabel">Horas para validação nota SEFAZ</label>
-        <TextField required label="Quantidade de Horas" error={qtdHorasValSef ? false : true} disabled={!acessoGeral} id="" value={qtdHorasValSef ? qtdHorasValSef : ""} onChange={(e) => setQtdHorasValSef(Number(e.target.value.substring(0, 4)))} type={"number"}/>
+        <TextField required label="Quantidade de Horas" error={qtdHorasValSef ? false : true} disabled={!acessoCAD} id="" value={qtdHorasValSef ? qtdHorasValSef : ""} onChange={(e) => setQtdHorasValSef(Number(e.target.value.substring(0, 4)))} type={"number"}/>
         <hr />
 
         <label id="titulosLabel">Horário de Atendimento para tela fale Conosco</label>
-        <TextField required label="Horário Inicial" error={horarioAtendIni === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horarioAtendIni ? horarioAtendIni : "00:00"} onChange={(e) => setHorarioAtendIni(e.target.value)} type={"time"} />
+        <TextField required label="Horário Inicial" error={horarioAtendIni === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horarioAtendIni ? horarioAtendIni : "00:00"} onChange={(e) => setHorarioAtendIni(e.target.value)} type={"time"} />
         <label style={{ marginTop: "1.2em" }}> até as </label>
-        <TextField required label="Horário Fim" error={horarioAtendFim === "00:00" ? true : false} disabled={!acessoGeral} id="" value={horarioAtendFim ? horarioAtendFim : "00:00"} onChange={(e) => setHorarioAtendFim(e.target.value)} type={"time"} />
+        <TextField required label="Horário Fim" error={horarioAtendFim === "00:00" ? true : false} disabled={!acessoCAD} id="" value={horarioAtendFim ? horarioAtendFim : "00:00"} onChange={(e) => setHorarioAtendFim(e.target.value)} type={"time"} />
         <hr />
 
         <label id="titulosLabel">Feriado</label>
         <FormGroup>
-          <FormControlLabel onChange={(e) => setFeriado((feriado === "Sim" ? "Nao" : "Sim"))} control={<Checkbox />} value={feriado === "Sim" ? "Sim" : "Nao"} label="Facultativo/Feriado" checked={feriado === "Sim" ? true : false} />
+          <FormControlLabel onChange={(e) => setFeriado((feriado === "Sim" ? "Nao" : "Sim"))} disabled={!acessoCAD}  control={<Checkbox />} value={feriado === "Sim" ? "Sim" : "Nao"} label="Facultativo/Feriado" checked={feriado === "Sim" ? true : false} />
         </FormGroup>
         <hr />
 
         <label id="titulosLabel">Vencedores Genuínos</label>
-        <TextField style={{ minWidth: "15em" }} required label="Quantidade de Vencedores" error={qtdVencedores ? false : true} disabled={!acessoGeral} id="" value={qtdVencedores ? qtdVencedores : ""} onChange={(e) => setQtdVencedores(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField style={{ minWidth: "15em" }} required label="Quantidade de Vencedores" error={qtdVencedores ? false : true} disabled={!acessoCAD} id="" value={qtdVencedores ? qtdVencedores : ""} onChange={(e) => setQtdVencedores(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
         <hr />
 
         <label id="titulosLabel">Ajuste de Preço</label>
-        <TextField required label="Critica de Pedidos   0,00 %" error={criticaPed ? false : true} disabled={!acessoGeral} id="" value={(criticaPed ? criticaPed : "")} onChange={(e) => setCriticaPed(e.target.value)} type={"number"} />
-        <TextField required label="Limite Aprovados    %" error={limiteApr > 0 ? false : true} disabled={!acessoGeral} id="" value={limiteApr ? limiteApr : ""} onChange={(e) => setLimiteApr(e.target.value)} type={"number"} />
-        <TextField required label="Percentual Limite   %" error={percLimite > 0 ? false : true} disabled={!acessoGeral} id="" value={percLimite ? percLimite : ""} onChange={(e) => setPercLimite(e.target.value)} type={"number"} />
-        <TextField required label="Limite Cotação    %" error={limiteCot ? false : true} disabled={!acessoGeral} id="" value={limiteCot ? limiteCot : ""} onChange={(e) => setLImiteCot(e.target.value)} type={"number"} />
+        <TextField required label="Critica de Pedidos   0,00 %" error={criticaPed ? false : true} disabled={!acessoCAD} id="" value={(criticaPed ? criticaPed : "")} onChange={(e) => setCriticaPed(e.target.value)} type={"number"} />
+        <TextField required label="Limite Aprovados    %" error={limiteApr > 0 ? false : true} disabled={!acessoCAD} id="" value={limiteApr ? limiteApr : ""} onChange={(e) => setLimiteApr(e.target.value)} type={"number"} />
+        <TextField required label="Percentual Limite   %" error={percLimite > 0 ? false : true} disabled={!acessoCAD} id="" value={percLimite ? percLimite : ""} onChange={(e) => setPercLimite(e.target.value)} type={"number"} />
+        <TextField required label="Limite Cotação    %" error={limiteCot ? false : true} disabled={!acessoCAD} id="" value={limiteCot ? limiteCot : ""} onChange={(e) => setLImiteCot(e.target.value)} type={"number"} />
         <hr />
 
         <label id="titulosLabel">Parametros de BO</label>
-        <TextField required label="Quantidade de Horas" error={qtdHorasBO ? false : true} disabled={!acessoGeral} id="" value={(qtdHorasBO ? qtdHorasBO : "")} onChange={(e) => setQtdHorasBO(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
-        <TextField required label="Prazo em dias" error={prazoBO ? false : true} disabled={!acessoGeral} id="" value={(prazoBO ? prazoBO : "")} onChange={(e) => setPrazoBO(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField required label="Quantidade de Horas" error={qtdHorasBO ? false : true} disabled={!acessoCAD} id="" value={(qtdHorasBO ? qtdHorasBO : "")} onChange={(e) => setQtdHorasBO(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField required label="Prazo em dias" error={prazoBO ? false : true} disabled={!acessoCAD} id="" value={(prazoBO ? prazoBO : "")} onChange={(e) => setPrazoBO(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
         <hr />
 
         <label id="titulosLabel">Leilão On-Line</label>
-        <TextField required label="Horas Cotação" error={horasTotalCot === "00:00" ? true : false} disabled={!acessoGeral} id="" value={(horasTotalCot ? horasTotalCot : "00:00")} onChange={(e) => setHorasTotalCot(e.target.value)} type={"time"} />
-        <TextField required label="Horas Leilão" error={horasTotalLei === "00:00" ? true : false} disabled={!acessoGeral} id="" value={(horasTotalLei ? horasTotalLei : "00:00")} onChange={(e) => setHorasTotalLei(e.target.value)} type={"time"} />
-        <TextField required label="Tempo p/ Recalculo em Minutos" error={tempoRecalculo ? false : true} disabled={!acessoGeral} id="" value={(tempoRecalculo ? tempoRecalculo : "")} onChange={(e) => setTempoRecalculo(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
-        <TextField style={{ minWidth: "16em" }} required label="Encerramento Antecipado em Minutos" error={encerraAnt ? false : true} disabled={!acessoGeral} id="" value={(encerraAnt ? encerraAnt : "")} onChange={(e) => setEncerraAnt(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
-        <TextField required label="Perc Alt Leilão   %" error={percAltLeilao ? false : true} disabled={!acessoGeral} id="" value={(percAltLeilao ? percAltLeilao : "")} onChange={(e) => setPercAltLeilao(e.target.value)} type={"number"} />
-        <TextField required label="Tempo Alteração em Minutos" error={tempoAlt ? false : true} disabled={!acessoGeral} id="" value={(tempoAlt ? tempoAlt : "")} onChange={(e) => setTempoAlt(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField required label="Horas Cotação" error={horasTotalCot === "00:00" ? true : false} disabled={!acessoCAD} id="" value={(horasTotalCot ? horasTotalCot : "00:00")} onChange={(e) => setHorasTotalCot(e.target.value)} type={"time"} />
+        <TextField required label="Horas Leilão" error={horasTotalLei === "00:00" ? true : false} disabled={!acessoCAD} id="" value={(horasTotalLei ? horasTotalLei : "00:00")} onChange={(e) => setHorasTotalLei(e.target.value)} type={"time"} />
+        <TextField required label="Tempo p/ Recalculo em Minutos" error={tempoRecalculo ? false : true} disabled={!acessoCAD} id="" value={(tempoRecalculo ? tempoRecalculo : "")} onChange={(e) => setTempoRecalculo(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField style={{ minWidth: "16em" }} required label="Encerramento Antecipado em Minutos" error={encerraAnt ? false : true} disabled={!acessoCAD} id="" value={(encerraAnt ? encerraAnt : "")} onChange={(e) => setEncerraAnt(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
+        <TextField required label="Perc Alt Leilão   %" error={percAltLeilao ? false : true} disabled={!acessoCAD} id="" value={(percAltLeilao ? percAltLeilao : "")} onChange={(e) => setPercAltLeilao(e.target.value)} type={"number"} />
+        <TextField required label="Tempo Alteração em Minutos" error={tempoAlt ? false : true} disabled={!acessoCAD} id="" value={(tempoAlt ? tempoAlt : "")} onChange={(e) => setTempoAlt(parseInt(Number(e.target.value.substring(0, 4))))} type={"number"} />
         <hr />
-        <button onClick={() => cadastrarParametros()} style={{ marginBottom: "1em", marginLeft : "0.5em" }} className="btn btn-outline-primary margemRight">SALVAR</button>
-      <button style={{ marginBottom: "1em" }} onClick={(e) => navigate("/listarparametrosLeilao")} className="btn btn-outline-danger">SAIR</button>
-
+        
 
       </Box>
+      <button onClick={() => cadastrarParametros()} style={{ marginBottom: "1em", marginLeft : "2em", display :  displayADD }} className="btn btn-outline-primary margemRight">SALVAR</button>
+      <button style={{ marginBottom: "1em" }} onClick={(e) => navigate("/listarparametrosLeilao")} className="btn btn-outline-danger">SAIR</button>
+
 
       
     </div>
