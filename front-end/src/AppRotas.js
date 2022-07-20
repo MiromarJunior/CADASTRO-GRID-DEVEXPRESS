@@ -27,6 +27,8 @@ import TipoPeca from "./Pages/TipoPeca/TipoPeca";
 import ListarParametroLeilao from "./Pages/Leilao/ListarParametroLeilao";
 import StatusItem from "./Pages/StatusItem/StatusItem";
 import CadastroMarcaVeiculo from "./Pages/Marca/CadastroMarcaVeiculo";
+import CadastroRegional from "./Pages/Regional/CadastroRegional";
+import ListarRegional from "./Pages/Regional/ListarRegional";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
@@ -71,8 +73,9 @@ const AppRotas = () => {
           <Route exact path="/cadastroFornecedor/:idFornecedor" element={<Private> <CadastroFornecedor /> </Private>} />
           <Route exact path="/statusItem" element={ <Private><StatusItem /></Private> } />
           <Route exact path="/cadastroMarcaVeiculo/:idMa" element={ <Private><CadastroMarcaVeiculo /></Private> } />
+          <Route exact path="/listarRegional" element={ <Private><ListarRegional /></Private> } />
+          <Route exact path="/cadastroRegional/:idRegional" element={<Private> <CadastroRegional /> </Private>} />
 
-          
         </Routes>
       </AuthProvider>
     </BrowserRouter>
