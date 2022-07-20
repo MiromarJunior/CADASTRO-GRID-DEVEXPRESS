@@ -18,12 +18,8 @@ const CadastroMarcaVeiculo = () => {
     const [imagemChat, setImagemChat] = useState();
     const [imagemChatColor, setImagemChatColor] = useState();
     const navigate = useNavigate();
-
     const cadastrarMarcaVeiculo = () => {
-        //const formData = new FormData();
-        //formData.append('logo',logo);
-        //console.log(formData);
-        const dados = { descricao, posLogChat, logo , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
+        const dados = { descricao, posLogChat, logo, logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
         saveMarcaVeiculo(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -66,7 +62,6 @@ const CadastroMarcaVeiculo = () => {
             <h3 id="titulos">Cadastro Marca Veiculo</h3>
             <Box
                 component="form"
-                encType="multipart/form-data"
                 sx={{
                     '& .MuiTextField-root': { m: 1, width: '25ch' },
                 }}
@@ -76,28 +71,25 @@ const CadastroMarcaVeiculo = () => {
                 <TextField required label="Código Marca" disabled={true} id="" value={codigoMarca} type={"number"} /><br />
                 <TextField required label="Descrição" error={descricao ? false : true} disabled={!acessoGeral} id="" value={descricao} onChange={(e) => setDescricao(e.target.value)} type={"text"} /><br />
                 <TextField required label="Posição Logo Chat" error={posLogChat ? false : true} disabled={!acessoGeral} id="" value={posLogChat} onChange={(e) => setPosLogChat(e.target.value)} type={"number"} /><br />
-              
-             
-                <TextField name="logo" inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setLogo(e.target.files[0])} type={"file"} InputLabelProps={{
-                    shrink: true
-                }} style={{ minWidth: '25em' }} /><br />
-                <TextField name="logoApont" inputProps={{ accept :"image/*"}} required label="Imagem Logo Apontador" error={logoApont ? false : true} disabled={!acessoGeral} id="" onChange={(e) => setLogoApont(e.target.files[0])} type={"file"} InputLabelProps={{
-                    shrink: true 
-                }} style={{ minWidth: '25em' }} /><br />
-                <TextField name="imagemChat" inputProps={{ accept :"image/*"}} required label="Imagem Chat" error={imagemChat ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setImagemChat(e.target.files[0])} type={"file"} InputLabelProps={{
+                <TextField required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="" value={logo} onChange={(e) => setLogo(e.target.value)} type={"file"} InputLabelProps={{
                     shrink: true,
                 }} style={{ minWidth: '25em' }} /><br />
-                <TextField name="imagemChatColor" inputProps={{ accept :"image/*"}}  required label="Imagem Chat Colorido" error={imagemChatColor ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setImagemChatColor(e.target.files[0])} type={"file"} InputLabelProps={{
+                <TextField required label="Imagem Logo Apontador" error={logoApont ? false : true} disabled={!acessoGeral} id="" value={logoApont} onChange={(e) => setLogoApont(e.target.value)} type={"file"} InputLabelProps={{
+                    shrink: true,
+                }} style={{ minWidth: '25em' }} /><br />
+                <TextField required label="Imagem Chat" error={imagemChat ? false : true} disabled={!acessoGeral} id="" value={imagemChat} onChange={(e) => setImagemChat(e.target.value)} type={"file"} InputLabelProps={{
+                    shrink: true,
+                }} style={{ minWidth: '25em' }} /><br />
+                <TextField required label="Imagem Chat Colorido" error={imagemChatColor ? false : true} disabled={!acessoGeral} id="" value={imagemChatColor} onChange={(e) => setImagemChatColor(e.target.value)} type={"file"} InputLabelProps={{
                     shrink: true,
                 }} style={{ minWidth: '25em' }} />
 
                 <br />
-                
+                <button onClick={() => cadastrarMarcaVeiculo()} style={{ marginBottom: "1em", marginLeft: "0.5em" }} className="btn btn-outline-primary">SALVAR</button>
+                <button style={{ marginBottom: "1em", marginLeft: "1em" }} onClick={(e) => navigate("/marcaVeiculo")} className="btn btn-outline-danger">VOLTAR</button>
+
 
             </Box>
-            <button onClick={() => cadastrarMarcaVeiculo()} style={{ marginBottom: "1em", marginLeft: "0.5em" }} className="btn btn-outline-primary">SALVAR</button>
-            <button style={{ marginBottom: "1em", marginLeft: "1em" }} onClick={(e) => navigate("/marcaVeiculo")} className="btn btn-outline-danger">VOLTAR</button>
-
         </div>
     )
 

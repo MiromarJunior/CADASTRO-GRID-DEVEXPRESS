@@ -11,6 +11,20 @@ const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 
 const app = express();
 app.use(express.json());
+// const multer  = require('multer')
+// const storage = multer.diskStorage({
+//   destination : (req,file,cb)=>{
+//     cb(null,'uploads/')
+//   },
+//   filename : (req, file, cb)=>{
+//     cb(null,file.originalname )
+//   },
+//   limits: {
+//     fileSize: 10
+//   },
+
+// });
+// const upload = multer({storage : storage});
 // let connection = await oracledb.getConnection(dbConfig);
 //await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
@@ -134,93 +148,99 @@ router.post("/excluirMarcaVeiculo", async (req, res) => {
 
 
 });
-
-router.post("/cadastrarMarcaVeiculo", async (req, res) => {
+router.post("/cadastrarMarcaVeiculo",async (req, res) => {
+  console.log(req.file);
+  console.log(req.body);
   const {
-    token, idMa, acessoGeral, descricao, posLogChat, logo, logoApont, imagemChat, imagemChatColor } = req.body;
+    token, idMa, acessoGeral, descricao, posLogChat, logo,logoApont, imagemChat, imagemChatColor } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
+ const fs = require('fs');
+//  fs.writeFileSync(`./Controller/uploads/logo.jpeg`,logo,{
+//   encoding : "binary"
+//  }) 
+ //const logo1 = fs.readFileSync(`./Controller/notas/logo`)
 
 
-  if (acessoGeral) {
-    try {
+  // if (acessoGeral) {
+  //   try {
 
-      jwt.verify(token, SECRET, async (err, decoded) => {
-        if (err) {
-          console.error(err, "err");
-          erroAcesso = "erroLogin";
-          res.send("erroLogin").end();
+  //     jwt.verify(token, SECRET, async (err, decoded) => {
+  //       if (err) {
+  //         console.error(err, "err");
+  //         erroAcesso = "erroLogin";
+  //         res.send("erroLogin").end();
 
-        } else {
+  //       } else {
 
-          if (idMa > 0) {
-            await connection.execute(`
-                UPDATE  MARCA_VEICULO
-                 SET  MRVC_DESCRICAO = '${descricao}',
-                 MRVC_POSICAO_LOGO_CHAT = '${posLogChat}',
-                 MRVC_IMAGEM_LOGO = '${logo}',
-                 MRVC_IMAGEM_LOGO_APONTADOR ='${logoApont}',
-                 MRVC_IMAGEM_CHAT ='${imagemChat}}',
-                 MRVC_IMAGEM_CHAT_COLORIDO ='${imagemChatColor}'
-                 WHERE ID_MARCA_VEICULO = '${idMa}'                
-                `
+  //         if (idMa > 0) {
+  //           await connection.execute(`
+  //               UPDATE  MARCA_VEICULO
+  //                SET  MRVC_DESCRICAO = '${descricao}',
+  //                MRVC_POSICAO_LOGO_CHAT = '${posLogChat}',
+  //                MRVC_IMAGEM_LOGO = '${logo}',
+  //                MRVC_IMAGEM_LOGO_APONTADOR ='${logoApont}',
+  //                MRVC_IMAGEM_CHAT ='${imagemChat}}',
+  //                MRVC_IMAGEM_CHAT_COLORIDO ='${imagemChatColor}'
+  //                WHERE ID_MARCA_VEICULO = '${idMa}'                
+  //               `
 
-              , [], {
-              outFormat: oracledb.OUT_FORMAT_OBJECT,
-              autoCommit: true
-            });
-            res.send("sucessoU").status(200).end();
+  //             , [], {
+  //             outFormat: oracledb.OUT_FORMAT_OBJECT,
+  //             autoCommit: true
+  //           });
+  //           res.send("sucessoU").status(200).end();
 
-          } else {
+  //         } else {
 
-            await connection.execute(
-              ` 
-              INSERT INTO MARCA_VEICULO(
-                ID_MARCA_VEICULO,
-                MRVC_DESCRICAO,
-                MRVC_POSICAO_LOGO_CHAT,
-                MRVC_IMAGEM_LOGO,
-                MRVC_IMAGEM_LOGO_APONTADOR,
-                MRVC_IMAGEM_CHAT,
-                MRVC_IMAGEM_CHAT_COLORIDO
-                )
-              VALUES(
-                SEQ_MRVC.NEXTVAL,
-                '${descricao}','${posLogChat}','${logo}','${logoApont}','${imagemChat}','${(imagemChatColor)}'
-              )           
+  //           await connection.execute(
+  //             ` 
+  //             INSERT INTO MARCA_VEICULO(
+  //               ID_MARCA_VEICULO,
+  //               MRVC_DESCRICAO,
+  //               MRVC_POSICAO_LOGO_CHAT,
+  //               MRVC_IMAGEM_LOGO,
+  //               MRVC_IMAGEM_LOGO_APONTADOR,
+  //               MRVC_IMAGEM_CHAT,
+  //               MRVC_IMAGEM_CHAT_COLORIDO
+  //               )
+  //             VALUES(
+  //               SEQ_MRVC.NEXTVAL,:1,:2,:3,:4,:5,:6
+               
+  //             )           
               
-              `,
-              [],
-              {
-                outFormat: oracledb.OUT_FORMAT_OBJECT,
-                autoCommit: true
-              });
-            res.send("sucesso").status(200).end();
-          }
+  //             `,
+  //             [descricao,posLogChat,logo1,logoApont,imagemChat,imagemChatColor],
+  //             {
+  //               outFormat: oracledb.OUT_FORMAT_OBJECT,
+  //               autoCommit: true
+  //             });
+  //           res.send("sucesso").status(200).end();
+  //         }
 
 
 
 
-        }
-      })
+  //       }
+  //     })
 
-    } catch (error) {
-      console.error(error, 'Erro ao tentar cadastrar marca de veiculo.');
-      res.send("erroSalvar").status(500);
+  //   } catch (error) {
+  //     console.error(error, 'Erro ao tentar cadastrar marca de veiculo.');
+  //     res.send("erroSalvar").status(500);
 
-    } finally {
-      if (connection) {
-        try {
-          await connection.close();
+  //   } finally {
+  //     if (connection) {
+  //       try {
+  //         await connection.close();
 
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    }
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //   }
 
-  } else {
-    res.send("semAcesso").status(200).end();
-  }
+  // } else {
+  //   res.send("semAcesso").status(200).end();
+  // }
 
 });
 
