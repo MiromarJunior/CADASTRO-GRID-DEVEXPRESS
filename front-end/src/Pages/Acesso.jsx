@@ -1,16 +1,10 @@
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-
-
 import { AuthContext } from "../Autenticação/validacao";
-
 import { Checkbox, FormControlLabel, FormGroup, Paper } from "@mui/material";
 import { getAcesso, getAcessoUserMenu, saveAcesso } from "../Service/usuarioService";
-
 import { Grid, Table, TableColumnResizing, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
-
 import { DataTypeProvider, EditingState, FilteringState, IntegratedFiltering, IntegratedSorting, SortingState } from "@devexpress/dx-react-grid";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import ListIcon from '@mui/icons-material/List';
@@ -94,12 +88,12 @@ const Acesso = () => {
             window.alert("Usuário sem permissão !!!");
 
           } else if (res.data === "sucesso") {
-            window.alert("Acesso cadastrado com sucesso !!");
+           // window.alert("Acesso cadastrado com sucesso !!");
             listaAcesso();
 
           }
           else if (res.data === "sucessoD") {
-            window.alert("Acesso excluído com sucesso !!");
+           // window.alert("Acesso excluído com sucesso !!");
             listaAcesso();
 
           }
@@ -150,12 +144,6 @@ const Acesso = () => {
       })
   }
 
-
-
-
-
-
-
   const alteraAcesso = (valor) => {
     if (valor === "ACESSO_MASTER") {
       return "ACESSO GERAL"
@@ -176,7 +164,7 @@ const Acesso = () => {
     } else if (valor === "DEL_USRO") {
       return <span>Excluir Usuário <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_USRO") {
-      return <span>Listar Usuários <ListIcon style={{ color: "green" }} /></span>
+      return <span>Listar Todos os Usuários <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "ADM_USRO") {
       return <span>Administrador Usuários </span>
     } else if (valor === "ADD_SGRA") {
@@ -194,49 +182,107 @@ const Acesso = () => {
     } else if (valor === "LIST_REGIAO") {
       return <span>Listar Região <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "ADD_JUSTIFICATIVA") {
-      return <span>Incluir JJustificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+      return <span>Incluir Justificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "EDIT_JUSTIFICATIVA") {
       return <span>Alterar Justificativa do Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
     } else if (valor === "DEL_JUSTIFICATIVA") {
       return <span>Excluir Justificativa do Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_JUSTIFICATIVA") {
       return <span>Listar Justificativa do Item <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "LIST_SACMONT") {
+      return <span>Listar SAC Montadoras <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_SACMONT") {
+      return <span>Editar SAC Montadoras <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_SACMONT") {
+      return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_SACMONT") {
+      return <span>Incluir SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    } else if (valor === "LIST_FORNECEDOR") {
+      return <span>Listar Fornecedor <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_FORNECEDOR") {
+      return <span>Editar Fornecedor <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_FORNECEDOR") {
+      return <span>Excluir Fornecedor <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_FORNECEDOR") {
+      return <span>Incluir Fornecedor <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    } else if (valor === "LIST_PARAMLE") {
+      return <span>Listar Parametros de Leilão <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_PARAMLE") {
+      return <span>Editar Parametros de Leilão <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_PARAMLE") {
+      return <span>Excluir Parametros de Leilão <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_PARAMLE") {
+      return <span>Incluir Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }else if (valor === "LIST_TIPOPECA") {
+      return <span>Listar Tipo de Peças <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_TIPOPECA") {
+      return <span>Editar Tipo de Peças <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_TIPOPECA") {
+      return <span>Excluir Tipo de Peças <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_TIPOPECA") {
+      return <span>Incluir Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }else if (valor === "LIST_STIT") {
+      return <span>Listar Status de Item <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_STIT") {
+      return <span>Editar Status de Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_STIT") {
+      return <span>Excluir Status de Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_STIT") {
+      return <span>Incluir Status de Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
+    else if (valor === "LIST_REGIONAL") {
+      return <span>Listar Regional <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_REGIONAL") {
+      return <span>Editar Regional <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_REGIONAL") {
+      return <span>Excluir Regional <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_REGIONAL") {
+      return <span>Incluir Regional <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+
+ 
+
+
+
+
 
     else { return valor }
 
   }
+
+  let gr = "";
+  if(grMen === "PARAMLE"){gr = "Parametros de leilão"}
+  else if(grMen ==="USUARIO" ){ gr = "Usuário"}
+  else if(grMen ==="SEGURADORA" ){ gr = "Seguradoras"}
+  else if(grMen ==="REGIAO" ){ gr = "Região"}
+  else if(grMen ==="JUSTIFICATIVA" ){ gr = "Justificativa do Item"}
+  else if(grMen ==="SACMONT" ){ gr = "Sac Montadora"}
+  else if(grMen ==="TIPOPECA" ){ gr = "Tipo de peças"}
+  else if(grMen ==="STATUSITEM" ){ gr = "Status de Item"}
+  else if(grMen ==="GERAL" ){ gr = "Permitidos"}
+  else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
+  else if(grMen ==="STATUSITEM" ){ gr = "Status Item"}
+
+
+
   const columns = ([
-    {
-      name: 'ACES_DESCRICAO', title: "ACESSO",
-      getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)),
+    { name: 'ACES_DESCRICAO', title: "ACESSO", 
+    getCellValue: row => (alteraAcesso(row.ACES_DESCRICAO)), 
     },
     {
       name: 'ACESSOL', title: "ATIVO",
       getCellValue: row => ([row.TOTAL, row.ACES_CODIGO]),
     },
-
-
-
-  ])
+    ])
 
   const [defaultColumnWidths] = useState([
     { columnName: 'ACES_DESCRICAO', width: 400 },
     { columnName: 'ACESSOL', width: 200 },
-
-
   ]);
-
-
-
 
   const [filteringStateColumnExtensions] = useState([
     { columnName: 'ALTERACAO', filteringEnabled: false, editingEnabled: false },
   ]);
-
-
-
-
 
 
   const BotaoAcessos = ({ value }) => (
@@ -275,7 +321,7 @@ const Acesso = () => {
   return (
 
     <div className="container-fluid " style={{ display: displayAcesso }} >
-      <h3 id="titulos"> Controle de Acessos {grMen} do grupo {grAce}</h3>
+      <h3 id="titulos"> Controle de Acessos {gr} <br/>do Grupo de Acesso {grAce}</h3>
       <button style={{ marginBottom: "5px" }} className="btn btn-outline-primary btnAcessoGr" onClick={(e) => navigate("/gruposDeAcesso")} >VOLTAR</button>
       <div className="card  "    >
         <Paper>
@@ -288,12 +334,6 @@ const Acesso = () => {
             <BotaoAcessosProv
               for={botaoAcessosL}
             />
-
-
-
-
-
-
             <EditingState
               columnExtensions={filteringStateColumnExtensions}
 

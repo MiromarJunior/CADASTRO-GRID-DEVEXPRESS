@@ -261,7 +261,10 @@ const ListarUsuario = () => {
 
   const cadastraUsuario = (lista) => {
     let dados = { lista, token, acessoGeral, acessoCAD, usuLogado : nomeUser() }; 
+  
+    if(lista.GRUPO_ACE === "Master" && acessoGeral){
 
+   
     saveUsuario(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -291,6 +294,10 @@ const ListarUsuario = () => {
         console.error(err);
         window.alert("Erro ao cadastrar !!")
       })
+    }else{
+      window.alert(" Erro !!!! \nApenas o Usuário Master pode conceder outro acesso Master !!!");
+      listaUsuarios();
+    }
   }
 
   const deletarUsuario = (idUsu, usuario) => {
@@ -390,6 +397,9 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
     onChange={event => onValueChange(event.target.value)}
     style={{ width: '100%' }}
   >
+
+
+    
     <MenuItem value="null" >      
       </MenuItem>
       {value ? <MenuItem value="semAcesso" >   
@@ -398,7 +408,7 @@ const GrupoAcessoEditor = ({ value, onValueChange }) => (
       
     {listaAcess.map((l, index)=>
     <MenuItem key={index} value={l.GRAC_DESCRICAO ? l.GRAC_DESCRICAO : "Sem Acesso"}>
-      {l.GRAC_DESCRICAO}
+      {l.GRAC_DESCRICAO }
     
     </MenuItem>    
     )}      

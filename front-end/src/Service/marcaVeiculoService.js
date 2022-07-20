@@ -10,11 +10,29 @@ const baseURL = process.env.REACT_APP_API_URL;
 
 const getMarcaVeiculo = data=>{
     return axios.post(`${baseURL}listarMarcaVeiculo`,data);
+}
+
+const deleteMarcaVeiculo = data=>{
+    return axios.post(`${baseURL}excluirMarcaVeiculo`,data);
 } 
 
+const saveMarcaVeiculo = data=>{    
+    return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data,{headers: {
+        "Content-Type": "multipart/form-data"
+      },});
+   
+} 
+
+// const saveMarcaVeiculo = data=>{
+    
+//     return axios.post(`${baseURL}cadastrarMarcaVeiculo`,data);
+   
+// } 
 
 
 
 
 
-module.exports = {getMarcaVeiculo};
+
+
+module.exports = {getMarcaVeiculo, deleteMarcaVeiculo, saveMarcaVeiculo};

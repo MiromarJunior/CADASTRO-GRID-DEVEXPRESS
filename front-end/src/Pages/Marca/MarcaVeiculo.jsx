@@ -21,7 +21,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
-import { getMarcaVeiculo } from "../../Service/marcaVeiculoService";
+import { deleteMarcaVeiculo, getMarcaVeiculo } from "../../Service/marcaVeiculoService";
 
 
 
@@ -75,7 +75,7 @@ const MarcaVeiculo = () => {
                     alert("Erro ao tentar listar marcas!!!");
                 }
                 else {
-                    console.log(res.data);
+                    
                     (res.data).forEach((item, index) => (item.id = index));
                     return setRows(res.data);
                 }
@@ -84,6 +84,42 @@ const MarcaVeiculo = () => {
                 return console.error(res);
             })
     };
+
+    const excluirMarcaVeiculo = (idMa) => {
+        const dados = { idMa, acessoGeral, token }
+        deleteMarcaVeiculo(dados)
+            .then((res) => {
+                if (res.data === "erroLogin") {
+                    alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                    alert("Usuário sem permissão !!!");
+
+                } else if (res.data === "campoNulo") {
+                    alert("Preencha todos os Campos obrigatorios!!!");
+                }
+                else if (res.data === "erroSalvar") {
+                    alert("Erro a tentar salvar ou alterar!!!");
+                }
+                else if (res.data === "sucesso") {
+                    alert("Marca veiculo excluida com sucesso.");
+                }
+                else {
+                    alert("Erro ao tentar excluir marca veiculo!!!")
+                }
+
+
+
+
+
+            }).catch((erro) => {
+                window.alert("Erro ao tentar excluir");
+                console.error(erro, "erro ao tentar excluir");
+            })
+
+    }
 
     useEffect(() => {
         listarMarcaVeiculo();
@@ -103,7 +139,7 @@ const MarcaVeiculo = () => {
     const EditMarcaVeiculo = ({ value }) => (
         <div>  
         <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : '' }} className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />
-        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : ''}}   className="margemRight" />
+        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : ''}}   className="margemRight" onClick={()=>excluirMarcaVeiculo(value)}/>
         
         <VisibilityIcon style={{ color: "green" ,display : ('')}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />   
     
@@ -123,7 +159,7 @@ const MarcaVeiculo = () => {
 
 
     return (<div>
-        <h1 id="titulos">Marca Veículo</h1>
+        <h1 id="titulos">Marca Veículo - Em desenvolvimento</h1>
         <div className="card">
             <Grid
                 rows={rows}

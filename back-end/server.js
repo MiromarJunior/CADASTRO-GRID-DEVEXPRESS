@@ -8,25 +8,13 @@ require("dotenv").config();
 const port = 5000;
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: [
-      process.env.URL_FRONT_END,
-      process.env.URL_FRONT_END4,
-      process.env.URL_FRONT_END2,
-      process.env.URL_FRONT_END3,
-    ],
-  })
-);
+app.use( cors({origin: [process.env.URL_FRONT_END, process.env.URL_FRONT_END4, process.env.URL_FRONT_END2, process.env.URL_FRONT_END3] }));
 
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+app.use(  express.urlencoded({extended: true }));
 
 app.listen(port, () => {
   let usuarioRotas = require("./Controller/usuarioController");
+
   app.use("/", usuarioRotas);
 
   let seguradoraRotas = require("./Controller/seguradoraController");
@@ -47,6 +35,7 @@ app.listen(port, () => {
   let marcaVeiculoRotas = require("./Controller/marcaVeiculoController");
   app.use("/", marcaVeiculoRotas);
 
+
   let justificativaItemRotas = require('./Controller/justificativaItemController');
   app.use('/', justificativaItemRotas);
 
@@ -55,11 +44,31 @@ app.listen(port, () => {
 
   let regiaoRotas = require('./Controller/regiaoController');
   app.use('/', regiaoRotas);
-
-  console.log("Servidor online na porta  : ", port);
   
   let sacMontadoraRotas = require("./Controller/sacMontadorasController");
   app.use("/", sacMontadoraRotas);
 
+  let parametrosLeilao = require("./Controller/parametrosLeilaoController");
+  app.use("/", parametrosLeilao);
+  
+  let fornecedorRotas = require("./Controller/fornecedorController");
+  app.use("/",fornecedorRotas) ;
+
+  let tipoPecas = require("./Controller/tipoPeca");
+  app.use("/",tipoPecas);
+
+  let statusItem = require("./Controller/statusItem");
+  app.use("/",statusItem);
+
+  let reguladoraRotas = require("./Controller/reguladoraController");
+  app.use("/",reguladoraRotas) ;
+
+  let regionalRotas = require("./Controller/regionalController");
+  app.use("/",regionalRotas) ;
+
+  let sucursalRotas = require("./Controller/sucursalController");
+  app.use("/",sucursalRotas) ;  
+
   console.log("Servidor online na porta  : ", port);
 });
+

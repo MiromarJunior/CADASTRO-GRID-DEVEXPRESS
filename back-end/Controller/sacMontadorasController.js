@@ -11,7 +11,7 @@ const { apenasNr } = require("../Service/utilServiceBackEnd.js");
 const app = express();
 app.use(express.json());
 
-router.post("/ListarSacMontadoras", async (req, res) => {
+router.post("/listarSac", async (req, res) => {
   const { token } = req.body;
 
   let connection = await oracledb.getConnection(dbConfig);
@@ -51,15 +51,15 @@ router.post("/ListarSacMontadoras", async (req, res) => {
   }
 });
 
-router.post("/cadastrarContatoSeguradora", async (req, res) => {
-  const { token, idSeg, sacmontadoras, acessoGeral } = req.body;
+router.post("/saveSac", async (req, res) => {
+  const { lista, token, idSeg, acessoGeral } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
 
-  let nomeCont = sacmontadoras.SCMN_MARCA,
-      emailCont = sacmontadoras.SCMN_EMAIL,
-      nrCelCont = sacmontadoras.SCMN_TELEFONE,
-      idCont = sacmontadoras.ID_SAC_MONTADORAS;
-
+  let nomeCont = lista.SCMN_MARCA,
+    emailCont = lista.SCMN_EMAIL,
+    nrCelCont = lista.SCMN_TELEFONE,
+    idCont = lista.ID_SAC_MONTADORAS;
+  console.log(lista);
   if (acessoGeral) {
     try {
       jwt.verify(token, SECRET, async (err, decoded) => {
@@ -69,15 +69,14 @@ router.post("/cadastrarContatoSeguradora", async (req, res) => {
           res.send("erroLogin").end();
         } else {
           if (idCont) {
+            
             await connection.execute(
               `
               UPDATE  SAC_MONTADORAS
-                 SET  SCMN_MARCA            ='${nomeCont}',
-                      SCMN_EMAIL            ='${emailCont}',
-                      SCMN_TELEFONE         ='${apenasNr(nrCelCont)}',
-                      ID_SAC_MONTADORAS     ='${idSeg}'
-               WHERE  ID_SAC_MONTADORAS     ='${idCont}'
-
+                 SET  SCMN_MARCA ='${nomeCont}',
+                      SCMN_EMAIL ='${emailCont}',
+                      SCMN_TELEFONE ='${apenasNr(nrCelCont)}'
+               where  ID_SAC_MONTADORAS ='${idCont}'
                `,
 
               [],
@@ -96,7 +95,7 @@ router.post("/cadastrarContatoSeguradora", async (req, res) => {
               )
               VALUES(
                 SEQ_SECO.NEXTVAL,
-                '${nomeCont}','${emailCont}','${nrCelCont}','${idSeg}'
+                '${nomeCont}','${emailCont}','${nrCelCont}'
               )`,
               [],
               { outFormat: oracledb.OUT_FORMAT_OBJECT, autoCommit: true }
@@ -122,4 +121,58 @@ router.post("/cadastrarContatoSeguradora", async (req, res) => {
   }
 });
 
+router.post("/excluirSac", async (req, res) => {
+  const {idCont, token, acessoGeral
+  } = req.body;
+  let connection = await oracledb.getConnection(dbConfig);
+
+  let deleteSql = "";
+  
+  if (acessoGeral) {
+      jwt.verify(token, SECRET, async (err, decoded) => {
+          if (err) {
+              console.error(err, "err");
+              erroAcesso = "erroLogin";
+              res.send("erroLogin").end();
+
+          } else {
+
+              deleteSql = (
+                  ` 
+                  DELETE FROM SAC_MONTADORAS 
+                  WHERE  ID_SAC_MONTADORAS = ${idCont}
+                  `
+              )
+          }
+      })
+
+      try {
+          await connection.execute(deleteSql
+              ,
+              [],
+              {
+                  outFormat: oracledb.OUT_FORMAT_OBJECT,
+                  autoCommit: true
+              });
+
+          res.send("sucesso").status(200).end();
+      } catch (error) {
+          console.error('Erro ao Ecluir Cadastro', error);
+          res.send("erroSalvar").status(500);
+
+      } finally {
+          if (connection) {
+              try {
+                  await connection.close();
+
+              } catch (error) {
+                  console.error(error);
+              }
+          }
+      }
+
+  } else {
+      res.send("semAcesso").status(200).end();
+  }
+});
 module.exports = router;

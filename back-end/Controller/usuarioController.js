@@ -762,8 +762,11 @@ router.post("/listarAcesso", async (req, res) => {
   let grupoSql = "";
   let geralSql = "";
  
-  if(grupoMenu === "USUARIO" || grupoMenu ==="SEGURADORA" || grupoMenu === "REGIAO"){     
-    grupoSql = `AND ACES.GRUPO_MENU = '${grupoMenu}'`;
+  if(grupoMenu === "USUARIO" || grupoMenu ==="SEGURADORA" || grupoMenu === "REGIAO"
+  || grupoMenu === "JUSTIFICATIVA" || grupoMenu === "SACMONT" || grupoMenu === "PARAMLE" 
+  || grupoMenu === "TIPOPECA" || grupoMenu === "FORNECEDOR" || grupoMenu ==="STATUSITEM"
+  || grupoMenu === "REGIONAL"){     
+    grupoSql = `AND ACES.GRUPO_MENU = '${grupoMenu}' `;
   }else if(grupoMenu === "GERAL"){  
     geralSql = ` AND (ACGR.GRAC_CODIGO) > 0`
   }

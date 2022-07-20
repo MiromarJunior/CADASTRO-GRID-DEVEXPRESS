@@ -15,31 +15,31 @@ app.use(express.json());
 //await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
 
-router.post("/cadastrarSeguradora", async(req, res)=> {
-  let {codLegado, cnpjSeguradora  , tipoPessoa,optSimples,statusSeg,
+router.post("/cadastrarSeguradora", async (req, res) => {
+  let { codLegado, cnpjSeguradora, tipoPessoa, optSimples, statusSeg,
     razaoSocial, nomeFantasia, ie, im,
     logradouro, complemento, bairro, estadoUF, nrLogradouro, cep,
     nomeCidade, smtpSist, portaSist, emailSist, senhaEmailSist,
-    remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth ,smtpSistSecure,
-    soapRetSol, soapRetNotas,idSeg, token, acessoGeral} =req.body;
-let insertSql;
-let selectSql;
-let updateSql;
-let idEstado;
+    remetenteEmailSist, nomeRemetenteEmailSist, smtpSistAuth, smtpSistSecure,
+    soapRetSol, soapRetNotas, idSeg, token, acessoGeral } = req.body;
+  let insertSql;
+  let selectSql;
+  let updateSql;
+  let idEstado;
 
-const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
+  const senhaC = bcrypt.hashSync(senhaEmailSist, saltRounds);
 
-    let connection = await oracledb.getConnection(dbConfig);  
+  let connection = await oracledb.getConnection(dbConfig);
 
-    if(acessoGeral){    
+  if (acessoGeral) {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.error(err, "err");
-          erroAcesso = "erroLogin";
-          res.send("erroLogin").end();
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
 
-      } else{  
+      } else {
         insertSql = (
           ` INSERT INTO SEGURADORA(ID_SEGURADORA,
             SGRA_CNPJ,
@@ -110,101 +110,105 @@ const senhaC = bcrypt.hashSync(senhaEmailSist,saltRounds);
 
         )
 
-        selectSql =(
+        selectSql = (
           `SELECT SEG.ID_SEGURADORA FROM SEGURADORA SEG
           WHERE SEG.SGRA_CNPJ = :CNPJsEG         
         `
-        )                       
-                   
-      }
-  });  
+        )
 
-  try {  
-    let estado = await connection.execute (  
-      `
+      }
+    });
+
+    try {
+      let estado = await connection.execute(
+        `
       SELECT ID_UNIDADE_FEDERATIVA FROM UNIDADE_FEDERATIVA
       WHERE UNFE_SIGLA = :ESF
       `
-      ,
-      [estadoUF],
-      { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
-        autoCommit :  true
-    }); 
-     idEstado = (estado.rows).toString();  
-
-    if(idSeg > 0){   
-      await connection.execute (     
-       updateSql
         ,
-        [codLegado, tipoPessoa, nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
-          smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
-          logradouro,idSeg],
-        { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-          autoCommit :  true
-      });
-      
-    }else{
-      
-      await connection.execute (     
-        insertSql
-        ,
-        [cnpjSeguradora,codLegado, tipoPessoa,
-          nomeFantasia,razaoSocial, optSimples,statusSeg,ie, im,
-          cep, nomeCidade,idEstado, nrLogradouro, complemento,bairro,
-          smtpSist, portaSist, emailSist, senhaC,remetenteEmailSist, nomeRemetenteEmailSist, 
-          smtpSistAuth ,smtpSistSecure,soapRetSol, soapRetNotas,
-          logradouro  ],
-        { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-          autoCommit :  true
-      });
+        [estadoUF],
+        {
+          outFormat: oracledb.OUT_FORMAT_ARRAY,
+          autoCommit: true
+        });
+      idEstado = (estado.rows).toString();
 
-    }
-  
-  
+      if (idSeg > 0) {
+        await connection.execute(
+          updateSql
+          ,
+          [codLegado, tipoPessoa, nomeFantasia, razaoSocial, optSimples, statusSeg, ie, im,
+            cep, nomeCidade, idEstado, nrLogradouro, complemento, bairro,
+            smtpSist, portaSist, emailSist, senhaC, remetenteEmailSist, nomeRemetenteEmailSist,
+            smtpSistAuth, smtpSistSecure, soapRetSol, soapRetNotas,
+            logradouro, idSeg],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+          });
 
-  let result =  await connection.execute( selectSql
-    ,
-     [cnpjSeguradora ],
-     { outFormat  :  oracledb.OUT_FORMAT_OBJECT
-      
-   });   
-   res.send(result.rows).status(200).end(); 
-          
-  } catch (error) {
-    
-      console.error("erro aqui",error);
-      res.send("erroSalvar").status(500);
-      
-  }finally {
-      if(connection){
-          try {
-              await connection.close();
-            
-          } catch (error) {
-            console.error(error);              
-          }
+      } else {
+
+        await connection.execute(
+          insertSql
+          ,
+          [cnpjSeguradora, codLegado, tipoPessoa,
+            nomeFantasia, razaoSocial, optSimples, statusSeg, ie, im,
+            cep, nomeCidade, idEstado, nrLogradouro, complemento, bairro,
+            smtpSist, portaSist, emailSist, senhaC, remetenteEmailSist, nomeRemetenteEmailSist,
+            smtpSistAuth, smtpSistSecure, soapRetSol, soapRetNotas,
+            logradouro],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+          });
+
       }
-  }
 
-}else{
-  res.send("semAcesso").status(200).end();
-}
+
+
+      let result = await connection.execute(selectSql
+        ,
+        [cnpjSeguradora],
+        {
+          outFormat: oracledb.OUT_FORMAT_OBJECT
+
+        });
+      res.send(result.rows).status(200).end();
+
+    } catch (error) {
+
+      console.error("erro aqui", error);
+      res.send("erroSalvar").status(500);
+
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+  } else {
+    res.send("semAcesso").status(200).end();
+  }
 
 
 });
 
-router.post("/listarSeguradora", async(req, res)=> {
-  const {token,idSeg,   
-} =req.body;
+router.post("/listarSeguradora", async (req, res) => {
+  const { token, idSeg,
+  } = req.body;
 
-    let connection = await oracledb.getConnection(dbConfig);
-    let result;
-    let selectSql = "";
-    if(idSeg > 0){
-     selectSql =  `AND ID_SEGURADORA = ${idSeg}`
-    }
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+  let selectSql = "";
+  if (idSeg > 0) {
+    selectSql = `AND ID_SEGURADORA = ${idSeg}`
+  }
 
 
 
@@ -212,12 +216,12 @@ router.post("/listarSeguradora", async(req, res)=> {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.error(err, "err");
-          erroAcesso = "erroLogin";
-          res.send("erroLogin").end();
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
 
-      } else{  
-        result = await connection.execute ( 
+      } else {
+        result = await connection.execute(
           ` 
           SELECT  * FROM SEGURADORA SEG, UNIDADE_FEDERATIVA UF
           WHERE SEG.ID_UNIDADE_FEDERATIVA = UF.ID_UNIDADE_FEDERATIVA(+)
@@ -225,28 +229,29 @@ router.post("/listarSeguradora", async(req, res)=> {
             
           `,
           [],
-          { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-         
-        } 
-           );
-         
-           res.send(result.rows).status(200).end();           
-      }
-  })      
-      
-  } catch (error) {
-      console.error(error);
-      res.send("erro de conexao").status(500);
-      
-  }finally {
-      if(connection){
-          try {
-              await connection.close();
-            
-          } catch (error) {
-            console.error(error);              
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+
           }
+        );
+
+        res.send(result.rows).status(200).end();
       }
+    })
+
+  } catch (error) {
+    console.error(error);
+    res.send("erro de conexao").status(500);
+
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 
 
@@ -254,28 +259,29 @@ router.post("/listarSeguradora", async(req, res)=> {
 
 });
 
-router.post("/excluirSeguradora", async(req, res)=> {
-  const {token,idSeg, acessoGeral, acessoDEL  
-} =req.body;
+router.post("/excluirSeguradora", async (req, res) => {
+  const { token, idSeg, acessoGeral, acessoDEL
+  } = req.body;
 
 
-    let connection = await oracledb.getConnection(dbConfig);
+  let connection = await oracledb.getConnection(dbConfig);
 
 
-let deleteSql = "";
-let deleteSql1 = "";
+  let deleteSql = "";
+  let deleteSql1 = "";
+  let deleteSql2 = "";
 
-if(acessoGeral || acessoDEL){
+  if (acessoGeral || acessoDEL) {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
-          console.error(err, "err");
-          erroAcesso = "erroLogin";
-          res.send("erroLogin").end();
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
 
-      } else{  
+      } else {
 
-        deleteSql =(
+        deleteSql = (
           ` 
           DELETE FROM SEGURADORA 
           WHERE  ID_SEGURADORA = ${idSeg}
@@ -287,10 +293,16 @@ if(acessoGeral || acessoDEL){
         deleteSql1 = (
           ` 
           DELETE FROM SEGURADORA_CONTATO SE
-WHERE SE.ID_SEGURADORA =  ${idSeg}
+          WHERE SE.ID_SEGURADORA =  ${idSeg}
            
           `
 
+        )
+        deleteSql2 = (
+          `
+          DELETE FROM PARAMETROS_LEILAO 
+          WHERE ID_SEGURADORA = ${idSeg}   
+          `
         )
 
 
@@ -298,81 +310,96 @@ WHERE SE.ID_SEGURADORA =  ${idSeg}
 
 
 
-     
-        
-         
-                    
+
+
+
+
       }
-  })  
-  try {
-  await connection.execute( deleteSql1
-    ,
-     [],
-     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-       autoCommit : true
-    
-   });
-   await connection.execute( deleteSql
-    ,
-     [],
-     { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-       autoCommit : true
-    
-   });
-   res.send("sucesso").status(200).end();  
-  } catch (error) {
+    })
+    try {
+      await connection.execute(deleteSql1
+        ,
+        [],
+        {
+          outFormat: oracledb.OUT_FORMAT_OBJECT,
+          autoCommit: true
+
+        });
+      await connection.execute(deleteSql2
+        ,
+        [],
+        {
+          outFormat: oracledb.OUT_FORMAT_OBJECT,
+          autoCommit: true
+
+        });
+
+
+
+
+
+      await connection.execute(deleteSql
+        ,
+        [],
+        {
+          outFormat: oracledb.OUT_FORMAT_OBJECT,
+          autoCommit: true
+
+        });
+      res.send("sucesso").status(200).end();
+    } catch (error) {
       console.error(error);
       res.send("erro de conexao").status(500);
-      
-  }finally {
-      if(connection){
-          try {
-              await connection.close();
-            
-          } catch (error) {
-            console.error(error);              
-          }
-      }
-  }
 
-}else{
-  res.send("semAcesso").status(200).end();
-}
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+  } else {
+    res.send("semAcesso").status(200).end();
+  }
 
 
 });
 
-router.post("/cadastrarContatoSeguradora", async(req, res)=> {
-    const {
-      token,idSeg,contatos, acessoGeral   } =req.body; 
-      let connection = await oracledb.getConnection(dbConfig);
+router.post("/cadastrarContatoSeguradora", async (req, res) => {
+  const {
+    token, idSeg, contatos, acessoGeral } = req.body;
+  let connection = await oracledb.getConnection(dbConfig);
 
-      let nomeCont = contatos.SGCO_NOME,
-          funcaoCont = contatos.SGCO_FUNCAO,
-          departCont = contatos.SGCO_DEPARTAMENTO,
-          emailCont = contatos.SGCO_EMAIL,
-          urlCont = contatos.SGCO_URL,
-          dddCelCont = contatos.SGCO_CELULAR_DDD,
-          nrCelCont = contatos.SGCO_CELULAR_NUMERO,
-          operaCont = contatos.SGCO_CELULAR_OPERADORA,
-          dddComCont = contatos.SGCO_FONE_COMERCIAL_DDD,
-          nrComCont = contatos.SGCO_FONE_COMERCIAL_NUMERO,
-          ramalCont = contatos.SGCO_FONE_COMERCIAL_RAMAL,
-          idCont = contatos.ID_SEGURADORA_CONTATO;
-     
-          if(acessoGeral){
+  let nomeCont = contatos.SGCO_NOME,
+    funcaoCont = contatos.SGCO_FUNCAO,
+    departCont = contatos.SGCO_DEPARTAMENTO,
+    emailCont = contatos.SGCO_EMAIL,
+    urlCont = contatos.SGCO_URL,
+    dddCelCont = contatos.SGCO_CELULAR_DDD,
+    nrCelCont = contatos.SGCO_CELULAR_NUMERO,
+    operaCont = contatos.SGCO_CELULAR_OPERADORA,
+    dddComCont = contatos.SGCO_FONE_COMERCIAL_DDD,
+    nrComCont = contatos.SGCO_FONE_COMERCIAL_NUMERO,
+    ramalCont = contatos.SGCO_FONE_COMERCIAL_RAMAL,
+    idCont = contatos.ID_SEGURADORA_CONTATO;
+
+  if (acessoGeral) {
     try {
-  
+
       jwt.verify(token, SECRET, async (err, decoded) => {
         if (err) {
-            console.error(err, "err");
-            erroAcesso = "erroLogin";
-            res.send("erroLogin").end();
-  
-        } else{              
+          console.error(err, "err");
+          erroAcesso = "erroLogin";
+          res.send("erroLogin").end();
 
-            if(idCont){
-              await connection.execute(                `
+        } else {
+
+          if (idCont) {
+            await connection.execute(`
                 UPDATE  SEGURADORA_CONTATO
                  SET  SGCO_NOME = '${nomeCont}',
                   SGCO_FUNCAO = '${funcaoCont}',
@@ -383,20 +410,22 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
                   SGCO_CELULAR_NUMERO ='${apenasNr(nrCelCont)}',
                   SGCO_CELULAR_OPERADORA ='${operaCont}',
                   SGCO_FONE_COMERCIAL_DDD ='${apenasNr(dddComCont)}',
-                  SGCO_FONE_COMERCIAL_NUMERO ='${ apenasNr(nrComCont)}',
+                  SGCO_FONE_COMERCIAL_NUMERO ='${apenasNr(nrComCont)}',
                   SGCO_FONE_COMERCIAL_RAMAL ='${apenasNr(ramalCont)}',
                   ID_SEGURADORA ='${idSeg}'
                   WHERE ID_SEGURADORA_CONTATO = '${idCont}'                
                 `
 
-              ,[],{outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-                autoCommit :  true});
-                res.send("sucesso").status(200).end();  
+              , [], {
+                outFormat: oracledb.OUT_FORMAT_OBJECT,
+              autoCommit: true
+            });
+            res.send("sucesso").status(200).end();
 
-            }else{
-          
-            await connection.execute (              
-               ` 
+          } else {
+
+            await connection.execute(
+              ` 
               INSERT INTO SEGURADORA_CONTATO(
                 ID_SEGURADORA_CONTATO,
                 SGCO_NOME,
@@ -420,158 +449,161 @@ router.post("/cadastrarContatoSeguradora", async(req, res)=> {
               )           
               
               `,
-              [] ,
-              { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-                autoCommit :  true
-            });
-            res.send("sucesso").status(200).end();  
+              [],
+              {
+                outFormat: oracledb.OUT_FORMAT_OBJECT,
+                autoCommit: true
+              });
+            res.send("sucesso").status(200).end();
           }
-            
-          
-      
-                      
+
+
+
+
         }
-    })      
-        
+      })
+
     } catch (error) {
-        console.error(error);
-        res.send("erro de conexao").status(500);
-        
-    }finally {
-        if(connection){
-            try {
-                await connection.close();
-              
-            } catch (error) {
-              console.error(error);              
-            }
+      console.error(error);
+      res.send("erro de conexao").status(500);
+
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+
+        } catch (error) {
+          console.error(error);
         }
+      }
     }
-  
-  }else{
+
+  } else {
     res.send("semAcesso").status(200).end();
   }
-  
-  }); 
 
-router.post("/listarContatoSeguradora", async(req, res)=> {
-    const {token,idSeg  
-  } =req.body;  
+});
+
+router.post("/listarContatoSeguradora", async (req, res) => {
+  const { token, idSeg
+  } = req.body;
 
 
-      let connection = await oracledb.getConnection(dbConfig);
-      let result;
-  
-  
-    try {
-  
-      jwt.verify(token, SECRET, async (err, decoded) => {
-        if (err) {
-            console.error(err, "err");
-            erroAcesso = "erroLogin";
-            res.send("erroLogin").end();
-  
-        } else{  
-          result = await connection.execute ( 
-            ` 
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+
+
+  try {
+
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+      } else {
+        result = await connection.execute(
+          ` 
             SELECT * FROM SEGURADORA_CONTATO SECO
             WHERE SECO.ID_SEGURADORA = :IDSEG
               
               
               
             `,
-            [ idSeg],
-            { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-           
-          } 
-             );
-           
-             res.send(result.rows).status(200).end();           
-        }
-    })      
-        
-    } catch (error) {
-        console.error(error);
-        res.send("erro de conexao").status(500);
-        
-    }finally {
-        if(connection){
-            try {
-                await connection.close();
-              
-            } catch (error) {
-              console.error(error);              
-            }
-        }
-    }
-  
-  
-  
-  
-  });
-  
-router.post("/excluirContatoSeguradora", async(req, res)=> {
-    const {token,  idCont, acessoGeral
-  } =req.body;
+          [idSeg],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
 
-  
-      let connection = await oracledb.getConnection(dbConfig);
-  
-  
+          }
+        );
+
+        res.send(result.rows).status(200).end();
+      }
+    })
+
+  } catch (error) {
+    console.error(error);
+    res.send("erro de conexao").status(500);
+
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+
+
+
+});
+
+router.post("/excluirContatoSeguradora", async (req, res) => {
+  const { token, idCont, acessoGeral
+  } = req.body;
+
+
+  let connection = await oracledb.getConnection(dbConfig);
+
+
   let deleteSql = "";
-  if(acessoGeral){
-      jwt.verify(token, SECRET, async (err, decoded) => {
-        if (err) {
-            console.error(err, "err");
-            erroAcesso = "erroLogin";
-            res.send("erroLogin").end();
-  
-        } else{  
-  
-          deleteSql =(
-            ` 
+  if (acessoGeral) {
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+      } else {
+
+        deleteSql = (
+          ` 
             DELETE FROM SEGURADORA_CONTATO 
             WHERE  ID_SEGURADORA_CONTATO = ${idCont}
              
-            `  
-          )
-                        
-        }
-    })  
+            `
+        )
+
+      }
+    })
     try {
-    await connection.execute( deleteSql
-      ,
-       [],
-       { outFormat  :  oracledb.OUT_FORMAT_OBJECT,
-         autoCommit : true
-      
-     });
-    
-     res.send("sucesso").status(200).end();  
+      await connection.execute(deleteSql
+        ,
+        [],
+        {
+          outFormat: oracledb.OUT_FORMAT_OBJECT,
+          autoCommit: true
+
+        });
+
+      res.send("sucesso").status(200).end();
     } catch (error) {
-        console.error(error);
-        res.send("erro de conexao").status(500);
-        
-    }finally {
-        if(connection){
-            try {
-                await connection.close();
-              
-            } catch (error) {
-              console.error(error);              
-            }
+      console.error(error);
+      res.send("erro de conexao").status(500);
+
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+
+        } catch (error) {
+          console.error(error);
         }
+      }
     }
-  
-  }else{
+
+  } else {
     res.send("semAcesso").status(200).end();
   }
-  
-  
-  });
-  
- 
 
- 
 
-module.exports  = router;
+});
+
+
+
+
+
+module.exports = router;

@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { useNavigate } from 'react-router-dom';
 
 
 const { useContext, useState } = require("react");
@@ -16,13 +17,16 @@ function LoginPage() {
 
 	const [usuario, setUsuario] = useState("");
 	const [senha, setSenha] = useState("");	
-	const { login } = useContext(AuthContext);
+	const { login,nomeUser } = useContext(AuthContext);
+	const navigate = useNavigate();
 
 	function acessoLogin(e) {
 		e.preventDefault();
 		login(usuario, senha);
 	}
-
+if(nomeUser()){
+	navigate("/home");
+}
 
 
 

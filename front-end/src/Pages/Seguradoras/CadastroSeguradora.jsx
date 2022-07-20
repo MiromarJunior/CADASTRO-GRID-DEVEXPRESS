@@ -139,6 +139,9 @@ const CadastroSeguradora = () => {
     const [acessoGeral, setAcessoGeral] = useState(false);
     const [acessoCAD, setAcessoCAD] = useState(false);
     const [displayAcesso, setDisplayAcesso] = useState("none");   
+    const listaSgra = "LIST_SGRA";
+    const incluirSgra = "ADD_SGRA";
+    const excluirSgra = "DEL_SGRA";
     const editarSgra = "EDIT_SGRA";
 
 
@@ -157,10 +160,16 @@ const CadastroSeguradora = () => {
 
                     } else {
                         (res.data).forEach((ac) => {
-                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac || editarSgra === ac) {
+                            if (process.env.REACT_APP_API_ACESSO_GERAL === ac ) {
                                 setAcessoGeral(true);
                                 setAcessoCAD(true);
                                 setDisplayAcesso("");                                  
+                            }else if(incluirSgra === ac && idSeg ==="0"){
+                                setAcessoCAD(true);
+                                setDisplayAcesso(""); 
+                            }else if(editarSgra === ac){
+                                setAcessoCAD(true);
+                                setDisplayAcesso(""); 
                             }
 
 
@@ -245,7 +254,7 @@ useEffect(()=>{
                             setIE(l.SGRA_INSCRICAO_ESTADUAL);
                             setIM(l.SGRA_INSCRICAO_MUNICIPAL);
                             setNomeCidade(l.SGRA_CIDADE);
-                            setEstadoUF(l.UNFE_SIGLA);
+                            setEstadoUF(l.UNFE_SIGLA.toString());
                             setLogradouro(l.SGRA_RUA);
                             setNrLogradouro(l.SGRA_NUMERO);
                             setSmtpSist(l.SGRA_SMTP);
@@ -852,7 +861,7 @@ useEffect(()=>{
 
                 <div className="form-group col-md-10" style={{marginBottom :"10px" ,marginLeft : "20px", marginTop : "10px"}}>
                     {/* <Button disabled={!(idSegN > 0)} className="margemRight" id="buttonInfo" onClick={()=>buscarContatos(idSegN)} > CONTATOS </Button> */}
-                    <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "CADASTRAR" : "SALVAR ALTERAÇÕES"}</Button>
+                    <Button style={{ display: displayAcesso }} className="margemRight" onClick={(e) => salvarSeguradora(e)} > {idSegN === "0" ? "SALVAR" : "SALVAR ALTERAÇÕES"}</Button>
                     <Button id="buttonAlert" onClick={(e) => navigate("/listarSeguradora")} > {idSegN === "0" ? "CANCELAR" : "SAIR"} </Button><br />
 
                 </div>

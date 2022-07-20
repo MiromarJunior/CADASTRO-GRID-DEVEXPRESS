@@ -34,7 +34,8 @@ import { getAcessoUserMenu } from "../Service/usuarioService";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
-import SacMontadoras from "./SacMontadoras/sacMontadoras";
+
+
 
 const drawerWidth = 280;
 
@@ -83,16 +84,68 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
+
+
+
 const HomePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { logout, nomeUser } = useContext(AuthContext);
   const [displayAcessoGeral, setDisplayAcessoGeral] = useState("none");
   const [displayAcessoSGRA, setDisplayAcessoSGRA] = useState("none");
+  const [displayAcessoSac, setDisplayAcessoSac] = useState("none");
+  const [displayAcessoReg, setDisplayAcessoReg] = useState("none");
+  const [displayAcessoJust, setDisplayAcessoJust] = useState("none");
+  const [displayAcessoParamLe, setDisplayAcessoParamLe] = useState("none");
+  const [displayAcessoTipoPeca, setDisplayAcessoTipoPeca] = useState("none");
+  const [displayAcessoFornecedor, setDisplayAcessoFornecedor] = useState("none");
+  const [displayAcessoStatusItem, setDisplayAcessoStatusItem] = useState("none");
+  const [displayAcessoRegional, setDisplayAcessoRegional] = useState("none");
+
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
   const excluirSgra = "DEL_SGRA";
   const editarSgra = "EDIT_SGRA";
+
+  const listaSac = "LIST_SACMONT";
+  const incluirSac = "ADD_SACMONT";
+  const excluirSac = "DEL_SACMONT";
+  const editarSac = "EDIT_SACMONT";
+
+  const listaReg = "LIST_REGIAO";
+  const incluirReg = "ADD_REGIAO";
+  const excluirReg = "DEL_REGIAO";
+  const editarReg = "EDIT_REGIAO";
+
+  const listaJust = "LIST_JUSTIFICATIVA";
+  const incluirJust = "ADD_JUSTIFICATIVA";
+  const excluirJust = "DEL_JUSTIFICATIVA";
+  const editarJust = "EDIT_JUSTIFICATIVA";
+
+  const listaParamLe = "LIST_PARAMLE";
+  const incluirParamLe = "ADD_PARAMLE";
+  const excluirParamLe = "DEL_PARAMLE";
+  const editarParamLe = "EDIT_PARAMLE";
+
+  const listaTipoPeca = "LIST_TIPOPECA";
+  const incluirTipoPeca = "ADD_TIPOPECA";
+  const excluirTipoPeca = "DEL_TIPOPECA";
+  const editarTipoPeca = "EDIT_TIPOPECA";
+
+  const listaFornecedor = "LIST_FORNECEDOR";
+  const incluirFornecedor = "ADD_FORNECEDOR";
+  const excluirFornecedor = "DEL_FORNECEDOR";
+  const editarFornecedor = "EDIT_FORNECEDOR";
+
+  const listaStatusItem = "LIST_STIT";
+  const incluirStatusItem = "ADD_STIT";
+  const excluirStatusItem = "DEL_STIT";
+  const editarStatusItem = "EDIT_STIT";
+
+  const listaRegional = "LIST_REGIONAL";
+  const incluirRegional = "ADD_REGIONAL";
+  const excluirRegional = "DEL_REGIONAL";
+  const editarRegional = "EDIT_REGIONAL";
 
   useEffect(() => {
     if (nomeUser()) {
@@ -111,14 +164,43 @@ const HomePage = () => {
                 if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                   setDisplayAcessoGeral("");
                   setDisplayAcessoSGRA("");
-                } else if (
-                  listaSgra === ac ||
-                  incluirSgra === ac ||
-                  excluirSgra === ac ||
-                  editarSgra === ac
-                ) {
+                  setDisplayAcessoSac("");
+                  setDisplayAcessoReg("");
+                  setDisplayAcessoJust("");
+                  setDisplayAcessoParamLe("");
+                  setDisplayAcessoTipoPeca("");
+                  setDisplayAcessoFornecedor("");
+                  setDisplayAcessoStatusItem("")
+                  setDisplayAcessoRegional("");
+                }
+                if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
                 }
+                if (listaSac === ac || incluirSac === ac || excluirSac === ac || editarSac === ac) {
+                  setDisplayAcessoSac("");
+                }
+                if (listaReg === ac || incluirReg === ac || excluirReg === ac || editarReg === ac) {
+                  setDisplayAcessoReg("");
+                }
+                if (listaJust === ac || incluirJust === ac || excluirJust === ac || editarJust === ac) {
+                  setDisplayAcessoJust("");
+                }
+                if (listaParamLe === ac || incluirParamLe === ac || excluirParamLe === ac || editarParamLe === ac) {
+                  setDisplayAcessoParamLe("");
+                }
+                if (listaTipoPeca === ac || incluirTipoPeca === ac || excluirTipoPeca === ac || editarTipoPeca === ac) {
+                  setDisplayAcessoTipoPeca("");
+                }
+                if (listaFornecedor === ac || incluirFornecedor === ac || excluirFornecedor === ac || editarFornecedor === ac) {
+                  setDisplayAcessoFornecedor("");
+                }
+                if (listaStatusItem === ac || incluirStatusItem === ac || excluirStatusItem === ac || editarStatusItem === ac) {
+                  setDisplayAcessoStatusItem("");
+                }
+                if (listaRegional === ac || incluirRegional === ac || excluirRegional === ac || editarRegional === ac) {
+                  setDisplayAcessoRegional("");
+                }
+
               });
             }
           })
@@ -163,7 +245,7 @@ const HomePage = () => {
     handleDrawerClose();
   };
   const parametrosDeLeilao = () => {
-    navigate("/parametrosLeilao");
+    navigate("/listarparametrosLeilao");
     handleDrawerClose();
   }
   const marcaVeiculo = () => {
@@ -175,6 +257,10 @@ const HomePage = () => {
     navigate('/municipios');
     handleDrawerClose();
   }
+  const listarFornecedor = () => {
+    navigate("/listarFornecedor");
+    handleDrawerClose();
+  }  
 
   const jstificativaItem = () => {
     navigate('/justificativaItem');
@@ -190,6 +276,21 @@ const HomePage = () => {
     navigate("/sacmontadoras");
     handleDrawerClose();
   };
+
+  const tipoPeca = () => {
+    navigate("/tipoPeca");
+    handleDrawerClose();
+  };
+
+  const statusItem = () => {
+    navigate("/statusItem");
+    handleDrawerClose();
+  };
+
+  const listarRegional = () => {
+    navigate("/listarRegional");
+    handleDrawerClose();
+  }  
 
   return (
     <div style={{ display: nomeUser() ? "" : "none" }}>
@@ -289,6 +390,18 @@ const HomePage = () => {
                   <ListItemText primary={"Grupo do Item"} />
                 </ListItemButton>
 
+                <ListItem disablePadding style={{ display: displayAcessoStatusItem }}>
+                  <ListItemButton onClick={() => statusItem()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Status Item"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
+
                 <ListItemButton onClick={() => marcaVeiculo()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
@@ -296,7 +409,7 @@ const HomePage = () => {
                   <ListItemText primary={"Marca Veículo"} />
                 </ListItemButton>
 
-                <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
+                <ListItem disablePadding style={{ display: displayAcessoParamLe }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
                     <ListItemIcon>
                       <ListIcon />
@@ -304,6 +417,45 @@ const HomePage = () => {
                     <ListItemText primary={"Parametros do Leilão"} />
                   </ListItemButton>
                 </ListItem>
+
+                <ListItem disablePadding  style={{ display: displayAcessoTipoPeca }}>
+                  <ListItemButton onClick={() => tipoPeca()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Tipo de Peça"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoFornecedor }} >
+                  <ListItemButton onClick={() => listarFornecedor()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Fornecedores"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
+                <ListItem disablePadding style={{ display: displayAcessoSac }}  >
+                  <ListItemButton onClick={() => sacmontadoras()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"SAC Montadoras"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding  style={{ display: displayAcessoRegional }}>
+                  <ListItemButton onClick={() => listarRegional()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Regional"} />
+                  </ListItemButton>
+                </ListItem>                
+
               </TreeItem>
 
               <TreeItem nodeId="USU" label="USUÁRIO">
@@ -329,50 +481,42 @@ const HomePage = () => {
                 </ListItem>
 
               </TreeItem>
-              <TreeItem nodeId="GUSTAVO" label="GUSTAVO">
-                <ListItemButton onClick={() => marcaVeiculo()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Marca Veículo"} />
-                </ListItemButton>
 
-              </TreeItem>
 
-              <TreeItem nodeId="SAC" label="SAC">
-                <ListItem disablePadding>
-                  <ListItemButton onClick={() => sacmontadoras()}>
-                    {/* <ListItemIcon>
-                      <PersonIcon />
-                    </ListItemIcon> */}
-                    <ListItemText primary={"📞SAC Montadoras"} />
-                  </ListItemButton>
-                </ListItem>
-              </TreeItem>
+
 
               <TreeItem nodeId="Gesner" label="Gesner">
-              <ListItemButton onClick={() => jstificativaItem()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Justificativa do Item"} />
-                </ListItemButton>                
-                <ListItemButton onClick={() => municipios()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Municipios"} />
-                </ListItemButton>
-                <ListItemButton onClick={() => regiao()}>
-                  <ListItemIcon>
-                    <HdrAutoIcon style={{ color: "green" }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Regiao"} />
-                </ListItemButton>
+
+                <ListItem disablePadding style={{ display: displayAcessoJust }} >
+                  <ListItemButton onClick={() => jstificativaItem()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Justificativa do Item"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                  <ListItemButton onClick={() => municipios()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Municipios"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoReg }} >
+                  <ListItemButton onClick={() => regiao()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Regiao"} />
+                  </ListItemButton>
+                </ListItem>
+
               </TreeItem>
 
             </TreeItem>
-
           </TreeView>
 
           <Divider />
@@ -389,7 +533,7 @@ const HomePage = () => {
           ))}
         </List> */}
 
-          <ListItem disablePadding style={{ marginTop: 300 }}>
+          <ListItem disablePadding  style={{marginTop : "10em"}}>
             <ListItemButton onClick={logout}>
               <ListItemIcon>
                 <ExitToAppTwoToneIcon />
@@ -407,3 +551,26 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+
+/**
+ * 
+ * import { useTime} from 'react-timer-hook';
+  function TempoHora() {
+    const {
+      seconds,
+      minutes,
+      hours,
+      ampm,
+    } = useTime({ format: '24-hour'});
+    if(horasL === (hours+":"+minutes)){
+  
+     return navigate("/listarparametrosLeilao");
+    }
+  
+    
+  } 
+
+
+ * 
+ */
