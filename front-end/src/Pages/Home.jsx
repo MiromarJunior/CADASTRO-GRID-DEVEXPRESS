@@ -101,6 +101,8 @@ const HomePage = () => {
   const [displayAcessoFornecedor, setDisplayAcessoFornecedor] = useState("none");
   const [displayAcessoStatusItem, setDisplayAcessoStatusItem] = useState("none");
   const [displayAcessoRegional, setDisplayAcessoRegional] = useState("none");
+  const [displayAcessoReguladora, setDisplayAcessoReguladora] = useState("none");
+  const [displayAcessoSucursal, setDisplayAcessoSucursal] = useState("none");
 
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
@@ -147,6 +149,16 @@ const HomePage = () => {
   const excluirRegional = "DEL_REGIONAL";
   const editarRegional = "EDIT_REGIONAL";
 
+  const listaReguladora = "LIST_REGULADORA";
+  const incluirReguladora = "ADD_REGULADORA";
+  const excluirReguladora = "DEL_REGULADORA";
+  const editarReguladora = "EDIT_REGULADORA";
+
+  const listaSucursal = "LIST_SUCURSAL";
+  const incluirSucursal = "ADD_SUCURSAL";
+  const excluirSucursal = "DEL_SUCURSAL";
+  const editarSucursal = "EDIT_SUCURSAL";
+
   useEffect(() => {
     if (nomeUser()) {
       const acessoMenuUser = async () => {
@@ -172,6 +184,8 @@ const HomePage = () => {
                   setDisplayAcessoFornecedor("");
                   setDisplayAcessoStatusItem("")
                   setDisplayAcessoRegional("");
+                  setDisplayAcessoReguladora("");
+                  setDisplayAcessoSucursal("");
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
@@ -200,7 +214,13 @@ const HomePage = () => {
                 if (listaRegional === ac || incluirRegional === ac || excluirRegional === ac || editarRegional === ac) {
                   setDisplayAcessoRegional("");
                 }
-
+                if (listaReguladora === ac || incluirReguladora === ac || excluirReguladora === ac || editarReguladora === ac) {
+                  setDisplayAcessoReguladora("");
+                }
+                if (listaSucursal === ac || incluirSucursal === ac || excluirSucursal === ac || editarSucursal === ac) {
+                  setDisplayAcessoSucursal("");
+                }
+              
               });
             }
           })
@@ -291,6 +311,15 @@ const HomePage = () => {
     navigate("/listarRegional");
     handleDrawerClose();
   }  
+  const listarReguladora = () => {
+    navigate("/listarReguladora");
+    handleDrawerClose();
+  }  
+  const listarSucursal = () => {
+    navigate("/listarSucursal");
+    handleDrawerClose();
+  }  
+
 
   return (
     <div style={{ display: nomeUser() ? "" : "none" }}>
@@ -454,7 +483,25 @@ const HomePage = () => {
                     </ListItemIcon>
                     <ListItemText primary={"Regional"} />
                   </ListItemButton>
-                </ListItem>                
+                </ListItem>    
+                
+                <ListItem disablePadding  style={{ display: displayAcessoReguladora }}>
+                  <ListItemButton onClick={() => listarReguladora()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Reguladora"} />
+                  </ListItemButton>
+                </ListItem>                              
+
+                <ListItem disablePadding  style={{ display: displayAcessoSucursal }}>
+                  <ListItemButton onClick={() => listarSucursal()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Sucursal"} />
+                  </ListItemButton>
+                </ListItem>  
 
               </TreeItem>
 

@@ -80,7 +80,7 @@ const ListarRegional = () => {
                     alert("Preencha todos os Campos obrigatorios!!!");
                 }
                 else if (res.data === "erroSalvar") {
-                    alert("Erro a tentar listar parametros de leilão!!!");
+                    alert("Erro a tentar listar Regional!!!");
                 }
                 else {
                     (res.data).forEach((item, index) => (item.id = index));
@@ -109,11 +109,11 @@ const ListarRegional = () => {
                             window.alert("Preencha todos os Campos obrigatorios!!!");
                         }
                         else if (res.data === "erroSalvar") {
-                            window.alert("Erro a tentar Excluir Parametro!!!");
+                            window.alert("Erro a tentar Excluir Regional!!!");
                             listarRegional();
                         }
                         else if (res.data === "sucesso") {
-                            window.alert("Parametro excluído com Sucesso!!!");
+                            window.alert("Regional excluído com Sucesso!!!");
                             listarRegional();
                         }
                     })

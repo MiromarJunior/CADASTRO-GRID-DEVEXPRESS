@@ -17,6 +17,6 @@ const deleteRegional = (data) => {
   return axios.post(`${baseURL}excluirRegional`, data);
 };
 
-const api = axios.create({ baseURL });
+//const api = axios.create({ baseURL });
 
 module.exports = { saveRegional, getRegional, deleteRegional };
