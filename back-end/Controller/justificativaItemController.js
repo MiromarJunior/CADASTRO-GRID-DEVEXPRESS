@@ -59,9 +59,8 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
     let justificativaItemDescricao = lista.JSIT_DESCRICAO;
 
     let insertSql;
-    let selectSql;
 
-    // console.log('CadastrarJustificativaItem.lista', lista);
+    // console.log('CadastrarJustificativaItem', req.ody);
 
     let connection = await oracledb.getConnection(dbConfig);
 
@@ -180,6 +179,5 @@ router.post("/excluirJustificativaItem", async (req, res) => {
         res.send("semAcesso").status(200).end();
     }
 });
-
 
 module.exports = router;

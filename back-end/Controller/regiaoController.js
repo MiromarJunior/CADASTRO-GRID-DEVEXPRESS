@@ -7,37 +7,25 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const dbConfig = require("../ConfigDB/configDB.js");
 
-
 const app = express();
 app.use(express.json());
-// let connection = await oracledb.getConnection(dbConfig);
-//await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
 router.post("/listarRegiao", async (req, res) => {
-    const { token, idReg,
-    } = req.body;
+    const { token } = req.body;
 
     let connection = await oracledb.getConnection(dbConfig);
     let result;
-    let selectSql = "";
-    
-    if (idReg > 0) {
-        selectSql = ` WHERE ID_REGIAO = ${idReg} `
-    }
 
     try {
-
         jwt.verify(token, SECRET, async (err, decoded) => {
             if (err) {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
-
             } else {
                 result = await connection.execute(
                     ` 
                     SELECT  * FROM REGIAO REG
-                    ${selectSql}
                     `,
                     [],
                     {
@@ -47,33 +35,28 @@ router.post("/listarRegiao", async (req, res) => {
                 res.send(result.rows).status(200).end();
             }
         })
-
     } catch (error) {
         console.error('Erro Listar Regiao', error);
         res.send("erro de conexao").status(500);
-
     } finally {
         if (connection) {
             try {
                 await connection.close();
-
             } catch (error) {
-                console.error(error);
+                console.error('Erro no Close da connection ao listar Região', error);
             }
         }
     }
 });
 
-
 router.post("/cadastrarRegiao", async (req, res) => {
     let { lista, token, acessoGeral } = req.body;
     let regiaoID = lista.ID_REGIAO;
     let regiaoDescricao = lista.REGI_DESCRICAO;
-    
-    let insertSql;
-    let selectSql;
 
-    // console.log('CadastrarRegiao.lista', lista);
+    let insertSql;
+
+    // console.log('CadastrarRegiao', req.body);
 
     let connection = await oracledb.getConnection(dbConfig);
 
@@ -84,20 +67,19 @@ router.post("/cadastrarRegiao", async (req, res) => {
                     console.error(err, "err");
                     erroAcesso = "erroLogin";
                     res.send("erroLogin").end();
-
                 } else {
                     insertSql = (
                         ` INSERT INTO REGIAO(ID_REGIAO,
                                 REGI_DESCRICAO)
-                                VALUES (SEQ_REGI.NEXTVAL, :DESCRICAO
+                                VALUES (SEQ_REGI.NEXTVAL, '${regiaoDescricao}'
                                 )
                             `
                     )
 
                     updateSql = (
                         ` UPDATE REGIAO
-                            SET REGI_DESCRICAO = :DESCRICAO
-                            WHERE ID_REGIAO = :REGI
+                            SET REGI_DESCRICAO = '${regiaoDescricao}'
+                            WHERE ID_REGIAO = '${regiaoID}'
                             `
                     )
                 }
@@ -107,7 +89,7 @@ router.post("/cadastrarRegiao", async (req, res) => {
                 await connection.execute(
                     updateSql
                     ,
-                    [regiaoDescricao, regiaoID],
+                    [],
                     {
                         outFormat: oracledb.OUT_FORMAT_OBJECT,
                         autoCommit: true
@@ -116,7 +98,7 @@ router.post("/cadastrarRegiao", async (req, res) => {
                 await connection.execute(
                     insertSql
                     ,
-                    [regiaoDescricao],
+                    [],
                     {
                         outFormat: oracledb.OUT_FORMAT_OBJECT,
                         autoCommit: true
@@ -134,11 +116,10 @@ router.post("/cadastrarRegiao", async (req, res) => {
                     await connection.close();
 
                 } catch (error) {
-                    console.error(error);
+                    console.error('Erro ao fechar coneccection de cadastro de Região', error);
                 }
             }
         }
-
     } else {
         res.send("semAcesso").status(200).end();
     }
@@ -153,22 +134,18 @@ router.post("/excluirRegiao", async (req, res) => {
     let connection = await oracledb.getConnection(dbConfig);
 
     let deleteSql = "";
-    // let deleteSql1 = "";
 
     if (acessoGeral) {
-
         jwt.verify(token, SECRET, async (err, decoded) => {
             if (err) {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
-
             } else {
-
                 deleteSql = (
                     ` 
                     DELETE FROM REGIAO 
-                    WHERE  ID_REGIAO = ${regiaoID}
+                    WHERE  ID_REGIAO = '${regiaoID}'
                     `
                 )
             }
@@ -185,24 +162,20 @@ router.post("/excluirRegiao", async (req, res) => {
 
             res.send("sucesso").status(200).end();
         } catch (error) {
-            console.error('Erro ao Ecluir Regiao', error);
+            console.error('Erro ao Excluir Regiao', error);
             res.send("erroSalvar").status(500);
-
         } finally {
             if (connection) {
                 try {
                     await connection.close();
-
                 } catch (error) {
-                    console.error(error);
+                    console.error('Erro no close da connection de excluir Região', error);
                 }
             }
         }
-
     } else {
         res.send("semAcesso").status(200).end();
     }
 });
-
 
 module.exports = router;

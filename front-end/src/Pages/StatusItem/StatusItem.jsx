@@ -233,6 +233,7 @@ const StatusItem = () => {
           window.location.reload();
         } else if (res.data === "semAcesso") {
           window.alert("Usuário sem permissão !!!");
+          navigate("/home");
         } else {
           res.data.forEach((item, index) => (item.id = index));
           return setRows(res.data);
