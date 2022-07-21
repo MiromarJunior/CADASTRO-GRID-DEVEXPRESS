@@ -157,7 +157,7 @@ router.post("/excluirRegional", async (req, res) => {
 
           res.send("sucesso").status(200).end();
       } catch (error) {
-          console.error('Erro ao Ecluir Cadastro', error);
+          console.error('Erro ao Excluir Cadastro', error);
           res.send("erroSalvar").status(500);
 
       } finally {

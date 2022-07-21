@@ -29,6 +29,10 @@ import StatusItem from "./Pages/StatusItem/StatusItem";
 import CadastroMarcaVeiculo from "./Pages/Marca/CadastroMarcaVeiculo";
 import CadastroRegional from "./Pages/Regional/CadastroRegional";
 import ListarRegional from "./Pages/Regional/ListarRegional";
+import CadastroReguladora from "./Pages/Reguladora/CadastroReguladora";
+import ListarReguladora from "./Pages/Reguladora/ListarReguladora";
+import CadastroSucursal from "./Pages/Sucursal/CadastroSucursal";
+import ListarSucursal from "./Pages/Sucursal/ListarSucursal";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
@@ -75,7 +79,10 @@ const AppRotas = () => {
           <Route exact path="/cadastroMarcaVeiculo/:idMa" element={ <Private><CadastroMarcaVeiculo /></Private> } />
           <Route exact path="/listarRegional" element={ <Private><ListarRegional /></Private> } />
           <Route exact path="/cadastroRegional/:idRegional" element={<Private> <CadastroRegional /> </Private>} />
-
+          <Route exact path="/listarReguladora" element={ <Private><ListarReguladora /></Private> } />
+          <Route exact path="/cadastroReguladora/:idReguladora" element={<Private> <CadastroReguladora /> </Private>} />
+          <Route exact path="/listarSucursal" element={ <Private><ListarSucursal /></Private> } />
+          <Route exact path="/cadastroSucursal/:idSucursal" element={<Private> <CadastroSucursal /> </Private>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
