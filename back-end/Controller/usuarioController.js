@@ -954,21 +954,24 @@ if(usuario){
         let result = await connection.execute(
           ` 
           SELECT DISTINCT(USRO.USRO_NOME),
-          USRO.USRO_CPF,     
-          USRO.USRO_USUARIO,      
-          LISTAGG(ACES.ACES_DESCRICAO||',') WITHIN GROUP(ORDER BY ACES.ACES_DESCRICAO) AS ACES_DESCRICAO
-          ,GACE.GRAC_DESCRICAO
-    FROM USUARIO USRO, USRO_GRAC, GRUPO_ACESSO GACE,ACES_GRAC ACGR,ACESSO ACES     
-    WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
-    AND GACE.GRAC_CODIGO = ACGR.GRAC_CODIGO(+)
-    AND ACES.ACES_CODIGO(+) = ACGR.ACES_CODIGO
-      AND USRO_GRAC.GRAC_CODIGO = GACE.GRAC_CODIGO    
-      AND USRO.USRO_USUARIO = '${usuario}' 
-      GROUP BY USRO.USRO_NOME,   USRO.USRO_CPF, USRO.USRO_USUARIO, GACE.GRAC_DESCRICAO
-
-                    
-     
-          
+                               USRO.USRO_CPF,     
+                               USRO.USRO_USUARIO,      
+                               LISTAGG(ACES.ACES_DESCRICAO || ',') WITHIN GROUP(ORDER BY ACES.ACES_DESCRICAO) AS ACES_DESCRICAO,
+                               GACE.GRAC_DESCRICAO
+                          FROM USUARIO USRO,
+                               USRO_GRAC,
+                               GRUPO_ACESSO GACE,
+                               ACES_GRAC ACGR,
+                               ACESSO ACES     
+                         WHERE USRO_GRAC.ID_USUARIO(+) = USRO.ID_USUARIO
+                           AND GACE.GRAC_CODIGO        = ACGR.GRAC_CODIGO(+)
+                           AND ACES.ACES_CODIGO(+)     = ACGR.ACES_CODIGO
+                           AND USRO_GRAC.GRAC_CODIGO  = GACE.GRAC_CODIGO    
+                           AND USRO.USRO_USUARIO      = '${usuario}' 
+                         GROUP BY USRO.USRO_NOME,
+                                  USRO.USRO_CPF,
+                                  USRO.USRO_USUARIO,
+                                  GACE.GRAC_DESCRICAO
           `,
           [],
           {

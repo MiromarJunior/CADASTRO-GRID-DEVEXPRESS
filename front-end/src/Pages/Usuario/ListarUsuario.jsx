@@ -257,7 +257,7 @@ const ListarUsuario = () => {
     listaGrupoAcesso();  
     listaUsuarios();  
  //eslint-disable-next-line
-    }, [logout,token,nomeUser]);   
+    }, [logout,token,nomeUser]);
 
   const cadastraUsuario = (lista) => {
     let dados = { lista, token, acessoGeral, acessoCAD, usuLogado : nomeUser() }; 

@@ -181,7 +181,7 @@ const StatusItem = () => {
         listaStatusItem();
       })
       .catch((err) => {
-        console.error("Erro ao Cadastrar Dados SAC", err);
+        console.error("Erro ao Cadastrar Status do Item", err);
         window.alert("Erro ao cadastrar !!");
       });
     }
@@ -268,6 +268,7 @@ const StatusItem = () => {
         required: true,
       },
   ];
+  
   const DeleteButton = ({ onExecute }) => (
     <IconButton style={{display: displayDEL}}
       onClick={() => {
