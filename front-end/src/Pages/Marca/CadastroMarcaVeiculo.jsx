@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
 import { deleteMarcaVeiculo, saveMarcaVeiculo } from "../../Service/marcaVeiculoService";
+import { validaTmIgm } from "../../Service/utilServiceFrontEnd";
 
 
 const CadastroMarcaVeiculo = () => {
@@ -19,11 +20,12 @@ const CadastroMarcaVeiculo = () => {
     const [imagemChatColor, setImagemChatColor] = useState();
     const navigate = useNavigate();
 
-    const cadastrarMarcaVeiculo = () => {
-        //const formData = new FormData();
-        //formData.append('logo',logo);
-        //console.log(formData);
+ 
+    
+    const cadastrarMarcaVeiculo = () => {      
         const dados = { descricao, posLogChat, logo , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
+        
+        
         saveMarcaVeiculo(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -60,7 +62,7 @@ const CadastroMarcaVeiculo = () => {
             })
 
     }
-    
+   
     return (
         <div className="container-fluid centralizar" >
             <h3 id="titulos">Cadastro Marca Veiculo</h3>
@@ -78,7 +80,7 @@ const CadastroMarcaVeiculo = () => {
                 <TextField required label="Posição Logo Chat" error={posLogChat ? false : true} disabled={!acessoGeral} id="" value={posLogChat} onChange={(e) => setPosLogChat(e.target.value)} type={"number"} /><br />
               
              
-                <TextField name="logo" inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setLogo(e.target.files[0])} type={"file"} InputLabelProps={{
+                <TextField name="logo" inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="logo"  onChange={(e) => setLogo(e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true
                 }} style={{ minWidth: '25em' }} /><br />
                 <TextField name="logoApont" inputProps={{ accept :"image/*"}} required label="Imagem Logo Apontador" error={logoApont ? false : true} disabled={!acessoGeral} id="" onChange={(e) => setLogoApont(e.target.files[0])} type={"file"} InputLabelProps={{
