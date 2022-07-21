@@ -54,6 +54,7 @@ const JustificativaItem = () => {
   const [rowChanges, setRowChanges] = useState({});
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
+  const [acessoList, setAcessoList] = useState(false);
   const [acessoDEL, setAcessoDEL] = useState(false);
   const [acessoCad, setAcessoCad] = useState(false);
   const [displayEDIT, setDisplayEDIT] = useState("none");
@@ -90,7 +91,7 @@ const JustificativaItem = () => {
                 setDisplayEDIT("");
                 setAcessoCad(true);
               } else if (listaJsit === ac) {
-                acessoList = true;
+                setAcessoList(true);
                 listaJustificativaItem();
               }
             })
@@ -334,7 +335,7 @@ const JustificativaItem = () => {
       const deletedSet = new Set(deleted);
 
       let idJustificativa = parseInt(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
-      deletarStatusItem(idJustificativa);
+      deletarJustificativaItem(idJustificativa);
     }
 
     setRows(changedRows);
@@ -344,7 +345,7 @@ const JustificativaItem = () => {
     <div className='container-fluid'>
       <h3 id='titulos'>Justificativa do Item: </h3>
       {/* <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarJustificativaItem`)} type="button" /> */}
-      <div className="container">
+      <div className="container-fluid">
         <Paper>
           <Grid
             rows={rows}

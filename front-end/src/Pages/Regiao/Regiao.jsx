@@ -54,6 +54,7 @@ const Regiao = () => {
   const [rowChanges, setRowChanges] = useState({});
   const [addedRows, setAddedRows] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
+  const [acessoList, setAcessoList] = useState(false);
   const [acessoDEL, setAcessoDEL] = useState(false);
   const [acessoCad, setAcessoCad] = useState(false);
   const [displayEDIT, setDisplayEDIT] = useState("none");
@@ -90,7 +91,7 @@ const Regiao = () => {
                 setDisplayEDIT("");
                 setAcessoCad(true);
               } else if (listaRegi === ac) {
-                acessoList = true;
+                setAcessoList(true);
                 listaRegiao();
               }
             })
@@ -345,7 +346,7 @@ const Regiao = () => {
     <div className='container-fluid'>
       <h3 id='titulos'>Região: </h3>
       {/* <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarRegiao`)} type="button" /> */}
-      <div className="container">
+      <div className="container-fluid">
         <Paper>
           <Grid
             rows={rows}
