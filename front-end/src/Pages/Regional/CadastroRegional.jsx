@@ -26,19 +26,11 @@ const CadastroRegional = () => {
     const [rgalNovaRegraCalculo, setRgalNovaRegraCalculo] = useState("");
     const [rgalTipoDisputaAtual, setRgalTipoDisputaAtual] = useState("");
     const [rgalNovoTipoDisputa, setRgalNovoTipoDisputa] = useState("");
-
     const { idRegional } = useParams();
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
     const [idRegionalN, setIdRegionalN] = useState(idRegional);
     const [displayCont, setDisplayCont] = useState(idRegionalN === "0" ? "none" : "");
-
-    //const [editingRowIds, getEditingRowIds] = useState([]);
-    //const [rowChanges, setRowChanges] = useState({});
-    //const [acessoGeral, setAcessoGeral] = useState(false);
-    //const [acessoCAD, setAcessoCAD] = useState(false);
-    //verificar
-
     const listaRgal = "LIST_REGIONAL";
     const incluirRgal = "ADD_REGIONAL";
     const excluirRgal = "DEL_REGIONAL";

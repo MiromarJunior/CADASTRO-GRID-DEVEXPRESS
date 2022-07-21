@@ -12,6 +12,7 @@ app.use(express.json());
 
 
 router.post("/cadastrarReguladora", async(req, res)=> {
+     
        let {idReguladora,                
             rgraCnpj,                    
             rgraIdLegado,               
@@ -22,7 +23,7 @@ router.post("/cadastrarReguladora", async(req, res)=> {
             rgraStatus,                  
             rgraTipoReguladora,         
             rgraSigla,                   
-            regionalId,                  
+            regAbreviatura,                  
             rgraInscricaoEstadual,      
             rgraInscricaoMunicipal,     
             rgraCep,                     
@@ -34,12 +35,12 @@ router.post("/cadastrarReguladora", async(req, res)=> {
             rgraBairro,  
             token} =req.body;       
 
-let insertSql;
-let selectSql;
-let updateSql;
-let idEstado;
-let idRegional;
-
+    let insertSql;
+    let selectSql;
+    let updateSql;
+    let idEstado;
+    let idRegional;
+ 
     let connection = await oracledb.getConnection(dbConfig);  
 
     jwt.verify(token, SECRET, async (err, decoded) => {
@@ -123,7 +124,7 @@ let idRegional;
       { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
         autoCommit :  true
     }); 
-     c = (estado.rows).toString();  
+     idEstado = (estado.rows).toString();  
 
      let regional = await connection.execute (  
       `
@@ -132,7 +133,7 @@ let idRegional;
        WHERE RGAL_ABREVIATURA = :RGAL_ABRE
       `
       ,
-      [regionalId],
+      [regAbreviatura],
       { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
         autoCommit :  true
     }); 
@@ -348,7 +349,7 @@ router.post("/cadastrarContatoReguladora", async(req, res)=> {
 
             if(idReguladoraContato){
               await connection.execute(                `
-              UPDATE  FORNECEDOR_CONTATO
+              UPDATE  REGULADORA_CONTATO
                  SET  RGCO_NOME = '${rgcoNome}',
                       RGCO_FUNCAO = '${rgcoFuncao}',
                       RGCO_DEPARTAMENTO = '${rgcoDepartamento}',
@@ -371,7 +372,7 @@ router.post("/cadastrarContatoReguladora", async(req, res)=> {
           
             await connection.execute (              
                ` 
-               INSERT INTO ID_REGULADORA_CONTATO(
+               INSERT INTO REGULADORA_CONTATO(
                 ID_REGULADORA_CONTATO,      
                 RGCO_NOME,                  
                 RGCO_FUNCAO,                
