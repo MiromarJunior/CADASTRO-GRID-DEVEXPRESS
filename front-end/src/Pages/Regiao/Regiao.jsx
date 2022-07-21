@@ -1,3 +1,7 @@
+/*
+* Lista de Regiões cadastradas no sistema.
+* Listar, cadastrar e atualizar os registros.
+*/
 import Paper from '@mui/material/Paper';
 
 import "./Regiao.css";
@@ -9,7 +13,6 @@ import {
   IntegratedSorting,
   SortingState
 } from '@devexpress/dx-react-grid';
-
 
 import {
   Grid,
@@ -38,215 +41,154 @@ import { saveRegiao, getRegiao, deleteRegiaoID } from "../../Service/regiaoServi
 import { getAcessoUserMenu } from '../../Service/usuarioService';
 import { validaDescricao } from '../../Service/utilServiceFrontEnd';
 
-
-const DeleteButton = ({ onExecute }) => (
-  <IconButton
-    onClick={() => {
-      // eslint-disable-next-line
-      if (window.confirm('Deseja excluir esta Região ?')) {
-        onExecute();
-      }
-    }}
-    title="Excluir Região"
-    size="large"
-  >
-    <DeleteForeverOutlinedIcon style={{ color: "red" }} />
-  </IconButton>
-);
-
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: 'center' }}>
-    <IconButton size="large"
-      color="primary"
-      onClick={onExecute}
-      title="Nova Região"
-    >
-      <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
-    </IconButton>
-  </div>
-);
-
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Região" size="large" >
-    <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Salvar alterações" size="large">
-    <SaveIcon />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
-    <CancelIcon />
-  </IconButton>
-);
-const commandComponents = {
-
-  add: AddButton,
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton,
-
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return (
-    <CommandButton
-      onExecute={onExecute}
-    />
-  );
-};
-
-const TableComponentTitle = ({ style, ...restProps }) => (
-  <TableHeaderRow.Content
-    {...restProps}
-    style={{
-      color: 'black',
-      fontWeight: "bold",
-      ...style,
-    }}
-  />
-);
-
 let acessoGeral = false;
 
 const Regiao = () => {
-
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
   // const [regDescricao, setRegDescricao] = useState([]);
   // const { idReg } = useParams();
   const navigate = useNavigate();
+  // const [listaAcess, setListaAcess] = useState([""]);
+  const [rowChanges, setRowChanges] = useState({});
+  const [addedRows, setAddedRows] = useState([]);
+  const [editingRowIds, getEditingRowIds] = useState([]);
+  const [acessoDEL, setAcessoDEL] = useState(false);
+  const [acessoCad, setAcessoCad] = useState(false);
+  const [displayEDIT, setDisplayEDIT] = useState("none");
+  const [displayDEL, setDisplayDEL] = useState("none");
+  const [displayADD, setDisplayADD] = useState("none");
 
+  const listaRegi = "LIST_REGIAO";
+  const incluirRegi = "ADD_REGIAO";
+  const excluirRegi = "DEL_REGIAO";
+  const editarRegi = "EDIT_REGIAO";
 
   useEffect(() => {
-    const acessoMenuUser = async () => {
+    const acessoMenuUser = () => {
       let dados = { token, usuario: nomeUser() };
-      await getAcessoUserMenu(dados)
+      getAcessoUserMenu(dados)
         .then((res) => {
-          if (res.data === "erroLogin") {
-            window.alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          }
-          else if (res.data === "semAcesso") {
-            window.alert("Usuário sem permissão !!!");
-
+          if (typeof (res.data) === "string") {
+            window.alert("Erro ao buscar Dados de Acesso do Usuário!");
           } else {
             (res.data).forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
+                setDisplayADD("");
+                setDisplayDEL("");
+                setDisplayEDIT("");
+                listaRegiao();
+              } else if (incluirRegi === ac) {
+                setDisplayADD("");
+                setAcessoCad(true);
+              } else if (excluirRegi === ac) {
+                setDisplayDEL("");
+                setAcessoDEL(true);
+              } else if (editarRegi === ac) {
+                setDisplayEDIT("");
+                setAcessoCad(true);
+              } else if (listaRegi === ac) {
+                acessoList = true;
+                listaRegiao();
               }
             })
           }
         })
         .catch((err) => {
-          console.error(err);
-          window.alert("Erro ao buscar Usuário !!")
+          console.error('Erro no processo de verificação de acesso de usuário em Região', err);
+          window.alert("Erro ao buscar Acesso do Usuário !!")
         })
-
     }
 
     acessoMenuUser();
-  }, [])
-
-  useEffect(() => {
-    listaRegiao();
-  }, [logout, token]);
+  }, [logout, token, nomeUser]);
 
   const cadastraRegiao = (lista) => {
-    let dados = { lista, token, acessoGeral };
-
+    let dados = { lista, token, acessoGeral: acessoCad, usuLogado: nomeUser() };
     // console.log('cadastrarRegiao', lista);
 
-    if (!validaDescricao(lista.REGI_DESCRICAO)) {
-      return { mensagem: 'Erro de Validação da Descrição da Região' };
-    }
+    if (displayADD === "") {
+      if (!validaDescricao(lista.REGI_DESCRICAO)) {
+        return { mensagem: 'Erro de Validação da Descrição da Região' };
+      }
 
-    saveRegiao(dados)
-      .then((res) => {
-
-        if (res.data === "erroLogin") {
-          alert("Sessão expirada, Favor efetuar um novo login !!");
-          logout();
-          window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
-          alert("Usuário sem permissão !!!");
-
-        } else if (res.data === "campoNulo") {
-          alert("Preencha todos os Campos obrigatorios!!!");
-        }
-        else if (res.data === "erroSalvar") {
-          alert("Erro a tentar salvar ou alterar!!!");
-        }
-        else {
-          if (lista.ID_REGIAO/*regiaoID*/ > 0) {
-            window.alert("Região Alterada com Sucesso!!!");
+      saveRegiao(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          } else if (res.data === "semAcesso") {
+            alert("Usuário sem permissão !!!");
+          } else if (res.data === "campoNulo") {
+            alert("Preencha todos os Campos obrigatorios!!!");
+          } else if (res.data === "erroSalvar") {
+            alert("Erro a tentar salvar ou alterar!!!");
+          } else if (res.data === "sucesso") {
+            alert("Região Cadastrada com sucesso !")
           } else {
-            window.alert("Região Cadastrada  com Sucesso!!!");
+            if (lista.ID_REGIAO > 0) {
+              window.alert("Região Alterada com Sucesso!!!");
+            } else {
+              window.alert("Região Cadastrada  com Sucesso!!!");
+            }
+            // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
           }
-          // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
-        }
 
-        listaRegiao();
-      })
-      .catch((err) => {
-        console.error('Erro ao Cadastrar Região', err);
-        window.alert("Erro ao cadastrar !!")
-      })
-  }
+          listaRegiao();
+        })
+        .catch((err) => {
+          console.error('Erro ao Cadastrar Região', err);
+          window.alert("Erro ao cadastrar !!")
+        })
+    }
+  };
 
   const deletarRegiao = (regiaoID) => {
+    let dados = { token, acessoGeral: acessoDEL, RegiaoID: parseInt(regiaoID) };
+    if (displayDEL === "") {
+      deleteRegiaoID(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          } else if (res.data === "semAcesso") {
+            alert("Usuário sem permissão !!!");
+          } else if (res.data === "campoNulo") {
+            alert("Preencha todos os Campos obrigatorios!!!");
+          } else if (res.data === "erroSalvar") {
+            alert("Erro a tentar excluir!!!");
+          } else {
+            window.alert("Região excluída com sucesso !!");
+            listaRegiao();
+          }
+        })
+        .catch((err) => {
+          console.error('Erro ao Excluir Região', err);
+          window.alert("Erro ao Excluir !!")
+        })
+    } else {
+      listaRegiao();
 
-    let dados = { token, acessoGeral, regiaoID: parseInt(regiaoID) };
-    deleteRegiaoID(dados)
-      .then((res) => {
+      alert("Usuário sem permissão !!!");
+    }
+  };
 
-        if (res.data === "erroLogin") {
-          alert("Sessão expirada, Favor efetuar um novo login !!");
-          logout();
-          window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
-          alert("Usuário sem permissão !!!");
-
-        } else if (res.data === "campoNulo") {
-          alert("Preencha todos os Campos obrigatorios!!!");
-        }
-        else if (res.data === "erroSalvar") {
-          alert("Erro a tentar excluir!!!");
-        } else {
-          window.alert("Região excluída com sucesso !!");
-          listaRegiao();
-        }
-      })
-      .catch((err) => {
-        console.error('Erro ao Excluir Região', err);
-        window.alert("Erro ao Excluir !!")
-      })
-  }
-
+  // parei aqui no listarRegiao
   const listaRegiao = async () => {
     let dados = { token, acessoGeral };
     await getRegiao(dados)
       .then((res) => {
-
         if (res.data === "erroLogin") {
           window.alert("Sessão expirada, Favor efetuar um novo login !!");
           logout();
           window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
+        } else if (res.data === "semAcesso") {
           window.alert("Usuário sem permissão !!!");
-
+          navigate("/home");
         } else {
           (res.data).forEach((item, index) => (item.id = index));
           return setRows(res.data);
@@ -258,28 +200,80 @@ const Regiao = () => {
       })
   }
 
-  // const buscaRegiao = async () => {
-  //   let dados = { token, idReg };
-  //   await getRegiao(dados)
-  //     .then((res) => {
-  //       if (res.data === "erroLogin") {
-  //         window.alert("Sessão expirada, Favor efetuar um novo login !!");
-  //         logout();
-  //         window.location.reload();
-  //       }
-  //       else if (res.data === "semAcesso") {
-  //         window.alert("Usuário sem permissão !!!");
+  const DeleteButton = ({ onExecute }) => (
+    <IconButton style={{ display: displayDEL }}
+      onClick={() => {
+        // eslint-disable-next-line
+        if (window.confirm('Deseja excluir esta Região ?')) {
+          onExecute();
+        }
+      }}
+      title="Excluir Região"
+      size="large"
+    >
+      <DeleteForeverOutlinedIcon style={{ color: "red" }} />
+    </IconButton>
+  );
 
-  //       } else {
-  //         (res.data).forEach((item, index) => (item.id = index));
-  //         return setRegDescricao(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       window.alert("Erro ao cadastrar !!")
-  //     })
-  // }
+  const AddButton = ({ onExecute }) => (
+    <div style={{ textAlign: 'center' }}>
+      <IconButton size="large" style={{ display: displayADD }}
+        color="primary"
+        onClick={onExecute}
+        title="Nova Região"
+      >
+        <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
+      </IconButton>
+    </div>
+  );
+
+
+  const EditButton = ({ onExecute }) => (
+    <IconButton style={{ display: displayEDIT }} onClick={onExecute} title="Alterar Região" size="large" >
+      <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
+    </IconButton>
+  );
+
+  const CommitButton = ({ onExecute }) => (
+    <IconButton onClick={onExecute} title="Salvar alterações" size="large">
+      <SaveIcon />
+    </IconButton>
+  );
+
+  const CancelButton = ({ onExecute }) => (
+    <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
+      <CancelIcon />
+    </IconButton>
+  );
+  const commandComponents = {
+
+    add: AddButton,
+    edit: EditButton,
+    delete: DeleteButton,
+    commit: CommitButton,
+    cancel: CancelButton,
+
+  };
+
+  const Command = ({ id, onExecute }) => {
+    const CommandButton = commandComponents[id];
+    return (
+      <CommandButton
+        onExecute={onExecute}
+      />
+    );
+  };
+
+  const TableComponentTitle = ({ style, ...restProps }) => (
+    <TableHeaderRow.Content
+      {...restProps}
+      style={{
+        color: 'black',
+        fontWeight: "bold",
+        ...style,
+      }}
+    />
+  );
 
   const columns = [
     { name: 'REGI_DESCRICAO', title: `DESCRIÇÃO DA REGIÃO`, required: true }
@@ -288,9 +282,9 @@ const Regiao = () => {
   const [defaultColumnWidths] = useState([
     { columnName: 'REGI_DESCRICAO', width: 450 }
   ]);
-  const [rowChanges, setRowChanges] = useState({});
-  const [addedRows, setAddedRows] = useState([]);
-  const [editingRowIds, getEditingRowIds] = useState([]);
+  // const [rowChanges, setRowChanges] = useState({});
+  // const [addedRows, setAddedRows] = useState([]);
+  // const [editingRowIds, getEditingRowIds] = useState([]);
 
   const changeAddedRows = value => setAddedRows(
     value.map(row => (Object.keys(row).length ? row : {
@@ -298,8 +292,8 @@ const Regiao = () => {
       REGI_DESCRICAO: ""
     })),
   );
-  const commitChanges = ({ added, changed, deleted }) => {
 
+  const commitChanges = ({ added, changed, deleted }) => {
     let changedRows;
     if (added) {
       const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
@@ -311,11 +305,8 @@ const Regiao = () => {
         })),
       ];
 
-
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_REGIAO)) {
-
-
           if (changedRows[i].REGI_DESCRICAO === "") {
             window.alert("Favor Preencher campo Descrição da Região");
           } else {
@@ -326,11 +317,11 @@ const Regiao = () => {
       }
       //setRows(changedRows);     
     }
+
     if (changed) {
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
-
           if (changedRows[i].REGI_DESCRICAO === "") {
             window.alert("Favor Preencher campo Descrição da Região");
           } else {
@@ -339,22 +330,23 @@ const Regiao = () => {
         }
       }
     }
+
     if (deleted) {
       const deletedSet = new Set(deleted);
       changedRows = rows.filter(row => deletedSet.has(row.id));
       deletarRegiao(changedRows.map(l => l.ID_REGIAO));
       // setRows(changedRows);
     }
+
     setRows(changedRows);
   };
+
   return (
     <div className='container-fluid'>
       <h3 id='titulos'>Região: </h3>
       {/* <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarRegiao`)} type="button" /> */}
       <div className="container">
-
         <Paper>
-
           <Grid
             rows={rows}
             columns={columns}
@@ -373,9 +365,7 @@ const Regiao = () => {
               addedRows={addedRows}
               onAddedRowsChange={changeAddedRows}
               onCommitChanges={commitChanges}
-            // defaultEditingRowIds={}
             />
-
             <Table />
             <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
             <TableHeaderRow
@@ -394,9 +384,7 @@ const Regiao = () => {
         </Paper>
       </div>
     </div>
-
   )
-
 }
 
 export default Regiao;
