@@ -7,73 +7,60 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const dbConfig = require("../ConfigDB/configDB.js");
 
-
 const app = express();
 app.use(express.json());
-// let connection = await oracledb.getConnection(dbConfig);
-//await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
 router.post("/listarJustificativaItem", async (req, res) => {
-    const { token, justificativaItemID,
-    } = req.body;
+    const { token } = req.body;
 
     let connection = await oracledb.getConnection(dbConfig);
     let result;
-    let selectSql = "";
-    
-    if (justificativaItemID > 0) {
-        selectSql = ` WHERE ID_JUSTIFICATIVA_ITEM = ${justificativaItemID} `
-    }
+
+    // console.log('listarJustificativaItem', req.body)
 
     try {
-
         jwt.verify(token, SECRET, async (err, decoded) => {
             if (err) {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
-
             } else {
                 result = await connection.execute(
                     ` 
                     SELECT  * FROM JUSTIFICATIVA_ITEM JSIT
-                    ${selectSql}
                     `,
                     [],
                     {
                         outFormat: oracledb.OUT_FORMAT_OBJECT,
                     }
                 );
+
                 res.send(result.rows).status(200).end();
             }
         })
 
     } catch (error) {
-        console.error(error);
+        console.error('Erro na listagem de Justificativa de Item', error);
         res.send("erro de conexao").status(500);
-
     } finally {
         if (connection) {
             try {
                 await connection.close();
-
             } catch (error) {
-                console.error(error);
+                console.error('Erro ao fechar conexão para consulta de Justificativas de item.', error);
             }
         }
     }
 });
 
-
 router.post("/cadastrarJustificativaItem", async (req, res) => {
     let { lista, token, acessoGeral } = req.body;
     let justificativaItemID = lista.ID_JUSTIFICATIVA_ITEM;
     let justificativaItemDescricao = lista.JSIT_DESCRICAO;
-    
-    let insertSql;
-    let selectSql;
 
-    // console.log('CadastrarJustificativaItem.lista', lista);
+    let insertSql;
+
+    // console.log('CadastrarJustificativaItem', req.ody);
 
     let connection = await oracledb.getConnection(dbConfig);
 
@@ -84,20 +71,18 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
                     console.error(err, "err");
                     erroAcesso = "erroLogin";
                     res.send("erroLogin").end();
-
                 } else {
                     insertSql = (
-                        ` INSERT INTO JUSTIFICATIVA_ITEM(ID_JUSTIFICATIVA_ITEM,
-                                JSIT_DESCRICAO)
-                                VALUES (SEQ_JSIT.NEXTVAL, :DESCRICAO
+                        ` INSERT INTO JUSTIFICATIVA_ITEM(ID_JUSTIFICATIVA_ITEM, JSIT_DESCRICAO)
+                                VALUES (SEQ_JSIT.NEXTVAL, '${justificativaItemDescricao}'
                                 )
                             `
                     )
 
                     updateSql = (
                         ` UPDATE JUSTIFICATIVA_ITEM
-                            SET JSIT_DESCRICAO = :DESCRICAO
-                            WHERE ID_JUSTIFICATIVA_ITEM = :JSIT
+                            SET JSIT_DESCRICAO = '${justificativaItemDescricao}'
+                            WHERE ID_JUSTIFICATIVA_ITEM = '${justificativaItemID}'
                             `
                     )
                 }
@@ -107,7 +92,7 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
                 await connection.execute(
                     updateSql
                     ,
-                    [justificativaItemDescricao, justificativaItemID],
+                    [],
                     {
                         outFormat: oracledb.OUT_FORMAT_OBJECT,
                         autoCommit: true
@@ -116,7 +101,7 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
                 await connection.execute(
                     insertSql
                     ,
-                    [justificativaItemDescricao],
+                    [],
                     {
                         outFormat: oracledb.OUT_FORMAT_OBJECT,
                         autoCommit: true
@@ -132,9 +117,8 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
             if (connection) {
                 try {
                     await connection.close();
-
                 } catch (error) {
-                    console.error(error);
+                    console.error('Erro no close da connection ao Cadastrar Justificativa do Item', error);
                 }
             }
         }
@@ -145,15 +129,13 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
 });
 
 router.post("/excluirJustificativaItem", async (req, res) => {
-    const {justificativaItemID, token, acessoGeral
-    } = req.body;
+    const { justificativaItemID, token, acessoGeral } = req.body;
 
-    // console.log('Inicio excluirJustificativaItem', req.body);
+    // console.log('excluirJustificativaItem', req.body);
 
     let connection = await oracledb.getConnection(dbConfig);
 
     let deleteSql = "";
-    // let deleteSql1 = "";
 
     if (acessoGeral) {
         jwt.verify(token, SECRET, async (err, decoded) => {
@@ -161,13 +143,11 @@ router.post("/excluirJustificativaItem", async (req, res) => {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
-
             } else {
-
                 deleteSql = (
                     ` 
                     DELETE FROM JUSTIFICATIVA_ITEM 
-                    WHERE  ID_JUSTIFICATIVA_ITEM = ${justificativaItemID}
+                    WHERE  ID_JUSTIFICATIVA_ITEM = '${justificativaItemID}'
                     `
                 )
             }
@@ -186,22 +166,18 @@ router.post("/excluirJustificativaItem", async (req, res) => {
         } catch (error) {
             console.error('Erro ao Ecluir Justificativa do Item', error);
             res.send("erroSalvar").status(500);
-
         } finally {
             if (connection) {
                 try {
                     await connection.close();
-
                 } catch (error) {
-                    console.error(error);
+                    console.error('Erro no Close da conecction de excluir justificativa do item', error);
                 }
             }
         }
-
     } else {
         res.send("semAcesso").status(200).end();
     }
 });
-
 
 module.exports = router;

@@ -1,3 +1,7 @@
+/*
+* Lista de justificativa de item cadastradas no sistema.
+* Listar, cadastrar e atualizar os registros.
+*/
 import Paper from '@mui/material/Paper';
 
 import "./JustificativaItem.css";
@@ -38,214 +42,154 @@ import { saveJustificativaItem, getJustificativaItem, deleteJustificativaItemID 
 import { getAcessoUserMenu } from '../../Service/usuarioService';
 import { validaDescricao } from '../../Service/utilServiceFrontEnd';
 
-
-const DeleteButton = ({ onExecute }) => (
-  <IconButton
-    onClick={() => {
-      // eslint-disable-next-line
-      if (window.confirm('Deseja excluir esta Justificativa do Item ?')) {
-        onExecute();
-      }
-    }}
-    title="Excluir Justificativa do Item"
-    size="large"
-  >
-    <DeleteForeverOutlinedIcon style={{ color: "red" }} />
-  </IconButton>
-);
-
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: 'center' }}>
-    <IconButton size="large"
-      color="primary"
-      onClick={onExecute}
-      title="Nova Justificativa do Item"
-    >
-      <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
-    </IconButton>
-  </div>
-);
-
-
-const EditButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Alterar Justificativa do Item" size="large" >
-    <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
-  </IconButton>
-);
-
-const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Salvar alterações" size="large">
-    <SaveIcon />
-  </IconButton>
-);
-
-const CancelButton = ({ onExecute }) => (
-  <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
-    <CancelIcon />
-  </IconButton>
-);
-const commandComponents = {
-
-  add: AddButton,
-  edit: EditButton,
-  delete: DeleteButton,
-  commit: CommitButton,
-  cancel: CancelButton,
-
-};
-
-const Command = ({ id, onExecute }) => {
-  const CommandButton = commandComponents[id];
-  return (
-    <CommandButton
-      onExecute={onExecute}
-    />
-  );
-};
-
-const TableComponentTitle = ({ style, ...restProps }) => (
-  <TableHeaderRow.Content
-    {...restProps}
-    style={{
-      color: 'black',
-      fontWeight: "bold",
-      ...style,
-    }}
-  />
-);
-
 let acessoGeral = false;
 
 const JustificativaItem = () => {
-
   const { logout, nomeUser } = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [rows, setRows] = useState([]);
   // const [descricaoJustificativaItem, setDescricaoJustificativaItem] = useState([]);
   const navigate = useNavigate();
+  // const [listaAcess, setListaAcess] = useState([""]);
+  const [rowChanges, setRowChanges] = useState({});
+  const [addedRows, setAddedRows] = useState([]);
+  const [editingRowIds, getEditingRowIds] = useState([]);
+  const [acessoList, setAcessoList] = useState(false);
+  const [acessoDEL, setAcessoDEL] = useState(false);
+  const [acessoCad, setAcessoCad] = useState(false);
+  const [displayEDIT, setDisplayEDIT] = useState("none");
+  const [displayDEL, setDisplayDEL] = useState("none");
+  const [displayADD, setDisplayADD] = useState("none");
 
+  const listaJsit = "LIST_JUSTIFICATIVA";
+  const incluirJsit = "ADD_JUSTIFICATIVA";
+  const excluirJsit = "DEL_JUSTIFICATIVA";
+  const editarJsit = "EDIT_JUSTIFICATIVA";
 
   useEffect(() => {
-    const acessoMenuUser = async () => {
+    const acessoMenuUser = () => {
       let dados = { token, usuario: nomeUser() };
-      await getAcessoUserMenu(dados)
+      getAcessoUserMenu(dados)
         .then((res) => {
-          if (res.data === "erroLogin") {
-            window.alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          }
-          else if (res.data === "semAcesso") {
-            window.alert("Usuário sem permissão !!!");
-
+          if (typeof (res.data) === "string") {
+            window.alert("Erro ao buscar Dados de Acesso do Usuário!");
           } else {
             (res.data).forEach((ac) => {
               if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                 acessoGeral = true;
+                setDisplayADD("");
+                setDisplayDEL("");
+                setDisplayEDIT("");
+                listaJustificativaItem();
+              } else if (incluirJsit === ac) {
+                setDisplayADD("");
+                setAcessoCad(true);
+              } else if (excluirJsit === ac) {
+                setDisplayDEL("");
+                setAcessoDEL(true);
+              } else if (editarJsit === ac) {
+                setDisplayEDIT("");
+                setAcessoCad(true);
+              } else if (listaJsit === ac) {
+                setAcessoList(true);
+                listaJustificativaItem();
               }
             })
           }
         })
         .catch((err) => {
-          console.error(err);
-          window.alert("Erro ao buscar Usuário !!")
+          console.error('Erro no processo de verificação de acesso de usuário em Justificativa de Item', err);
+          window.alert("Erro ao buscar Acesso do Usuário !!")
         })
-
     }
 
     acessoMenuUser();
-  }, [])
-
-  useEffect(() => {
-    listaJustificativaItem();
-  }, [logout, token]);
+  }, [logout, token, nomeUser]);
 
   const cadastraJustificativaItem = (lista) => {
-    let dados = { lista, token, acessoGeral };
-
+    let dados = { lista, token, acessoGeral: acessoCad, usuLogado: nomeUser() };
     // console.log('cadastrar Justificativa do Item', lista);
 
-    if (!validaDescricao(lista.JSIT_DESCRICAO)) {
-      return { mensagem: 'Erro de Validação da Descrição da Justificativa do Item' };
-    }
+    if (displayADD === "") {
+      if (!validaDescricao(lista.JSIT_DESCRICAO)) {
+        return { mensagem: 'Erro de Validação da Descrição da Justificativa do Item' };
+      }
 
-    saveJustificativaItem(dados)
-      .then((res) => {
-
-        if (res.data === "erroLogin") {
-          alert("Sessão expirada, Favor efetuar um novo login !!");
-          logout();
-          window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
-          alert("Usuário sem permissão !!!");
-
-        } else if (res.data === "campoNulo") {
-          alert("Preencha todos os Campos obrigatorios!!!");
-        }
-        else if (res.data === "erroSalvar") {
-          alert("Erro a tentar salvar ou alterar!!!");
-        }
-        else {
-          if (lista.ID_JUSTIFICATIVA_ITEM > 0) {
-            window.alert("Justificativa do Item Alterada com Sucesso!!!");
+      saveJustificativaItem(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          } else if (res.data === "semAcesso") {
+            alert("Usuário sem permissão !!!");
+          } else if (res.data === "campoNulo") {
+            alert("Preencha todos os Campos obrigatorios!!!");
+          } else if (res.data === "erroSalvar") {
+            alert("Erro a tentar salvar ou alterar!!!");
+          } else if (res.data === "sucesso") {
+            alert("Justificativa do Item Cadastrada com sucesso !")
           } else {
-            window.alert("Justificativa do Item Cadastrada  com Sucesso!!!");
+            if (lista.ID_REGIAO > 0) {
+              window.alert("Região Alterada com Sucesso!!!");
+            } else {
+              window.alert("Região Cadastrada  com Sucesso!!!");
+            }
+            // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
           }
-          // listaJustificativaItem(); // sempre chamar a lista no caso de cadastro simples.
-        }
 
-        listaJustificativaItem();
-      })
-      .catch((err) => {
-        console.error('Erro ao Cadastrar Justificativa do Item', err);
-        window.alert("Erro ao cadastrar !!")
-      })
-  }
+          listaJustificativaItem();
+        })
+        .catch((err) => {
+          console.error("Erro ao Cadastrar Justificativa de Item", err);
+          window.alert("Erro ao cadastrar !!");
+        });
+    }
+  };
 
   const deletarJustificativaItem = (justificativaItemID) => {
+    let dados = { token, acessoGeral: acessoDEL, justificativaItemID: parseInt(justificativaItemID) };
+    if (displayDEL === "") {
+      deleteJustificativaItemID(dados)
+        .then((res) => {
+          if (res.data === "erroLogin") {
+            alert("Sessão expirada, Favor efetuar um novo login !!");
+            logout();
+            window.location.reload();
+          } else if (res.data === "semAcesso") {
+            alert("Usuário sem permissão !!!");
+            listaJustificativaItem();
+          } else if (res.data === "campoNulo") {
+            alert("Preencha todos os Campos obrigatorios!!!");
+          } else if (res.data === "erroSalvar") {
+            alert("Erro a tentar excluir!!!");
+          } else {
+            window.alert("Justificativa do Item excluída com sucesso !!");
+            listaJustificativaItem();
+          }
+        })
+        .catch((err) => {
+          console.error('Erro ao Excluir Justificativa do Item', err);
+          window.alert("Erro ao Excluir !!")
+        })
+    } else {
+      listaJustificativaItem();
 
-    let dados = { token, acessoGeral, justificativaItemID: parseInt(justificativaItemID) };
-    deleteJustificativaItemID(dados)
-      .then((res) => {
-
-        if (res.data === "erroLogin") {
-          alert("Sessão expirada, Favor efetuar um novo login !!");
-          logout();
-          window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
-          alert("Usuário sem permissão !!!");
-
-        } else if (res.data === "campoNulo") {
-          alert("Preencha todos os Campos obrigatorios!!!");
-        }
-        else if (res.data === "erroSalvar") {
-          alert("Erro a tentar excluir!!!");
-        } else {
-          window.alert("Justificativa do Item excluída com sucesso !!");
-          listaJustificativaItem();
-        }
-      })
-      .catch((err) => {
-        console.error('Erro ao Excluir Justificativa do Item', err);
-        window.alert("Erro ao Excluir !!")
-      })
-  }
+      alert("Usuário sem permissão !!!");
+    }
+  };
 
   const listaJustificativaItem = async () => {
     let dados = { token, acessoGeral };
     await getJustificativaItem(dados)
       .then((res) => {
-
         if (res.data === "erroLogin") {
           window.alert("Sessão expirada, Favor efetuar um novo login !!");
           logout();
           window.location.reload();
-        }
-        else if (res.data === "semAcesso") {
+        } else if (res.data === "semAcesso") {
           window.alert("Usuário sem permissão !!!");
-
+          navigate("/home");
         } else {
           (res.data).forEach((item, index) => (item.id = index));
           return setRows(res.data);
@@ -257,6 +201,83 @@ const JustificativaItem = () => {
       })
   }
 
+
+  const DeleteButton = ({ onExecute }) => (
+    <IconButton style={{ display: displayDEL }}
+      onClick={() => {
+        // eslint-disable-next-line
+        if (window.confirm('Deseja excluir esta Justificativa do Item ?')) {
+          onExecute();
+        }
+      }}
+      title="Excluir Justificativa do Item"
+      size="large"
+    >
+      <DeleteForeverOutlinedIcon style={{ color: "red" }} />
+    </IconButton>
+  );
+
+  const AddButton = ({ onExecute }) => (
+    <div style={{ textAlign: 'center' }}>
+      <IconButton size="large" style={{ display: displayADD }}
+        color="primary"
+        onClick={onExecute}
+        title="Nova Justificativa do Item"
+      >
+        <AddCircleOutlinedIcon style={{ color: "blue" }} fontSize="large" />
+      </IconButton>
+    </div>
+  );
+
+
+  const EditButton = ({ onExecute }) => (
+    <IconButton style={{ display: displayEDIT }} onClick={onExecute}
+      title="Alterar Justificativa do Item" size="large" >
+      <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} />
+    </IconButton>
+  );
+
+  const CommitButton = ({ onExecute }) => (
+    <IconButton onClick={onExecute} title="Salvar alterações" size="large">
+      <SaveIcon />
+    </IconButton>
+  );
+
+  const CancelButton = ({ onExecute }) => (
+    <IconButton color="secondary" onClick={onExecute} title="Cancelar alterações" size="large">
+      <CancelIcon />
+    </IconButton>
+  );
+
+  const commandComponents = {
+    add: AddButton,
+    edit: EditButton,
+    delete: DeleteButton,
+    commit: CommitButton,
+    cancel: CancelButton,
+
+  };
+
+  const Command = ({ id, onExecute }) => {
+    const CommandButton = commandComponents[id];
+    return (
+      <CommandButton
+        onExecute={onExecute}
+      />
+    );
+  };
+
+  const TableComponentTitle = ({ style, ...restProps }) => (
+    <TableHeaderRow.Content
+      {...restProps}
+      style={{
+        color: 'black',
+        fontWeight: "bold",
+        ...style,
+      }}
+    />
+  );
+
   const columns = [
     { name: 'JSIT_DESCRICAO', title: `DESCRIÇÃO DA JUSTIFICATIVA DO ITEM`, required: true }
   ]
@@ -264,9 +285,9 @@ const JustificativaItem = () => {
   const [defaultColumnWidths] = useState([
     { columnName: 'JSIT_DESCRICAO', width: 450 }
   ]);
-  const [rowChanges, setRowChanges] = useState({});
-  const [addedRows, setAddedRows] = useState([]);
-  const [editingRowIds, getEditingRowIds] = useState([]);
+  // const [rowChanges, setRowChanges] = useState({});
+  // const [addedRows, setAddedRows] = useState([]);
+  // const [editingRowIds, getEditingRowIds] = useState([]);
 
   const changeAddedRows = value => setAddedRows(
     value.map(row => (Object.keys(row).length ? row : {
@@ -275,7 +296,6 @@ const JustificativaItem = () => {
     })),
   );
   const commitChanges = ({ added, changed, deleted }) => {
-
     let changedRows;
     if (added) {
       const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
@@ -289,23 +309,19 @@ const JustificativaItem = () => {
 
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_JUSTIFICATIVA_ITEM)) {
-
-
           if (changedRows[i].JSIT_DESCRICAO === "") {
             window.alert("Favor Preencher campo Descrição da Justificativa do Item");
           } else {
             cadastraJustificativaItem(changedRows[i])
           }
-          //cadastraUsuario(changedRows[i]);
         }
       }
-      //setRows(changedRows);     
     }
+
     if (changed) {
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
-
           if (changedRows[i].JSIT_DESCRICAO === "") {
             window.alert("Favor Preencher campo Descrição da Justificativa do Item");
           } else {
@@ -314,22 +330,23 @@ const JustificativaItem = () => {
         }
       }
     }
+
     if (deleted) {
       const deletedSet = new Set(deleted);
-      changedRows = rows.filter(row => deletedSet.has(row.id));
-      deletarJustificativaItem(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
-      // setRows(changedRows);
+
+      let idJustificativa = parseInt(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
+      deletarJustificativaItem(idJustificativa);
     }
+
     setRows(changedRows);
   };
+
   return (
     <div className='container-fluid'>
       <h3 id='titulos'>Justificativa do Item: </h3>
       {/* <ArrowBackIcon titleAccess="Voltar" style={{ color: "green" }} className="margemRight" onClick={(e) => navigate(`/ListarJustificativaItem`)} type="button" /> */}
-      <div className="container">
-
+      <div className="container-fluid">
         <Paper>
-
           <Grid
             rows={rows}
             columns={columns}
@@ -348,9 +365,7 @@ const JustificativaItem = () => {
               addedRows={addedRows}
               onAddedRowsChange={changeAddedRows}
               onCommitChanges={commitChanges}
-            // defaultEditingRowIds={}
             />
-
             <Table />
             <TableColumnResizing defaultColumnWidths={defaultColumnWidths} />
             <TableHeaderRow
@@ -369,9 +384,7 @@ const JustificativaItem = () => {
         </Paper>
       </div>
     </div>
-
   )
-
 }
 
 export default JustificativaItem;

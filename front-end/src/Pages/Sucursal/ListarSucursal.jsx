@@ -1,22 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
-import {
-    DataTypeProvider, EditingState, SortingState,
-    IntegratedSorting,
-    IntegratedFiltering,
-    FilteringState,
-} from '@devexpress/dx-react-grid';
-import {
-    Grid,
-    Table,
-    TableHeaderRow,
-    TableEditRow,
-    TableFilterRow,
-    TableColumnVisibility,
-
-} from '@devexpress/dx-react-grid-material-ui';
-import { deleteFornecedorID, getFornecedor } from "../../Service/fornecedorService";
+import { DataTypeProvider, EditingState, SortingState,IntegratedSorting,IntegratedFiltering,FilteringState,} from '@devexpress/dx-react-grid';
+import { Grid,Table,TableHeaderRow,TableEditRow,TableFilterRow,TableColumnVisibility,} from '@devexpress/dx-react-grid-material-ui';
+import { deleteSucursalID,getSucursal} from "../../Service/sucursalService";
 import { cnpj } from "cpf-cnpj-validator";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
@@ -25,26 +12,24 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 
 
-
-
     const getRowId = row => row.id;
-    const ListarFornecedor = () => {
-    const [rows, setRows] = useState([]);
-    const navigate = useNavigate();     
-    const { logout, nomeUser } = useContext(AuthContext);
-    const [validCNPJ] = useState(["FORN_CNPJ"]);
-    const [editForn] = useState(["ALTERACAO"]); 
-    let token = localStorage.getItem("token");  
-    const [acessoGeral, setAcessoGeral] = useState(false);    
-    const [acessoDEL, setAcessoDEL] = useState(false);
-    const [defaultHiddenColumnNames] = useState(['nova']);   
-    const [acessoADD, setAcessoADD] = useState(false);
-    const [displayEDIT, setDisplayEDIT] = useState("none");
-    const [displayDEL, setDisplayDEL] = useState("none");
-    const listaForn = "LIST_FORNECEDOR";
-    const incluirForn = "ADD_FORNECEDOR";  
-    const excluirForn = "DEL_FORNECEDOR";
-    const editarForn = "EDIT_FORNECEDOR";
+    const ListarSucursal = () => {
+        const [rows, setRows] = useState([]);
+        const navigate = useNavigate();     
+        const { logout, nomeUser } = useContext(AuthContext);
+        let token = localStorage.getItem("token");  
+        const [validCNPJ] = useState(["SUAL_CNPJ"]);
+        const [editSual] = useState(["ALTERACAO"]); 
+        const [acessoGeral, setAcessoGeral] = useState(false);    
+        const [acessoDEL, setAcessoDEL] = useState(false);
+        const [defaultHiddenColumnNames] = useState(['nova']);   
+        const [acessoADD, setAcessoADD] = useState(false);
+        const [displayEDIT, setDisplayEDIT] = useState("none");
+        const [displayDEL, setDisplayDEL] = useState("none"); 
+        const listaSual = "LIST_SUCURSAL";
+        const incluirSual = "ADD_SUCURSAL";  
+        const excluirSual = "DEL_SUCURSAL";
+        const editarSual = "EDIT_SUCURSAL";
 
     useEffect(() => {     
         const acessoMenuUser = async ()=>{          
@@ -56,14 +41,14 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
                      setDisplayEDIT("");  
                      setDisplayDEL("");   
                      setAcessoGeral(true);                    
-                     listarFornecedores();                       
-                    }else if(listaForn === ac) {
-                        listarFornecedores();
-                     }else if(incluirForn === ac) {
+                     listarSucursal();                       
+                    }else if(listaSual === ac) {
+                        listarSucursal();
+                     }else if(incluirSual === ac) {
                         setAcessoADD(true);
-                     }else if(editarForn === ac) {
+                     }else if(editarSual === ac) {
                         setDisplayEDIT("");                        
-                     }else if(excluirForn === ac) {
+                     }else if(excluirSual === ac) {
                         setDisplayDEL("");   
                         setAcessoDEL(true);                     
                      }
@@ -71,16 +56,16 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
               })
               .catch((err) => {
                 console.error(err);
-                window.alert("Erro ao Listar Fornecedores !!")
+                window.alert("Erro ao Listar Sucursal !!")
               })
           }
           acessoMenuUser();  
           // eslint-disable-next-line  
     }, [logout, token,nomeUser]);
 
-    const listarFornecedores = async () => {
+    const listarSucursal = async () => {
         let dados = { token };
-        await getFornecedor(dados)
+        await getSucursal(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
                     alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -107,11 +92,11 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
             })
     };
 
-    const deletarFornecedor = (idFornecedor) => {
+    const deletarSucursal = (idSucursal) => {
         if(acessoGeral || acessoDEL){        
-        let dados = { idFornecedor, token, acessoGeral, acessoDEL };
+        let dados = { idSucursal, token, acessoGeral, acessoDEL };
         if (window.confirm("deseja excluir o item ?")) {
-            deleteFornecedorID(dados)
+            deleteSucursalID(dados)
                 .then((res) => {
                     if (res.data === "erroLogin") {
                         window.alert("Sessão expirada, Favor efetuar um novo login !!");
@@ -120,7 +105,6 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
                     }
                     else if (res.data === "semAcesso") {
                         window.alert("Usuário sem permissão !!!");
-
                     } else if (res.data === "campoNulo") {
                         window.alert("Preencha todos os Campos obrigatorios!!!");
                     }
@@ -128,13 +112,13 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
                         window.alert("Erro a tentar salvar ou alterar!!!");
                     }
                     else if (res.data === "sucesso") {
-                        window.alert("Fornecedor Excluída com Sucesso!!!");
-                        listarFornecedores();
+                        window.alert("Sucursal Excluída com Sucesso!!!");
+                        listarSucursal();
                     }
                 })
                 .catch((res) => {
                     console.error(res);
-                    window.alert("Erro ao tentar excluir Fornecedor");
+                    window.alert("Erro ao tentar excluir Sucursal");
                 })
         }
     }else{
@@ -143,44 +127,42 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
     };
     //GRID
 
-    const BotaoAd =  < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroFornecedor/0")} />         
+    const BotaoAd =  < AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroSucursal/0")} />         
    
   const columns  =
   (     acessoGeral || acessoADD ?
     
-        [{ name: 'FORN_CNPJ', title: `CNPJ` },
-        { name: 'FORN_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
-        { name: 'FORN_CIDADE', title: "CIDADE" },        
-        {name: "ALTERACAO", title: BotaoAd,
-          getCellValue: row => (row.ID_FORNECEDOR)
+        [{ name: 'SUAL_CNPJ', title: `CNPJ` },
+         { name: 'SUAL_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
+         { name: 'SUAL_NOME_FANTASIA', title: "FANTASIA" },        
+         {name: "ALTERACAO", title: BotaoAd,
+          getCellValue: row => (row.ID_SUCURSAL)
         }]    
         :
-        [{ name: 'FORN_CNPJ', title: `CNPJ` },
-        { name: 'FORN_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
-        { name: 'FORN_CIDADE', title: "CIDADE" },        
-        {name: "ALTERACAO", title: "Cadastro",
-          getCellValue: row => (row.ID_FORNECEDOR)
+        [{ name: 'SUAL_CNPJ', title: `CNPJ` },
+         { name: 'SUAL_RAZAO_SOCIAL', title: "RAZÃO SOCIAL" },
+         { name: 'SUAL_NOME_FANTASIA', title: "FANTASIA" },        
+         {name: "ALTERACAO", title: "Cadastro",
+          getCellValue: row => (row.ID_SUCURSAL)
         }]   
   )
 
     const [editingStateColumns] = useState([
-        { columnName: "ALTERACAO", editingEnabled: false , title :"olamn"},
-        // {columnName : "PRDT_VALOR_LIQUIDO",editingEnabled: false},
-        // {columnName : "PRDT_VALOR",align: 'center'},
+        { columnName: "ALTERACAO", editingEnabled: false , title :"olamn"}
     ])
 
    
-    const EditFornecedoresAdm = ({ value }) => (
+    const EditSucursalAdm = ({ value }) => (
         <div>  
-            <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastroFornecedor/${value}`)} type="button" />
-            <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : displayDEL}}   className="margemRight" onClick={(e) => deletarFornecedor(value)} />
-            <VisibilityIcon style={{ color: "green" ,display : (displayEDIT ==="none" ? "" : "none")}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroFornecedor/${value}`)} type="button" />   
+            <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastroSucursal/${value}`)} type="button" />
+            <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : displayDEL}}   className="margemRight" onClick={(e) => deletarSucursal(value)} />
+            <VisibilityIcon style={{ color: "green" ,display : (displayEDIT ==="none" ? "" : "none")}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroSucursal/${value}`)} type="button" />   
         </div>  
     )
 
-    const EditFornecedoresProv = props => (
+    const EditSucursalProv = props => (
         <DataTypeProvider
-            formatterComponent={ EditFornecedoresAdm}
+            formatterComponent={ EditSucursalAdm}
             {...props}
         />
     )
@@ -188,7 +170,7 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
     return (
         <div className="container-fluid">
 
-<h3 id='titulos'>Fornecedores 🚗 ​​</h3> 
+<h3 id='titulos'>Sucursal 🚗 ​​</h3> 
 
             <div className="card">
                 <Grid
@@ -202,7 +184,7 @@ import { getAcessoUserMenu } from "../../Service/usuarioService";
                     <SortingState columnExtensions={editingStateColumns} />
                     <IntegratedSorting />
                     <EditingState columnExtensions={editingStateColumns} />
-                    <EditFornecedoresProv for={editForn} />
+                    <EditSucursalProv for={editSual} />
                     <ValidCnpjProv for={validCNPJ} />
 
                     <Table
@@ -239,4 +221,4 @@ const ValidCnpjProv = (props) => (
     />
 )
 
-export default ListarFornecedor;
+export default ListarSucursal;

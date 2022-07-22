@@ -89,9 +89,7 @@ let idEstado;
                       SUAL_BAIRRO                   = :SUAL_BAIRRO           
                 WHERE ID_SUCURSAL                   = :ID_SUCURSAL 
         `
-
         )
-
         selectSql =(
           `SELECT ID_SUCURSAL 
              FROM SUCURSAL  
@@ -114,7 +112,7 @@ let idEstado;
       { outFormat  :  oracledb.OUT_FORMAT_ARRAY,
         autoCommit :  true
     }); 
-     c = (estado.rows).toString();  
+    idEstado = (estado.rows).toString();  
 
     if(idSucursal > 0){   
       await connection.execute (     
@@ -338,7 +336,7 @@ router.post("/cadastrarContatoSucursal", async(req, res)=> {
 
             if(idSucursalContato){
               await connection.execute(                `
-              UPDATE  FORNECEDOR_CONTATO
+              UPDATE  SUCURSAL_CONTATO
                  SET  SUCO_NOME = '${sucoNome}',
                       SUCO_FUNCAO = '${sucoFuncao}',
                       SUCO_DEPARTAMENTO = '${sucoDepartamento}',
@@ -361,8 +359,7 @@ router.post("/cadastrarContatoSucursal", async(req, res)=> {
           
             await connection.execute (              
                ` 
-               INSERT INTO FORNECEDOR_CONTATO(
-                                              ID_SUCURSAL_CONTATO
+               INSERT INTO SUCURSAL_CONTATO(  ID_SUCURSAL_CONTATO,
                                               SUCO_NOME,
                                               SUCO_FUNCAO,
                                               SUCO_DEPARTAMENTO,

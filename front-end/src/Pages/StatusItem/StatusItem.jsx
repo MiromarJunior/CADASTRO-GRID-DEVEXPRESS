@@ -181,7 +181,7 @@ const StatusItem = () => {
         listaStatusItem();
       })
       .catch((err) => {
-        console.error("Erro ao Cadastrar Dados SAC", err);
+        console.error("Erro ao Cadastrar Status do Item", err);
         window.alert("Erro ao cadastrar !!");
       });
     }
@@ -233,6 +233,7 @@ const StatusItem = () => {
           window.location.reload();
         } else if (res.data === "semAcesso") {
           window.alert("Usuário sem permissão !!!");
+          navigate("/home");
         } else {
           res.data.forEach((item, index) => (item.id = index));
           return setRows(res.data);
@@ -268,6 +269,7 @@ const StatusItem = () => {
         required: true,
       },
   ];
+  
   const DeleteButton = ({ onExecute }) => (
     <IconButton style={{display: displayDEL}}
       onClick={() => {
