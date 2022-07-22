@@ -320,6 +320,11 @@ const HomePage = () => {
     handleDrawerClose();
   }  
 
+  const horasLeilao = () => {
+    navigate("/horasLeilao");
+    handleDrawerClose();
+  } 
+
 
   return (
     <div style={{ display: nomeUser() ? "" : "none" }}>
@@ -444,6 +449,15 @@ const HomePage = () => {
                       <ListIcon />
                     </ListItemIcon>
                     <ListItemText primary={"Parametros do Leilão"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoParamLe }}>
+                  <ListItemButton onClick={() => horasLeilao()}>
+                    <ListItemIcon>
+                      <ListIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Horas Leilão"} />
                   </ListItemButton>
                 </ListItem>
 
