@@ -39,7 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { saveRegiao, getRegiao, deleteRegiaoID } from "../../Service/regiaoService";
 import { getAcessoUserMenu } from '../../Service/usuarioService';
-import { validaDescricao } from '../../Service/utilServiceFrontEnd';
+import { validaDescricao, validaRegiao } from '../../Service/utilServiceFrontEnd';
 
 let acessoGeral = false;
 
@@ -60,7 +60,6 @@ const Regiao = () => {
   const [displayEDIT, setDisplayEDIT] = useState("none");
   const [displayDEL, setDisplayDEL] = useState("none");
   const [displayADD, setDisplayADD] = useState("none");
-
   const listaRegi = "LIST_REGIAO";
   const incluirRegi = "ADD_REGIAO";
   const excluirRegi = "DEL_REGIAO";
@@ -107,80 +106,87 @@ const Regiao = () => {
   }, [logout, token, nomeUser]);
 
   const cadastraRegiao = (lista) => {
-    let dados = { lista, token, acessoGeral: acessoCad, usuLogado: nomeUser() };
-    // console.log('cadastrarRegiao', lista);
+    let dados = { lista, token, acessoGeral: (acessoCad || acessoGeral), usuLogado: nomeUser() };
 
-    if (displayADD === "") {
-      if (!validaDescricao(lista.REGI_DESCRICAO)) {
-        return { mensagem: 'Erro de Validação da Descrição da Região' };
-      }
+    // console.log('cadastrarRegiao.Lista', lista)
 
-      saveRegiao(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          } else if (res.data === "semAcesso") {
-            alert("Usuário sem permissão !!!");
-          } else if (res.data === "campoNulo") {
-            alert("Preencha todos os Campos obrigatorios!!!");
-          } else if (res.data === "erroSalvar") {
-            alert("Erro a tentar salvar ou alterar!!!");
-          } else if (res.data === "sucesso") {
-            alert("Região Cadastrada com sucesso !")
-          } else {
-            if (lista.ID_REGIAO > 0) {
-              window.alert("Região Alterada com Sucesso!!!");
-            } else {
-              window.alert("Região Cadastrada  com Sucesso!!!");
-            }
-            // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
-          }
-
-          listaRegiao();
-        })
-        .catch((err) => {
-          console.error('Erro ao Cadastrar Região', err);
-          window.alert("Erro ao cadastrar !!")
-        })
+    if (!(displayADD === '')) {
+      alert("Usuário sem permissão !!!");
+      // listaRegiao();
+      return;
     }
+
+    // validacao ja presente na chamada do metodo
+    // if (!validaRegiao(lista)) {
+    //   return { mensagem: 'Erro de Validação dos Campos da Região da Região' };
+    // }
+
+    saveRegiao(dados)
+      .then((res) => {
+        if (res.data === "erroLogin") {
+          alert("Sessão expirada, Favor efetuar um novo login !!");
+          logout();
+          window.location.reload();
+        } else if (res.data === "semAcesso") {
+          alert("Usuário sem permissão !!!");
+        } else if (res.data === "campoNulo") {
+          alert("Preencha todos os Campos obrigatorios!!!");
+        } else if (res.data === "erroSalvar") {
+          alert("Erro a tentar salvar ou alterar!!!");
+        } else if (res.data === "sucesso") {
+          alert("Região Cadastrada com sucesso !")
+        } else {
+          if (lista.ID_REGIAO > 0) {
+            window.alert("Região Alterada com Sucesso!!!");
+          } else {
+            window.alert("Região Cadastrada  com Sucesso!!!");
+          }
+          // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
+        }
+        listaRegiao();
+      })
+      .catch((err) => {
+        console.error('Erro ao Cadastrar Região', err);
+        window.alert("Erro ao cadastrar !!")
+      })
   };
 
   const deletarRegiao = (regiaoID) => {
-    let dados = { token, acessoGeral: acessoDEL, RegiaoID: parseInt(regiaoID) };
-    if (displayDEL === "") {
-      deleteRegiaoID(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          } else if (res.data === "semAcesso") {
-            alert("Usuário sem permissão !!!");
-          } else if (res.data === "campoNulo") {
-            alert("Preencha todos os Campos obrigatorios!!!");
-          } else if (res.data === "erroSalvar") {
-            alert("Erro a tentar excluir!!!");
-          } else {
-            window.alert("Região excluída com sucesso !!");
-            listaRegiao();
-          }
-        })
-        .catch((err) => {
-          console.error('Erro ao Excluir Região', err);
-          window.alert("Erro ao Excluir !!")
-        })
-    } else {
-      listaRegiao();
+    let dados = { token, acessoGeral: (acessoDEL || acessoGeral), regiaoID: parseInt(regiaoID) };
 
+    if (!(displayDEL === '')) {
       alert("Usuário sem permissão !!!");
+      // listaRegiao();
+      return;
     }
+
+    deleteRegiaoID(dados)
+      .then((res) => {
+        if (res.data === "erroLogin") {
+          alert("Sessão expirada, Favor efetuar um novo login !!");
+          logout();
+          window.location.reload();
+        } else if (res.data === "semAcesso") {
+          alert("Usuário sem permissão !!!");
+        } else if (res.data === "campoNulo") {
+          alert("Preencha todos os Campos obrigatorios!!!");
+        } else if (res.data === "erroSalvar") {
+          alert("Erro a tentar excluir!!!");
+        } else {
+          window.alert("Região excluída com sucesso !!");
+          // listaRegiao();
+        }
+        // sempre atualizar a lista pois erro de acesso travou com apenas o item a ser excluido na tela
+        listaRegiao();
+      })
+      .catch((err) => {
+        console.error('Erro ao Excluir Região', err);
+        window.alert("Erro ao Excluir !!")
+      })
   };
 
-  // parei aqui no listarRegiao
   const listaRegiao = async () => {
-    let dados = { token, acessoGeral };
+    let dados = { token, acessoGeral: (acessoList || acessoGeral) };
     await getRegiao(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -199,7 +205,7 @@ const Regiao = () => {
         console.error('Erro ao Listar Região', err);
         window.alert("Erro ao Listar !!")
       })
-  }
+  };
 
   const DeleteButton = ({ onExecute }) => (
     <IconButton style={{ display: displayDEL }}
@@ -247,13 +253,11 @@ const Regiao = () => {
     </IconButton>
   );
   const commandComponents = {
-
     add: AddButton,
     edit: EditButton,
     delete: DeleteButton,
     commit: CommitButton,
     cancel: CancelButton,
-
   };
 
   const Command = ({ id, onExecute }) => {
@@ -277,7 +281,7 @@ const Regiao = () => {
   );
 
   const columns = [
-    { name: 'REGI_DESCRICAO', title: `DESCRIÇÃO DA REGIÃO`, required: true }
+    { name: 'REGI_DESCRICAO', title: `Descrição *`, required: true }
   ]
 
   const [defaultColumnWidths] = useState([
@@ -290,7 +294,7 @@ const Regiao = () => {
   const changeAddedRows = value => setAddedRows(
     value.map(row => (Object.keys(row).length ? row : {
       ID_REGIAO: null,
-      REGI_DESCRICAO: ""
+      REGI_DESCRICAO: "",
     })),
   );
 
@@ -308,25 +312,23 @@ const Regiao = () => {
 
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_REGIAO)) {
-          if (changedRows[i].REGI_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Região");
+          if (validaRegiao(changedRows[i])) {
+            cadastraRegiao(changedRows[i]);
           } else {
-            cadastraRegiao(changedRows[i])
+            // return;
           }
-          //cadastraUsuario(changedRows[i]);
         }
       }
-      //setRows(changedRows);     
     }
 
     if (changed) {
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
-          if (changedRows[i].REGI_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Região");
+          if (validaRegiao(changedRows[i])) {
+            cadastraRegiao(changedRows[i]);
           } else {
-            cadastraRegiao(changedRows[i])
+            // return;
           }
         }
       }
