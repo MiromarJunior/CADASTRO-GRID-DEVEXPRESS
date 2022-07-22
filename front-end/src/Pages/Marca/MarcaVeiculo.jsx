@@ -22,6 +22,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 import { deleteMarcaVeiculo, getMarcaVeiculo } from "../../Service/marcaVeiculoService";
+import { TextField } from "@mui/material";
 
 
 
@@ -52,7 +53,10 @@ const MarcaVeiculo = () => {
     const [acessoADD, setAcessoADD] = useState(false);
     const [displayEDIT, setDisplayEDIT] = useState("none");
     const [displayDEL, setDisplayDEL] = useState("none");
-    const [columBottom] = useState(["BOTOES"])
+    const [columBottom] = useState(["BOTOES"]);
+    const [foto, setFoto] = useState([]);
+
+  
 
     const listarMarcaVeiculo = async () => {
 
@@ -73,11 +77,10 @@ const MarcaVeiculo = () => {
                 }
                 else if (res.data === "erroSalvar") {
                     alert("Erro ao tentar listar marcas!!!");
-                }
-                else {
-                    
+                 }
+                else {                      
                     (res.data).forEach((item, index) => (item.id = index));
-                    return setRows(res.data);
+                   return setRows(res.data);
                 }
             })
             .catch((res) => {
@@ -129,12 +132,13 @@ const MarcaVeiculo = () => {
 
     const columns = ([
         { name: 'ID_MARCA_VEICULO', title: "Código da Marca" },
-        { name: 'MRVC_DESCRICAO', title: "Marca" },
+        { name: 'MRVC_DESCRICAO', title: "Marca" },        
         { name: 'BOTOES', title: botaoAdd,
         getCellValue: row => (row.ID_MARCA_VEICULO) },
 
 
     ]);
+    
 
     const EditMarcaVeiculo = ({ value }) => (
         <div>  
@@ -156,10 +160,15 @@ const MarcaVeiculo = () => {
             {...props}
         />
     )
+  
+   
 
-
-    return (<div>
+    return (
+    <div className="container-fluid">
         <h1 id="titulos">Marca Veículo - Em desenvolvimento</h1>
+                 <img src={`data:image/png;base64,${foto}`} alt=""/>
+        {/* <img alt="" src={ foto ? URL.createObjectURL(foto) : ""}  /> */}
+        
         <div className="card">
             <Grid
                 rows={rows}
