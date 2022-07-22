@@ -22,6 +22,7 @@ router.post("/listarRegiao", async (req, res) => {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
+                return;
             } else {
                 result = await connection.execute(
                     ` 
@@ -67,6 +68,7 @@ router.post("/cadastrarRegiao", async (req, res) => {
                     console.error(err, "err");
                     erroAcesso = "erroLogin";
                     res.send("erroLogin").end();
+                    return; // ter certeza que nao continuara no codigo?
                 } else {
                     insertSql = (
                         ` INSERT INTO REGIAO(ID_REGIAO,
@@ -141,6 +143,7 @@ router.post("/excluirRegiao", async (req, res) => {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
+                return;
             } else {
                 deleteSql = (
                     ` 
