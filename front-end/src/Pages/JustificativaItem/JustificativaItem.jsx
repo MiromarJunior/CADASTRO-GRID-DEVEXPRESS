@@ -40,7 +40,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { saveJustificativaItem, getJustificativaItem, deleteJustificativaItemID } from "../../Service/justificativaItemService";
 import { getAcessoUserMenu } from '../../Service/usuarioService';
-import { validaDescricao } from '../../Service/utilServiceFrontEnd';
+import { validaDescricao, validaJustificativaItem } from '../../Service/utilServiceFrontEnd';
 
 let acessoGeral = false;
 
@@ -107,80 +107,85 @@ const JustificativaItem = () => {
   }, [logout, token, nomeUser]);
 
   const cadastraJustificativaItem = (lista) => {
-    let dados = { lista, token, acessoGeral: acessoCad, usuLogado: nomeUser() };
+    let dados = { lista, token, acessoGeral: (acessoCad || acessoGeral), usuLogado: nomeUser() };
     // console.log('cadastrar Justificativa do Item', lista);
 
-    if (displayADD === "") {
-      if (!validaDescricao(lista.JSIT_DESCRICAO)) {
-        return { mensagem: 'Erro de Validação da Descrição da Justificativa do Item' };
-      }
-
-      saveJustificativaItem(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          } else if (res.data === "semAcesso") {
-            alert("Usuário sem permissão !!!");
-          } else if (res.data === "campoNulo") {
-            alert("Preencha todos os Campos obrigatorios!!!");
-          } else if (res.data === "erroSalvar") {
-            alert("Erro a tentar salvar ou alterar!!!");
-          } else if (res.data === "sucesso") {
-            alert("Justificativa do Item Cadastrada com sucesso !")
-          } else {
-            if (lista.ID_REGIAO > 0) {
-              window.alert("Região Alterada com Sucesso!!!");
-            } else {
-              window.alert("Região Cadastrada  com Sucesso!!!");
-            }
-            // listaRegiao(); // sempre chamar a lista no caso de cadastro simples.
-          }
-
-          listaJustificativaItem();
-        })
-        .catch((err) => {
-          console.error("Erro ao Cadastrar Justificativa de Item", err);
-          window.alert("Erro ao cadastrar !!");
-        });
+    if (!(displayADD === "")) {
+      return;
     }
+
+    // validacao ja presente no metodo que faz a chamada deste.
+    // if (!validaJustificativaItem(lista)) {
+    //   return { mensagem: 'Erro de Validação dos campos da Justificativa do Item' };
+    // }
+
+    saveJustificativaItem(dados)
+      .then((res) => {
+        if (res.data === "erroLogin") {
+          alert("Sessão expirada, Favor efetuar um novo login !!");
+          logout();
+          window.location.reload();
+        } else if (res.data === "semAcesso") {
+          alert("Usuário sem permissão !!!");
+        } else if (res.data === "campoNulo") {
+          alert("Preencha todos os Campos obrigatorios!!!");
+        } else if (res.data === "erroSalvar") {
+          alert("Erro a tentar salvar ou alterar!!!");
+        } else if (res.data === "sucesso") {
+          alert("Justificativa do Item Cadastrada com sucesso !")
+        } else {
+          if (lista.ID_JUSTIFICATIVA_ITEM > 0) {
+            window.alert("Justificativa do Item Alterada com Sucesso!!!");
+          } else {
+            window.alert("Justificativa do Item Cadastrada com Sucesso!!!");
+          }
+          listaJustificativaItem();
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao Cadastrar Justificativa de Item", err);
+        window.alert("Erro ao cadastrar !!");
+      });
   };
 
   const deletarJustificativaItem = (justificativaItemID) => {
-    let dados = { token, acessoGeral: acessoDEL, justificativaItemID: parseInt(justificativaItemID) };
-    if (displayDEL === "") {
-      deleteJustificativaItemID(dados)
-        .then((res) => {
-          if (res.data === "erroLogin") {
-            alert("Sessão expirada, Favor efetuar um novo login !!");
-            logout();
-            window.location.reload();
-          } else if (res.data === "semAcesso") {
-            alert("Usuário sem permissão !!!");
-            listaJustificativaItem();
-          } else if (res.data === "campoNulo") {
-            alert("Preencha todos os Campos obrigatorios!!!");
-          } else if (res.data === "erroSalvar") {
-            alert("Erro a tentar excluir!!!");
-          } else {
-            window.alert("Justificativa do Item excluída com sucesso !!");
-            listaJustificativaItem();
-          }
-        })
-        .catch((err) => {
-          console.error('Erro ao Excluir Justificativa do Item', err);
-          window.alert("Erro ao Excluir !!")
-        })
-    } else {
-      listaJustificativaItem();
+    let dados = { token, acessoGeral: (acessoDEL || acessoGeral), justificativaItemID: parseInt(justificativaItemID) };
 
+    if (!(displayDEL === '')) {
+      listaJustificativaItem();
       alert("Usuário sem permissão !!!");
+      return;
     }
+
+    deleteJustificativaItemID(dados)
+      .then((res) => {
+        if (res.data === "erroLogin") {
+          alert("Sessão expirada, Favor efetuar um novo login !!");
+          logout();
+          window.location.reload();
+        } else if (res.data === "semAcesso") {
+          alert("Usuário sem permissão !!!");
+          listaJustificativaItem();
+        } else if (res.data === "campoNulo") {
+          alert("Preencha todos os Campos obrigatorios!!!");
+        } else if (res.data === "erroSalvar") {
+          alert("Erro a tentar excluir!!!");
+        } else {
+          window.alert("Justificativa do Item excluída com sucesso !!");
+          // listaJustificativaItem();
+        }
+
+        // aqui para nao travar apenas com o item que nao foi excluido por falta de acesso
+        listaJustificativaItem();
+      })
+      .catch((err) => {
+        console.error('Erro ao Excluir Justificativa do Item', err);
+        window.alert("Erro ao Excluir !!")
+      })
   };
 
   const listaJustificativaItem = async () => {
-    let dados = { token, acessoGeral };
+    let dados = { token, acessoGeral: (acessoList || acessoGeral) };
     await getJustificativaItem(dados)
       .then((res) => {
         if (res.data === "erroLogin") {
@@ -200,7 +205,6 @@ const JustificativaItem = () => {
         window.alert("Erro ao Listar !!")
       })
   }
-
 
   const DeleteButton = ({ onExecute }) => (
     <IconButton style={{ display: displayDEL }}
@@ -279,7 +283,7 @@ const JustificativaItem = () => {
   );
 
   const columns = [
-    { name: 'JSIT_DESCRICAO', title: `DESCRIÇÃO DA JUSTIFICATIVA DO ITEM`, required: true }
+    { name: 'JSIT_DESCRICAO', title: `Descrição *`, required: true }
   ]
 
   const [defaultColumnWidths] = useState([
@@ -295,6 +299,7 @@ const JustificativaItem = () => {
       JSIT_DESCRICAO: ""
     })),
   );
+
   const commitChanges = ({ added, changed, deleted }) => {
     let changedRows;
     if (added) {
@@ -309,10 +314,10 @@ const JustificativaItem = () => {
 
       for (let i = 0; i < changedRows.length; i++) {
         if (!(changedRows[i].ID_JUSTIFICATIVA_ITEM)) {
-          if (changedRows[i].JSIT_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Justificativa do Item");
+          if (validaJustificativaItem(changedRows[i])) {
+            cadastraJustificativaItem(changedRows[i]);
           } else {
-            cadastraJustificativaItem(changedRows[i])
+            // return;
           }
         }
       }
@@ -322,10 +327,10 @@ const JustificativaItem = () => {
       changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
       for (let i = 0; i < rows.length; i++) {
         if (JSON.stringify(rows[i]) !== JSON.stringify(changedRows[i])) {
-          if (changedRows[i].JSIT_DESCRICAO === "") {
-            window.alert("Favor Preencher campo Descrição da Justificativa do Item");
+          if (validaJustificativaItem(changedRows[i])) {
+            cadastraJustificativaItem(changedRows[i]);
           } else {
-            cadastraJustificativaItem(changedRows[i])
+            // return;
           }
         }
       }
@@ -333,9 +338,8 @@ const JustificativaItem = () => {
 
     if (deleted) {
       const deletedSet = new Set(deleted);
-
-      let idJustificativa = parseInt(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
-      deletarJustificativaItem(idJustificativa);
+      changedRows = rows.filter(row => deletedSet.has(row.id));
+      deletarJustificativaItem(changedRows.map(l => l.ID_JUSTIFICATIVA_ITEM));
     }
 
     setRows(changedRows);

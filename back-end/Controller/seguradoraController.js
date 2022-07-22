@@ -253,10 +253,6 @@ router.post("/listarSeguradora", async (req, res) => {
       }
     }
   }
-
-
-
-
 });
 
 router.post("/excluirSeguradora", async (req, res) => {

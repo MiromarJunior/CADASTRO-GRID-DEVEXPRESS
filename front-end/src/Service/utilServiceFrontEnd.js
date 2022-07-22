@@ -316,8 +316,8 @@ export const validaGRID = (valor, val, changedRows, setRows, msg) => {
   //  }
 };
 
-export const validaDescricao = (descricao) =>{
-  if (descricao.length > 1){
+export const validaDescricao = (descricao) => {
+  if (descricao.length > 1) {
     return true;
   } else {
     window.alert('Favor Preencher o campo Descrição Corretamente');
@@ -348,14 +348,14 @@ export const criandoU = (n) => {
 };
 
 
-export const formatHrLeilao = (valor) =>{
-  
-    return valor.replace(",",":").replace(" ","");
-   
+export const formatHrLeilao = (valor) => {
+
+  return valor.replace(",", ":").replace(" ", "");
+
 }
 
-export const validaNull = (p1,p2) =>{
-  if (p1.length > 0){
+export const validaNull = (p1, p2) => {
+  if (p1.length > 0) {
     return true;
   } else {
     window.alert(p2);
@@ -363,88 +363,141 @@ export const validaNull = (p1,p2) =>{
   }
 }
 
-export const validaCampo = (valor,msg1,tam,msg2) =>{
+export const validaCampo = (valor, msg1, tam, msg2) => {
   //função criada para validar null e tamanho campo
   //valor = valor campo  
   //msg1  = msg para null 
   //tam   = tamanho do campo
   //msg2  = msg para o tamanho quantidade
 
-  if (valor.toString().length > 0 ){
-    if (valor.toString().length > tam){
+  if (valor.toString().length > 0) {
+    if (valor.toString().length > tam) {
       window.alert(msg2);
       return false;
     }
-    else{
+    else {
       return true;
-      }  
+    }
   } else {
     window.alert(msg1);
     return false;
   }
 }
 
-export const formataVirgPont = (valor)=>{
-  let v = Number(valor).toFixed(2);  
-  return v.toString().replace(".",",");
+export const formataVirgPont = (valor) => {
+  let v = Number(valor).toFixed(2);
+  return v.toString().replace(".", ",");
 }
 
-export const validaHrIni = (v1,v2,msg)=>{
-  if(v1 !=="00:00" && v2 === null){
+export const validaHrIni = (v1, v2, msg) => {
+  if (v1 !== "00:00" && v2 === null) {
     return true
-  } else if(v1 < v2){
-      return true
-    }  
-    else {
-      return false, window.alert(msg)
-  
-    }
-
+  } else if (v1 < v2) {
+    return true
+  }
+  else {
+    window.alert(msg)
+    return false
+    // gesner - window.alert estava a frente do return, separado por ',', dando erro na aplicacao
   }
 
-  export const validaCampoParam = (valor,msg1,tam,msg2) =>{
-    //função criada para validar null e tamanho campo
-    //valor = valor campo  
-    //msg1  = msg para null 
-    //tam   = tamanho do campo
-    //msg2  = msg para o tamanho quantidade
-      if(valor !== 0 && valor > 0 ){
-      if (valor.toString().length > 0  ){
+}
 
-        if (valor.toString().length > tam){
-          window.alert(msg2);
-          return false;
-        }
-        else{
-          return true;
-          }  
-      } else {
-        window.alert(msg1);
+export const validaCampoParam = (valor, msg1, tam, msg2) => {
+  //função criada para validar null e tamanho campo
+  //valor = valor campo  
+  //msg1  = msg para null 
+  //tam   = tamanho do campo
+  //msg2  = msg para o tamanho quantidade
+  if (valor !== 0 && valor > 0) {
+    if (valor.toString().length > 0) {
+
+      if (valor.toString().length > tam) {
+        window.alert(msg2);
         return false;
       }
-
+      else {
+        return true;
+      }
     } else {
       window.alert(msg1);
       return false;
     }
-   
+
+  } else {
+    window.alert(msg1);
+    return false;
   }
 
+}
 
 
-  export const validaTmIgm = (valor)=>{
-    const img = document.getElementById(valor);
-    const widthImg = img.clientWidth;
-    const heightImg = img.clientHeight;
-    if(valor === "logoApont"){
 
-    }else {
-      if(widthImg > 129 || heightImg > 100){
-        window.alert("Tamanho imagem inválido \n Tamanho máximo 128X100!" + widthImg +" // "+ heightImg )
-      }else{
-        window.alert("ok tamanho");
-      }
+export const validaTmIgm = (valor) => {
+  const img = document.getElementById(valor);
+  const widthImg = img.clientWidth;
+  const heightImg = img.clientHeight;
+  if (valor === "logoApont") {
+
+  } else {
+    if (widthImg > 129 || heightImg > 100) {
+      window.alert("Tamanho imagem inválido \n Tamanho máximo 128X100!" + widthImg + " // " + heightImg)
+    } else {
+      window.alert("ok tamanho");
     }
   }
-  
-  
+}
+
+export const validaCampoString = (campo, descricaoCampo, tamanhoMinCampo, tamanhoMaxCampo) => {
+  if (campo.length < tamanhoMinCampo) {
+    window.alert(`Tamanho do campo de ${descricaoCampo} inferior ao tamanho mínimo permitido.`);
+    return false;
+  } else if (campo.length > tamanhoMaxCampo) {
+    window.alert(`Tamanho do campo de ${descricaoCampo} superior ao tamanho máximo permitido`);
+    return false;
+  }
+
+  // fim do processo com as validacoes OK
+  return true;
+}
+
+export const validaJustificativaItem = (justificativaItem) => {
+  // console.log('validaJustificativaItem', justificativaItem);
+
+  if (!validaCampoString(justificativaItem.JSIT_DESCRICAO, 'Descrição da Região', 1, 64)) {
+    return false;
+  }
+
+  return true;
+}
+
+export const validaRegiao = (regiao) => {
+  // console.log('validaRegiao.regiao', regiao);
+
+  if (!validaCampoString(regiao.REGI_DESCRICAO, 'Descrição da Região', 2, 64)) {
+    return false;
+  }
+
+  return true;
+}
+
+export const validaMunicipio = (municipio) => {
+  // console.log('validaMunicipio.Municipio', municipio);
+
+  if (!validaCampoString(municipio.MUNI_DESCRICAO, 'Descrição do Município', 2, 64)) {
+    return false;
+  } else if (municipio.UNFE_SIGLA == '') {
+    window.alert('UF do Município não informada.');
+    return false;
+  } else if (municipio.MUNI_CODIGO == '') {
+    window.alert('Código do Município não informado.');
+    return false
+  } else if (apenasNr(municipio.MUNI_CODIGO) != municipio.MUNI_CODIGO){
+    window.alert('Favor, informar apenas número para o Código do Município.');
+    return false;
+  }
+
+  return true;
+}
+
+

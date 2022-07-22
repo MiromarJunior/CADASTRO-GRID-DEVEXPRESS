@@ -24,6 +24,7 @@ router.post("/listarJustificativaItem", async (req, res) => {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
+                return;
             } else {
                 result = await connection.execute(
                     ` 
@@ -71,6 +72,7 @@ router.post("/cadastrarJustificativaItem", async (req, res) => {
                     console.error(err, "err");
                     erroAcesso = "erroLogin";
                     res.send("erroLogin").end();
+                    return;
                 } else {
                     insertSql = (
                         ` INSERT INTO JUSTIFICATIVA_ITEM(ID_JUSTIFICATIVA_ITEM, JSIT_DESCRICAO)
@@ -143,6 +145,7 @@ router.post("/excluirJustificativaItem", async (req, res) => {
                 console.error(err, "err");
                 erroAcesso = "erroLogin";
                 res.send("erroLogin").end();
+                return;
             } else {
                 deleteSql = (
                     ` 
