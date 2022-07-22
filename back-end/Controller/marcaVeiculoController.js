@@ -7,15 +7,17 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const sharp = require("sharp");
 const dbConfig = require("../ConfigDB/configDB.js");
-const { apenasNr } = require("../Service/utilServiceBackEnd.js");
+const fs = require('fs');
 
 
 const app = express();
 app.use(express.json());
-const multer  = require('multer')
+const multer  = require('multer');
+
 const storage = multer.diskStorage({
   destination : (req,file,cb)=>{
     cb(null,'uploads/')
+    
   },
   filename : (req, file, cb)=>{
     cb(null,file.fieldname+".png")
@@ -31,13 +33,20 @@ const upload = multer({storage : storage});
 
 
 router.post("/listarMarcaVeiculo", async (req, res) => {
-  const { token
+  const { token, idMa
   } = req.body;
 
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let selectSql = "";
-
+  if(idMa > 0 ){
+    selectSql =
+    `
+        WHERE ID_MARCA_VEICULO = ${idMa}
+    `
+    ;
+  }
+  
   try {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
@@ -47,20 +56,39 @@ router.post("/listarMarcaVeiculo", async (req, res) => {
         res.send("erroLogin").end();
 
       } else {
+        oracledb.fetchAsBuffer = [ oracledb.BLOB ];
         result = await connection.execute(
           ` 
-          select * from MARCA_VEICULO
-      
+          SELECT * FROM MARCA_VEICULO  
+          ${selectSql}
+           
             
           `,
           [],
-          {
-            outFormat: oracledb.OUT_FORMAT_OBJECT,
-
-          }
+          {  outFormat : oracledb.OUT_FORMAT_OBJECT }
         );
+        const blob = result.rows;
+        let b64 = "";
+        const objetoExterno = (result.rows).map(
+         
+        ({ID_MARCA_VEICULO,MRVC_DESCRICAO,MRVC_POSICAO_LOGO_CHAT,MRVC_IMAGEM_LOGO,MRVC_IMAGEM_LOGO_APONTADOR, MRVC_IMAGEM_CHAT, MRVC_IMAGEM_CHAT_COLORIDO})=>
 
-        res.send(result.rows).status(200).end();
+        ({ID_MARCA_VEICULO,MRVC_DESCRICAO,
+          MRVC_POSICAO_LOGO_CHAT,
+          MRVC_IMAGEM_LOGO :(MRVC_IMAGEM_LOGO ? MRVC_IMAGEM_LOGO.toString("base64") : ""),
+          MRVC_IMAGEM_LOGO_APONTADOR : (MRVC_IMAGEM_LOGO_APONTADOR ? MRVC_IMAGEM_LOGO_APONTADOR.toString("base64") : ""),
+          MRVC_IMAGEM_CHAT : ( MRVC_IMAGEM_CHAT ?  MRVC_IMAGEM_CHAT.toString("base64") : "" ),
+          MRVC_IMAGEM_CHAT_COLORIDO : ( MRVC_IMAGEM_CHAT_COLORIDO ? MRVC_IMAGEM_CHAT_COLORIDO.toString("base64")  : "") 
+        }))
+        
+
+          //  result.rows.map((l)=>{
+          //  b64 = (l.MRVC_IMAGEM_LOGO).toString("base64");
+     
+        // })
+     
+
+       res.send(objetoExterno).status(200).end();
       }
     })
 
@@ -151,21 +179,31 @@ router.post("/excluirMarcaVeiculo", async (req, res) => {
 });
 router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat","imagemChatColor"),async (req, res) => {
  
-  const {
+  let {
     token, idMa, acessoGeral, descricao, posLogChat } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
+  let   logo   = "";
+  logoApont = "",
+       imagemChat = "",
+       imagemChatColor = "";
+    
 
- const fs = require('fs');
- let logo = "",
- logoApont = "",
- imagemChat = "",
- imagemChatColor = "";
- if(fs.existsSync("./uploads/logo.png")){  
+  // if(!fs.existsSync("./uploads/logo.png") ){
+  //   const buffer = Buffer.from(logoB, "base64");
+  //   fs.writeFileSync("uploads/logo.png", buffer);
+ 
+ 
+    
+  // }
+ 
+console.log(fs.existsSync("./uploads/logo.png"));
+
+ if(fs.existsSync("./uploads/logo.png") ){  
   await  sharp("./uploads/logo.png").clone()
   .resize({width : 120, height : 100})  
   .toFile("./uploads/logos.png");   
   if(fs.existsSync("./uploads/logos.png")){
-    logo = fs.readFileSync(`./uploads/logos.png`);
+  logo = fs.readFileSync(`./uploads/logos.png`) ;
   } 
 
  }
@@ -195,6 +233,10 @@ router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat",
   } 
  }
 
+
+
+
+
   if (acessoGeral) {
     try {
 
@@ -221,8 +263,7 @@ router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat",
               outFormat: oracledb.OUT_FORMAT_OBJECT,
               autoCommit: true
             });
-            res.send("sucessoU").status(200).end();
-            
+            res.send("sucessoU").status(200).end();        
             
 
           
@@ -256,10 +297,11 @@ router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat",
          
           }
           if(fs.existsSync("./uploads/logo.png")){
-            fs.unlinkSync('./uploads/logo.png');          
-            fs.unlinkSync('./uploads/logos.png');            
+            fs.unlinkSync('./uploads/logo.png');       
+            fs.unlinkSync('./uploads/logos.png');        
+                   
            }
-          
+                     
            if(fs.existsSync("./uploads/logoApont.png")){
             fs.unlinkSync('./uploads/logoApont.png');
             fs.unlinkSync('./uploads/logoAponts.png');
@@ -308,3 +350,26 @@ router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat",
 
 
 module.exports = router;
+
+
+/*
+
+  // var oMyBlob = new Blob(blob, {type : 'image'}); 
+     //   let b64 = blob.toString("base64");
+      //  console.log(b64);
+       // fs.writeSync(b64,`./uploads/arquivo.png`)
+       // fs.writeSync("logo.png",blob) ;
+        // (result.rows).map((l)=>{
+        //   console.log(l);
+        //   fs.writeSync(l,`./uploads/arquivo.png`) 
+
+        // })
+        // (result.rows).map((l)=>{
+        //  fs.writeSync(l.MRVC_IMAGEM_LOGO,`./uploads/arquivo.png`) 
+        // })
+      // const blob = result.rows[0][0];
+      // console.log(blob.toString());
+      // fs.writeFileSync(blob,`./uploads/arquivo.png`) 
+
+
+*/

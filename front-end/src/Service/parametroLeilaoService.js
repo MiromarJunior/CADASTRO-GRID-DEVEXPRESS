@@ -24,7 +24,21 @@ export const deleteParametroLeilao = (data)=>{
 export const getSegParametroLeilao = (data)=>{
   return axios.post(`${baseURL}listarSeguradorParamLeilao`,data);
  
-} 
+}
+
+export const saveHoraLeilao = (data)=>{
+  return axios.post(`${baseURL}cadastrarHoraLeilao`,data);
+ 
+}
+
+export const getAcrescimoHoraLeilao = (data)=>{
+  return axios.post(`${baseURL}listarAcrescimoHoraLeilao`,data);
+ 
+}
+
+
+
+
 
 
 

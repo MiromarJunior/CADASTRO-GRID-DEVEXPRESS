@@ -13,7 +13,7 @@ const getMarcaVeiculo = data=>{
 }
 
 const deleteMarcaVeiculo = data=>{
-    return axios.post(`${baseURL}excluirMarcaVeiculo`,data);
+    return axios.post(`${baseURL}excluirMarcaVeiculo`,data );
 } 
 
 const saveMarcaVeiculo = data=>{    

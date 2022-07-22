@@ -312,10 +312,10 @@ router.post("/listarSeguradorParamLeilao", async (req, res) => {
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let selectSql = "";
-  if(idPar){
+  if (idPar) {
 
-    selectSql  = 
-    `
+    selectSql =
+      `
     SELECT SG.* FROM SEGURADORA SG
     WHERE SG.ID_SEGURADORA = 
     (SELECT PL.ID_SEGURADORA FROM PARAMETROS_LEILAO PL
@@ -323,7 +323,7 @@ router.post("/listarSeguradorParamLeilao", async (req, res) => {
     UNION
 
     `
-    ;
+      ;
   }
 
   try {
@@ -355,6 +355,163 @@ router.post("/listarSeguradorParamLeilao", async (req, res) => {
 
   } catch (error) {
     console.error("erro ao listar params seguradora", error);
+    res.send("erroSalvar").status(500);
+
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+
+
+
+});
+
+router.post("/cadastrarHoraLeilao", async (req, res) => {
+  let {
+    token, acessoGeral, periodoPadrao, periodoAdicional, acrescimo, estado, idH
+  } = req.body;
+  let insertPeriodo;
+  let insertAcrescimo;
+
+  let connection = await oracledb.getConnection(dbConfig);
+  if (acessoGeral) {
+
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+      } else {
+        insertPeriodo = (
+
+          ` INSERT INTO HORARIO_LEILAO(ID_HORARIO_LEILAO,
+            HOLE_HORARIO_PADRAO,
+            HOLE_PERIODO_ADICIONAL) 
+            VALUES(SEQ_HOLE.nextval, '${periodoPadrao}', '${periodoAdicional}')
+                
+            
+          `
+        )
+
+        insertAcrescimo = (
+
+          ` INSERT INTO HORARIO_LEILAO_UF(ID_HORARIO_LEILAO_UF,
+            HLUF_PERIODO_ACRESCIMO,
+            ID_UNIDADE_FEDERATIVA)
+            VALUES(SEQ_HLUF.nextval, '${acrescimo}', '${estado}') 
+        `
+        )
+
+      }
+    });
+
+    try {
+
+
+      if (idH > 0) {
+        await connection.execute(
+          updateSql
+          , [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+          });
+        res.send("sucessoU").status(200).end();
+
+      } else {
+
+        await connection.execute(
+          insertPeriodo
+          , [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+          });
+
+        await connection.execute(
+          insertAcrescimo
+          , [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+            autoCommit: true
+          });
+        res.send("sucesso").status(200).end();
+      }
+    } catch (error) {
+
+      console.error("erro ao cadastrar horas do Leilão", error);
+      res.send("erroSalvar").status(500);
+
+    } finally {
+      if (connection) {
+        try {
+          await connection.close();
+
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+  } else {
+    res.send("semAcesso").status(200).end();
+  }
+
+
+});
+
+router.post("/listarAcrescimoHoraLeilao", async (req, res) => {
+  const { token
+  } = req.body;
+
+  let connection = await oracledb.getConnection(dbConfig);
+  let result;
+  let selectSql = "";
+  
+  try {
+
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        console.error(err, "err");
+        erroAcesso = "erroLogin";
+        res.send("erroLogin").end();
+
+      } else {
+        result = await connection.execute(
+          ` 
+          SELECT HU.ID_HORARIO_LEILAO_UF,
+          TO_CHAR(HU.HLUF_PERIODO_ACRESCIMO,'00,00') AS ACRESCIMO,  
+          HU.HLUF_PERIODO_ACRESCIMO,
+          HU.ID_UNIDADE_FEDERATIVA,UF.UNFE_SIGLA,
+          UF.UNFE_DESCRICAO,
+          UF.ID_REGIAO FROM HORARIO_LEILAO_UF HU , UNIDADE_FEDERATIVA UF 
+          WHERE HU.ID_UNIDADE_FEDERATIVA = UF.ID_UNIDADE_FEDERATIVA
+
+          
+          
+            
+          `,
+          [],
+          {
+            outFormat: oracledb.OUT_FORMAT_OBJECT,
+
+          }
+        );
+
+        res.send(result.rows).status(200).end();
+      }
+    })
+
+  } catch (error) {
+    console.error("erro ao listar acrescimos por estado", error);
     res.send("erroSalvar").status(500);
 
   } finally {

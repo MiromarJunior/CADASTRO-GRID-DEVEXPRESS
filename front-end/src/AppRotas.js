@@ -33,6 +33,7 @@ import CadastroReguladora from "./Pages/Reguladora/CadastroReguladora";
 import ListarReguladora from "./Pages/Reguladora/ListarReguladora";
 import CadastroSucursal from "./Pages/Sucursal/CadastroSucursal";
 import ListarSucursal from "./Pages/Sucursal/ListarSucursal";
+import HorasLeilao from "./Pages/Leilao/HorasLeilao";
 
 const { BrowserRouter, Routes, Route, Navigate } = require("react-router-dom");
 
@@ -83,6 +84,8 @@ const AppRotas = () => {
           <Route exact path="/cadastroReguladora/:idReguladora" element={<Private> <CadastroReguladora /> </Private>} />
           <Route exact path="/listarSucursal" element={ <Private><ListarSucursal /></Private> } />
           <Route exact path="/cadastroSucursal/:idSucursal" element={<Private> <CadastroSucursal /> </Private>} />
+          <Route exact path="/horasLeilao/" element={<Private> <HorasLeilao /> </Private>} />
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>
