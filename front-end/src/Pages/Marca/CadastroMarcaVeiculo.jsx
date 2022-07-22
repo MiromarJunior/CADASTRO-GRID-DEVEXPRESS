@@ -1,8 +1,9 @@
 import { Box, TextField } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../Autenticação/validacao";
-import { deleteMarcaVeiculo, saveMarcaVeiculo } from "../../Service/marcaVeiculoService";
+import { deleteMarcaVeiculo, getMarcaVeiculo, saveMarcaVeiculo } from "../../Service/marcaVeiculoService";
+import { getAcessoUserMenu } from "../../Service/usuarioService";
 import { validaTmIgm } from "../../Service/utilServiceFrontEnd";
 
 
@@ -18,13 +19,51 @@ const CadastroMarcaVeiculo = () => {
     const [logoApont, setLogoApont] = useState();
     const [imagemChat, setImagemChat] = useState();
     const [imagemChatColor, setImagemChatColor] = useState();
+    const [logoB, setLogoB] = useState("");
+    const [logoApontB, setLogoApontB] = useState("");
+    const [imagemChatB, setImagemChatB] = useState("");
+    const [imagemChatColorB, setImagemChatColorB] = useState("");
     const navigate = useNavigate();
 
- 
+    useEffect(() => {
+        const acessoMenuUser = async () => {
+          let dados = { token, usuario: nomeUser() };
+          await getAcessoUserMenu(dados)
+            .then((res) => {
+              if (res.data === "erroLogin") {
+                window.alert("Sessão expirada, Favor efetuar um novo login !!");
+                logout();
+                window.location.reload();
+              }
+              else if (res.data === "semAcesso") {
+                window.alert("Usuário sem permissão !!!");
+              } else {
+                (res.data).forEach((ac) => {
+                  if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                    setAcessogeral(true);
+                 
+                    listarMarcaVeiculo();
+                  
     
-    const cadastrarMarcaVeiculo = () => {      
-        const dados = { descricao, posLogChat, logo , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
+                  }
+    
+                })
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              window.alert("Erro ao buscar Usuário - Parametro leilão !!")
+            })
+        }
+        acessoMenuUser();
         
+        //eslint-disable-next-line
+      }, [logout, token, nomeUser]);
+
+    const cadastrarMarcaVeiculo = () => {    
+       
+        const dados = { descricao, posLogChat,logo , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
+        console.log(dados);
         
         saveMarcaVeiculo(dados)
             .then((res) => {
@@ -47,6 +86,7 @@ const CadastroMarcaVeiculo = () => {
                 }
                 else if (res.data === "sucessoU") {
                     alert("Marca veiculo alterada com sucesso.");
+                    listarMarcaVeiculo();
                 }
                 else {
                     alert("Erro ao tentar cadastrar marca veiculo!!!")
@@ -62,6 +102,47 @@ const CadastroMarcaVeiculo = () => {
             })
 
     }
+
+
+    const listarMarcaVeiculo = async () => {
+
+        let dados = { token, idMa };
+        await getMarcaVeiculo(dados)
+            .then((res) => {
+                if (res.data === "erroLogin") {
+                    alert("Sessão expirada, Favor efetuar um novo login !!");
+                    logout();
+                    window.location.reload();
+                }
+                else if (res.data === "semAcesso") {
+                    alert("Usuário sem permissão !!!");
+                    navigate("/home");
+
+                } else if (res.data === "campoNulo") {
+                    alert("Preencha todos os Campos obrigatorios!!!");
+                }
+                else if (res.data === "erroSalvar") {
+                    alert("Erro ao tentar listar marcas!!!");
+                 }
+                else {                      
+                    (res.data).forEach((l)=>{
+                        setDescricao(l.MRVC_DESCRICAO);
+                        setPosLogChat(l.MRVC_POSICAO_LOGO_CHAT);
+                        setLogo(l.MRVC_IMAGEM_LOGO);
+                     //   setLogoB(l.MRVC_IMAGEM_LOGO);
+                        setLogoApont(l.MRVC_IMAGEM_LOGO_APONTADOR);
+                        setImagemChat(l.MRVC_IMAGEM_CHAT);
+                        setImagemChatColor(l.MRVC_IMAGEM_CHAT_COLORIDO);
+                    })
+                }
+            })
+            .catch((res) => {
+                return console.error(res);
+            })
+    };
+
+
+
    
     return (
         <div className="container-fluid centralizar" >
@@ -74,21 +155,27 @@ const CadastroMarcaVeiculo = () => {
                 }}
                 noValidate
                 autoComplete="off"
-            >
+            >   
                 <TextField required label="Código Marca" disabled={true} id="" value={codigoMarca} type={"number"} /><br />
                 <TextField required label="Descrição" error={descricao ? false : true} disabled={!acessoGeral} id="" value={descricao} onChange={(e) => setDescricao(e.target.value)} type={"text"} /><br />
                 <TextField required label="Posição Logo Chat" error={posLogChat ? false : true} disabled={!acessoGeral} id="" value={posLogChat} onChange={(e) => setPosLogChat(e.target.value)} type={"number"} /><br />
               
-             
-                <TextField name="logo" inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="logo"  onChange={(e) => setLogo(e.target.files[0])} type={"file"} InputLabelProps={{
+                <img src={`data:image/png;base64,${logo}`} alt=""/>               
+                <TextField name= {typeof(logo) ==="object" ? "logo" : ""}  inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="logo"  onChange={(e) => setLogo( e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true
                 }} style={{ minWidth: '25em' }} /><br />
+               
+               <img src={`data:image/png;base64,${logoApont}`} alt=""/>
                 <TextField name="logoApont" inputProps={{ accept :"image/*"}} required label="Imagem Logo Apontador" error={logoApont ? false : true} disabled={!acessoGeral} id="" onChange={(e) => setLogoApont(e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true 
                 }} style={{ minWidth: '25em' }} /><br />
+                
+                 <img src={`data:image/png;base64,${imagemChat}`} alt=""/>
                 <TextField name="imagemChat" inputProps={{ accept :"image/*"}} required label="Imagem Chat" error={imagemChat ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setImagemChat(e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true,
                 }} style={{ minWidth: '25em' }} /><br />
+                
+                <img src={`data:image/png;base64,${imagemChatColor}`} alt=""/>
                 <TextField name="imagemChatColor" inputProps={{ accept :"image/*"}}  required label="Imagem Chat Colorido" error={imagemChatColor ? false : true} disabled={!acessoGeral} id=""  onChange={(e) => setImagemChatColor(e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true,
                 }} style={{ minWidth: '25em' }} />
