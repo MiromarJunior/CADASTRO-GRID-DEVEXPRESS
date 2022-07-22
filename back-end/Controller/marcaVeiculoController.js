@@ -12,22 +12,25 @@ const fs = require('fs');
 
 const app = express();
 app.use(express.json());
-const multer  = require('multer');
+const multer = require('multer');
+const { storage } = require("../Service/multerConfig.js");
 
-const storage = multer.diskStorage({
-  destination : (req,file,cb)=>{
-    cb(null,'uploads/')
-    
-  },
-  filename : (req, file, cb)=>{
-    cb(null,file.fieldname+".png")
-  },
-  limits: {
-    fileSize: 10
-  },
+// const upload = multer({ dest: 'uploads/' })
 
-});
-const upload = multer({storage : storage});
+// const storage = multer.diskStorage({
+//   destination : (req,file,cb)=>{
+//     cb(null,'uploads/')
+
+//   },
+//   filename : (req, file, cb)=>{
+//     cb(null,"logo"+".png")
+//   },
+
+
+// });
+const upload = multer({ storage: storage });
+
+
 // let connection = await oracledb.getConnection(dbConfig);
 //await connection.execute(`alter session set nls_date_format = 'DD/MM/YYYY hh24:mi:ss'`); 
 
@@ -39,14 +42,14 @@ router.post("/listarMarcaVeiculo", async (req, res) => {
   let connection = await oracledb.getConnection(dbConfig);
   let result;
   let selectSql = "";
-  if(idMa > 0 ){
+  if (idMa > 0) {
     selectSql =
-    `
+      `
         WHERE ID_MARCA_VEICULO = ${idMa}
     `
-    ;
+      ;
   }
-  
+
   try {
 
     jwt.verify(token, SECRET, async (err, decoded) => {
@@ -56,7 +59,7 @@ router.post("/listarMarcaVeiculo", async (req, res) => {
         res.send("erroLogin").end();
 
       } else {
-        oracledb.fetchAsBuffer = [ oracledb.BLOB ];
+        oracledb.fetchAsBuffer = [oracledb.BLOB];
         result = await connection.execute(
           ` 
           SELECT * FROM MARCA_VEICULO  
@@ -65,30 +68,31 @@ router.post("/listarMarcaVeiculo", async (req, res) => {
             
           `,
           [],
-          {  outFormat : oracledb.OUT_FORMAT_OBJECT }
+          { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
         const blob = result.rows;
         let b64 = "";
         const objetoExterno = (result.rows).map(
-         
-        ({ID_MARCA_VEICULO,MRVC_DESCRICAO,MRVC_POSICAO_LOGO_CHAT,MRVC_IMAGEM_LOGO,MRVC_IMAGEM_LOGO_APONTADOR, MRVC_IMAGEM_CHAT, MRVC_IMAGEM_CHAT_COLORIDO})=>
 
-        ({ID_MARCA_VEICULO,MRVC_DESCRICAO,
-          MRVC_POSICAO_LOGO_CHAT,
-          MRVC_IMAGEM_LOGO :(MRVC_IMAGEM_LOGO ? MRVC_IMAGEM_LOGO.toString("base64") : ""),
-          MRVC_IMAGEM_LOGO_APONTADOR : (MRVC_IMAGEM_LOGO_APONTADOR ? MRVC_IMAGEM_LOGO_APONTADOR.toString("base64") : ""),
-          MRVC_IMAGEM_CHAT : ( MRVC_IMAGEM_CHAT ?  MRVC_IMAGEM_CHAT.toString("base64") : "" ),
-          MRVC_IMAGEM_CHAT_COLORIDO : ( MRVC_IMAGEM_CHAT_COLORIDO ? MRVC_IMAGEM_CHAT_COLORIDO.toString("base64")  : "") 
-        }))
-        
+          ({ ID_MARCA_VEICULO, MRVC_DESCRICAO, MRVC_POSICAO_LOGO_CHAT, MRVC_IMAGEM_LOGO, MRVC_IMAGEM_LOGO_APONTADOR, MRVC_IMAGEM_CHAT, MRVC_IMAGEM_CHAT_COLORIDO }) =>
 
-          //  result.rows.map((l)=>{
-          //  b64 = (l.MRVC_IMAGEM_LOGO).toString("base64");
-     
+          ({
+            ID_MARCA_VEICULO, MRVC_DESCRICAO,
+            MRVC_POSICAO_LOGO_CHAT,
+            MRVC_IMAGEM_LOGO: (MRVC_IMAGEM_LOGO ? MRVC_IMAGEM_LOGO.toString("base64") : ""),
+            MRVC_IMAGEM_LOGO_APONTADOR: (MRVC_IMAGEM_LOGO_APONTADOR ? MRVC_IMAGEM_LOGO_APONTADOR.toString("base64") : ""),
+            MRVC_IMAGEM_CHAT: (MRVC_IMAGEM_CHAT ? MRVC_IMAGEM_CHAT.toString("base64") : ""),
+            MRVC_IMAGEM_CHAT_COLORIDO: (MRVC_IMAGEM_CHAT_COLORIDO ? MRVC_IMAGEM_CHAT_COLORIDO.toString("base64") : "")
+          }))
+
+
+        //  result.rows.map((l)=>{
+        //  b64 = (l.MRVC_IMAGEM_LOGO).toString("base64");
+
         // })
-     
 
-       res.send(objetoExterno).status(200).end();
+
+        res.send(objetoExterno).status(200).end();
       }
     })
 
@@ -177,61 +181,57 @@ router.post("/excluirMarcaVeiculo", async (req, res) => {
 
 
 });
-router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat","imagemChatColor"),async (req, res) => {
- 
+const cpUpload = upload.fields([{ name: "logo", maxCount: 1 }
+  , { name: "logoApont", fieldName: "logoApont", maxCount: 1 },
+{ name: "imagemChat", maxCount: 1 }
+  , { name: "imagemChatColor", maxCount: 1 }])
+router.post("/cadastrarMarcaVeiculo", cpUpload, async (req, res) => {
+  //router.post("/cadastrarMarcaVeiculo",upload.any("logo","logoApont","imagemChat","imagemChatColor"),async (req, res) => {
   let {
-    token, idMa, acessoGeral, descricao, posLogChat } = req.body;
+    token, idMa, acessoGeral, descricao, posLogChat, logoB } = req.body;
   let connection = await oracledb.getConnection(dbConfig);
-  let   logo   = "";
-  logoApont = "",
-       imagemChat = "",
-       imagemChatColor = "";
-    
+  let logoApont = "",
+    imagemChat = "",
+    imagemChatColor = "",
+    logo = "";
 
-  // if(!fs.existsSync("./uploads/logo.png") ){
-  //   const buffer = Buffer.from(logoB, "base64");
-  //   fs.writeFileSync("uploads/logo.png", buffer);
- 
- 
-    
-  // }
- 
-console.log(fs.existsSync("./uploads/logo.png"));
+  if (!(fs.existsSync("./uploads/logo.png"))) {
+    const buffer = Buffer.from(logoB, "base64");
+    fs.writeFileSync("uploads/logo.png", buffer);
+  }
 
- if(fs.existsSync("./uploads/logo.png") ){  
-  await  sharp("./uploads/logo.png").clone()
-  .resize({width : 120, height : 100})  
-  .toFile("./uploads/logos.png");   
-  if(fs.existsSync("./uploads/logos.png")){
-  logo = fs.readFileSync(`./uploads/logos.png`) ;
-  } 
+  if (fs.existsSync("./uploads/logo.png")) {
+    logo = fs.readFileSync("./uploads/logo.png");
+  }
 
- }
- if(fs.existsSync("./uploads/logoApont.png")){
-   await  sharp("./uploads/logoApont.png").clone()
-  .resize({width : 48, height : 48})  
-  .toFile("./uploads/logoAponts.png");   
-  if(fs.existsSync("./uploads/logoAponts.png")){
-    logoApont = fs.readFileSync(`./uploads/logoAponts.png`);
-  } 
- }
- if(fs.existsSync("./uploads/imagemChat.png")){
-  
-  await  sharp("./uploads/imagemChat.png").clone()
-  .resize({width : 120, height : 100})  
-  .toFile("./uploads/imagemChats.png");   
-  if(fs.existsSync("./uploads/imagemChats.png")){
-    imagemChat = fs.readFileSync(`./uploads/imagemChats.png`);
-  } 
- }
- if(fs.existsSync("./uploads/imagemChatColor.png")){  
-  await  sharp("./uploads/imagemChatColor.png").clone()
-  .resize({width : 120, height : 100})  
-  .toFile("./uploads/imagemChatColors.png");   
-  if(fs.existsSync("./uploads/imagemChatColors.png")){
-    imagemChatColor = fs.readFileSync(`./uploads/imagemChatColors.png`);
-  } 
- }
+
+
+
+  if (fs.existsSync("./uploads/logoApont.png")) {
+    await sharp("./uploads/logoApont.png").clone()
+      .resize({ width: 48, height: 48 })
+      .toFile("./uploads/logoAponts.png");
+    if (fs.existsSync("./uploads/logoAponts.png")) {
+      logoApont = fs.readFileSync(`./uploads/logoAponts.png`);
+    }
+  }
+  if (fs.existsSync("./uploads/imagemChat.png")) {
+
+    await sharp("./uploads/imagemChat.png").clone()
+      .resize({ width: 120, height: 100 })
+      .toFile("./uploads/imagemChats.png");
+    if (fs.existsSync("./uploads/imagemChats.png")) {
+      imagemChat = fs.readFileSync(`./uploads/imagemChats.png`);
+    }
+  }
+  if (fs.existsSync("./uploads/imagemChatColor.png")) {
+    await sharp("./uploads/imagemChatColor.png").clone()
+      .resize({ width: 120, height: 100 })
+      .toFile("./uploads/imagemChatColors.png");
+    if (fs.existsSync("./uploads/imagemChatColors.png")) {
+      imagemChatColor = fs.readFileSync(`./uploads/imagemChatColors.png`);
+    }
+  }
 
 
 
@@ -249,7 +249,8 @@ console.log(fs.existsSync("./uploads/logo.png"));
         } else {
 
           if (idMa > 0) {
-          let resultUP =  await connection.execute(`
+
+            let resultUP = await connection.execute(`
                 UPDATE  MARCA_VEICULO
                  SET  MRVC_DESCRICAO = :DES,
                  MRVC_POSICAO_LOGO_CHAT = :PSCH,
@@ -259,15 +260,19 @@ console.log(fs.existsSync("./uploads/logo.png"));
                  MRVC_IMAGEM_CHAT_COLORIDO = : IMGCHCL                                 
                  WHERE ID_MARCA_VEICULO = '${idMa}'                
                 `
-              , [descricao,posLogChat,logo,logoApont,imagemChat,imagemChatColor], {
+              , [descricao, posLogChat, logo, logoApont, imagemChat, imagemChatColor], {
               outFormat: oracledb.OUT_FORMAT_OBJECT,
               autoCommit: true
             });
-            res.send("sucessoU").status(200).end();        
-            
 
-          
-                  
+            res.send("sucessoU").status(200).end();
+            // if(fs.existsSync("./uploads/logoS.png")){
+            // fs.unlinkSync('./uploads/logos.png');   
+            // }    
+
+
+
+
 
           } else {
             await connection.execute(
@@ -287,43 +292,53 @@ console.log(fs.existsSync("./uploads/logo.png"));
               )           
               
               `,
-              [descricao,posLogChat,logo,logoApont,imagemChat,imagemChatColor],
+              [descricao, posLogChat, logo, logoApont, imagemChat, imagemChatColor],
               {
                 outFormat: oracledb.OUT_FORMAT_OBJECT,
                 autoCommit: true
               });
-            res.send("sucesso").status(200).end();      
+            res.send("sucesso").status(200).end();
 
-         
           }
-          if(fs.existsSync("./uploads/logo.png")){
-            fs.unlinkSync('./uploads/logo.png');       
-            fs.unlinkSync('./uploads/logos.png');        
-                   
-           }
-                     
-           if(fs.existsSync("./uploads/logoApont.png")){
-            fs.unlinkSync('./uploads/logoApont.png');
-            fs.unlinkSync('./uploads/logoAponts.png');
-         
-           }
-           if(fs.existsSync("./uploads/imagemChat.png")){
-            fs.unlinkSync('./uploads/imagemChat.png');     
-            fs.unlinkSync('./uploads/imagemChats.png');       
-           }
-           if(fs.existsSync("./uploads/imagemChatColor.png")){
-            fs.unlinkSync('./uploads/imagemChatColor.png');
-            fs.unlinkSync('./uploads/imagemChatColors.png');
-           }  
-          
-          
- 
+          // fs.unlinkSync('./uploads/logo.png');       
+
+
+          if (fs.existsSync("./uploads/logo.png")) {
+            fs.unlinkSync('./uploads/logo.png');
+
+
+
+          }
+
+          // if(fs.existsSync("./uploads/logo.png")){
+          //   fs.unlinkSync('./uploads/logo.png');       
+          //   fs.unlinkSync('./uploads/logos.png');        
+
+          //  }
+
+          //  if(fs.existsSync("./uploads/logoApont.png")){
+
+          //   fs.unlinkSync('./uploads/logoApont.png');
+          //   fs.unlinkSync('./uploads/logoAponts.png');
+
+          //  }
+          //  if(fs.existsSync("./uploads/imagemChat.png")){
+          //   fs.unlinkSync('./uploads/imagemChat.png');     
+          //   fs.unlinkSync('./uploads/imagemChats.png');       
+          //  }
+          //  if(fs.existsSync("./uploads/imagemChatColor.png")){
+          //   fs.unlinkSync('./uploads/imagemChatColor.png');
+          //   fs.unlinkSync('./uploads/imagemChatColors.png');
+          //  }  
+
+
+
 
 
 
         }
       })
-      
+
 
     } catch (error) {
       console.error(error, 'Erro ao tentar cadastrar marca de veiculo.');

@@ -401,6 +401,29 @@ const HomePage = () => {
           >
             <TreeItem nodeId="CADG" label="CADASTROS GERAIS">
               <TreeItem nodeId="BAS" label="BÁSICO">
+
+              <ListItem disablePadding>
+                  <ListItemButton onClick={() => municipios()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Municipios"} />
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding style={{ display: displayAcessoReg }} >
+                  <ListItemButton onClick={() => regiao()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Regiao"} />
+                  </ListItemButton>
+                </ListItem>
+
+
+
+
+
                 <ListItem disablePadding style={{ display: displayAcessoSGRA }}>
                   <ListItemButton onClick={() => listarSeguradoras()}>
                     <ListItemIcon>
@@ -442,6 +465,16 @@ const HomePage = () => {
                   </ListItemIcon>
                   <ListItemText primary={"Marca Veículo"} />
                 </ListItemButton>
+
+
+                <ListItem disablePadding style={{ display: displayAcessoJust }} >
+                  <ListItemButton onClick={() => jstificativaItem()}>
+                    <ListItemIcon>
+                      <HdrAutoIcon style={{ color: "green" }} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Justificativa do Item"} />
+                  </ListItemButton>
+                </ListItem>
 
                 <ListItem disablePadding style={{ display: displayAcessoParamLe }}>
                   <ListItemButton onClick={() => parametrosDeLeilao()}>
@@ -546,36 +579,7 @@ const HomePage = () => {
 
 
 
-              <TreeItem nodeId="Gesner" label="Gesner">
-
-                <ListItem disablePadding style={{ display: displayAcessoJust }} >
-                  <ListItemButton onClick={() => jstificativaItem()}>
-                    <ListItemIcon>
-                      <HdrAutoIcon style={{ color: "green" }} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Justificativa do Item"} />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding>
-                  <ListItemButton onClick={() => municipios()}>
-                    <ListItemIcon>
-                      <HdrAutoIcon style={{ color: "green" }} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Municipios"} />
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem disablePadding style={{ display: displayAcessoReg }} >
-                  <ListItemButton onClick={() => regiao()}>
-                    <ListItemIcon>
-                      <HdrAutoIcon style={{ color: "green" }} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Regiao"} />
-                  </ListItemButton>
-                </ListItem>
-
-              </TreeItem>
+            
 
             </TreeItem>
           </TreeView>

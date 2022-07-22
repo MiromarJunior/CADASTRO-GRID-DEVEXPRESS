@@ -15,10 +15,10 @@ const CadastroMarcaVeiculo = () => {
     const [codigoMarca, setCodigoMarca] = useState(idMa);
     const [descricao, setDescricao] = useState('');
     const [posLogChat, setPosLogChat] = useState('');
-    const [logo, setLogo] = useState();
-    const [logoApont, setLogoApont] = useState();
-    const [imagemChat, setImagemChat] = useState();
-    const [imagemChatColor, setImagemChatColor] = useState();
+    const [logo, setLogo] = useState("");
+    const [logoApont, setLogoApont] = useState("");
+    const [imagemChat, setImagemChat] = useState("");
+    const [imagemChatColor, setImagemChatColor] = useState("");
     const [logoB, setLogoB] = useState("");
     const [logoApontB, setLogoApontB] = useState("");
     const [imagemChatB, setImagemChatB] = useState("");
@@ -41,8 +41,10 @@ const CadastroMarcaVeiculo = () => {
                 (res.data).forEach((ac) => {
                   if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
                     setAcessogeral(true);
-                 
-                    listarMarcaVeiculo();
+                    if(idMa > 0){
+                        listarMarcaVeiculo();
+                    }
+                      
                   
     
                   }
@@ -60,11 +62,10 @@ const CadastroMarcaVeiculo = () => {
         //eslint-disable-next-line
       }, [logout, token, nomeUser]);
 
-    const cadastrarMarcaVeiculo = () => {    
+    const cadastrarMarcaVeiculo = () => {  
        
-        const dados = { descricao, posLogChat,logo , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
-        console.log(dados);
-        
+        const dados = { descricao, posLogChat,logo ,logoB , logoApont, imagemChat, imagemChatColor, idMa, acessoGeral, token }
+         
         saveMarcaVeiculo(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -91,10 +92,6 @@ const CadastroMarcaVeiculo = () => {
                 else {
                     alert("Erro ao tentar cadastrar marca veiculo!!!")
                 }
-
-
-
-
 
             }).catch((erro) => {
                 window.alert("Erro ao tentar cadastrar");
@@ -128,8 +125,8 @@ const CadastroMarcaVeiculo = () => {
                     (res.data).forEach((l)=>{
                         setDescricao(l.MRVC_DESCRICAO);
                         setPosLogChat(l.MRVC_POSICAO_LOGO_CHAT);
-                        setLogo(l.MRVC_IMAGEM_LOGO);
-                     //   setLogoB(l.MRVC_IMAGEM_LOGO);
+                     //   setLogo(l.MRVC_IMAGEM_LOGO);
+                        setLogoB(l.MRVC_IMAGEM_LOGO);
                         setLogoApont(l.MRVC_IMAGEM_LOGO_APONTADOR);
                         setImagemChat(l.MRVC_IMAGEM_CHAT);
                         setImagemChatColor(l.MRVC_IMAGEM_CHAT_COLORIDO);
@@ -156,12 +153,12 @@ const CadastroMarcaVeiculo = () => {
                 noValidate
                 autoComplete="off"
             >   
-                <TextField required label="Código Marca" disabled={true} id="" value={codigoMarca} type={"number"} /><br />
-                <TextField required label="Descrição" error={descricao ? false : true} disabled={!acessoGeral} id="" value={descricao} onChange={(e) => setDescricao(e.target.value)} type={"text"} /><br />
-                <TextField required label="Posição Logo Chat" error={posLogChat ? false : true} disabled={!acessoGeral} id="" value={posLogChat} onChange={(e) => setPosLogChat(e.target.value)} type={"number"} /><br />
+                <TextField required label="Código Marca" disabled={true} id="" value={codigoMarca ? codigoMarca : ""} type={"number"} /><br />
+                <TextField required label="Descrição" error={descricao ? false : true} disabled={!acessoGeral} id="" value={descricao ? descricao: ""} onChange={(e) => setDescricao(e.target.value)} type={"text"} /><br />
+                <TextField required label="Posição Logo Chat" error={posLogChat ? false : true} disabled={!acessoGeral} id="" value={ posLogChat ? posLogChat: ""} onChange={(e) => setPosLogChat(e.target.value)} type={"number"} /><br />
               
-                <img src={`data:image/png;base64,${logo}`} alt=""/>               
-                <TextField name= {typeof(logo) ==="object" ? "logo" : ""}  inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="logo"  onChange={(e) => setLogo( e.target.files[0])} type={"file"} InputLabelProps={{
+                <img src={`data:image/png;base64,${logoB}`} style={{ maxWidth : "128px", maxHeight:"100px"}} alt=""/>               
+                <TextField name= {"logo"}  inputProps={{ accept :"image/*"}} required label="Imagem Logo" error={logo ? false : true} disabled={!acessoGeral} id="logo"  onChange={(e) => setLogo( e.target.files[0])} type={"file"} InputLabelProps={{
                     shrink: true
                 }} style={{ minWidth: '25em' }} /><br />
                
