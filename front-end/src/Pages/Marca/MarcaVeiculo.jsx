@@ -22,22 +22,7 @@ import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAcessoUserMenu } from "../../Service/usuarioService";
 import { deleteMarcaVeiculo, getMarcaVeiculo } from "../../Service/marcaVeiculoService";
-import { TextField } from "@mui/material";
-
-
-
-// const TableComponent = ({ ...restProps }) => (
-//     <Table.Table
-//         {...restProps}
-//     />
-// );
-
-
-
-
-
-
-
+import { validaV } from "../Home";
 
 
 
@@ -49,14 +34,44 @@ const MarcaVeiculo = () => {
     const { logout, nomeUser } = useContext(AuthContext);
     let token = localStorage.getItem("token");
     const [acessoGeral, setAcessoGeral] = useState(false);
-    const [acessoDEL, setAcessoDEL] = useState(false);
-    const [acessoADD, setAcessoADD] = useState(false);
+    const [displayADD, setDisplayADD] = useState("none");
     const [displayEDIT, setDisplayEDIT] = useState("none");
     const [displayDEL, setDisplayDEL] = useState("none");
     const [columBottom] = useState(["BOTOES"]);
-    const [foto, setFoto] = useState([]);
+   
 
-  
+    useEffect(() => {
+        const acessoMenuUser = async () => {
+            let dados = { token, usuario: nomeUser() };
+            await getAcessoUserMenu(dados)
+                .then((res) => {
+                    (res.data).forEach((ac) => {
+                        if (process.env.REACT_APP_API_ACESSO_GERAL === ac) {
+                            setAcessoGeral(true);
+                            setDisplayEDIT("");
+                            setDisplayDEL("");   
+                            setDisplayADD("");                         
+                            listarMarcaVeiculo();
+                        
+                        } else if (validaV.listMarcaVeiculo === ac) {
+                            listarMarcaVeiculo();
+                        } else if (validaV.addMarcaVeiculo === ac) {
+                            setDisplayADD("");
+                        } else if (validaV.editMarcaVeiculo === ac) {
+                            setDisplayEDIT("");
+                        } else if (validaV.delMarcaVeiculo === ac) {
+                            setDisplayDEL("");
+                        }
+                    })
+                })
+                .catch((err) => {
+                    console.error(err);
+                    window.alert("Erro ao Listar Seguradoras !!")
+                })
+        }
+        acessoMenuUser();
+        //eslint-disable-next-line  
+    }, [logout, token]);
 
     const listarMarcaVeiculo = async () => {
 
@@ -89,7 +104,7 @@ const MarcaVeiculo = () => {
     };
 
     const excluirMarcaVeiculo = (idMa) => {
-        const dados = { idMa, acessoGeral, token }
+        const dados = { idMa, acessoGeral  : ( displayDEL ==="" ? true : false), token }
         deleteMarcaVeiculo(dados)
             .then((res) => {
                 if (res.data === "erroLogin") {
@@ -108,6 +123,7 @@ const MarcaVeiculo = () => {
                 }
                 else if (res.data === "sucesso") {
                     alert("Marca veiculo excluida com sucesso.");
+                    listarMarcaVeiculo();
                 }
                 else {
                     alert("Erro ao tentar excluir marca veiculo!!!")
@@ -124,28 +140,36 @@ const MarcaVeiculo = () => {
 
     }
 
-    useEffect(() => {
-        listarMarcaVeiculo();
-    }, [])
+   
 
-    const botaoAdd =  <AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue" }} type="button" onClick={() => navigate("/cadastroMarcaVeiculo/0")} />
+    const botaoAdd =  <AddCircleOutlinedIcon className="margemRight" titleAccess="Cadastrar novo" fontSize="large" style={{ color: "blue", display : displayADD }} type="button" onClick={() => navigate("/cadastroMarcaVeiculo/0")} />
 
-    const columns = ([
+    const columns = (
+       ( acessoGeral || displayADD ==="") 
+        ?
+        [        
         { name: 'ID_MARCA_VEICULO', title: "Código da Marca" },
         { name: 'MRVC_DESCRICAO', title: "Marca" },        
         { name: 'BOTOES', title: botaoAdd,
         getCellValue: row => (row.ID_MARCA_VEICULO) },
+        ]
+        :
+        [
+        { name: 'ID_MARCA_VEICULO', title: "Código da Marca" },
+        { name: 'MRVC_DESCRICAO', title: "Marca" },        
+        { name: 'BOTOES', title: "Alterações",
+        getCellValue: row => (row.ID_MARCA_VEICULO) },
+        ]
 
-
-    ]);
+    );
     
 
     const EditMarcaVeiculo = ({ value }) => (
         <div>  
-        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : '' }} className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />
-        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : ''}}   className="margemRight" onClick={()=>excluirMarcaVeiculo(value)}/>
+        <ModeEditOutlineOutlinedIcon titleAccess="Alterar" style={{ color: "orange", display : displayEDIT }} className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />
+        <DeleteForeverOutlinedIcon titleAccess={"Excluir"} type="button" fontSize="medium" style={{ color: "red" ,display : displayDEL}}   className="margemRight" onClick={()=>excluirMarcaVeiculo(value)}/>
         
-        <VisibilityIcon style={{ color: "green" ,display : ('')}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />   
+        <VisibilityIcon style={{ color: "green" ,display : (displayEDIT==="" ? "none" : " ")}} titleAccess="Visualizar" className="margemRight" onClick={(e) => navigate(`/cadastroMarcaVeiculo/${value}`)} type="button" />   
     
         </div>  
     
@@ -166,7 +190,7 @@ const MarcaVeiculo = () => {
     return (
     <div className="container-fluid">
         <h1 id="titulos">Marca Veículo - Em desenvolvimento</h1>
-                 <img src={`data:image/png;base64,${foto}`} alt=""/>
+                 {/* <img src={`data:image/png;base64,${foto}`} alt=""/> */}
         {/* <img alt="" src={ foto ? URL.createObjectURL(foto) : ""}  /> */}
         
         <div className="card">

@@ -11,6 +11,19 @@ import ListIcon from '@mui/icons-material/List';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 
+const btnListAce =(v1,p1,msg)=>{
+   if (v1 === `LIST_${p1}`) {
+    return <span>Listar {msg} <ListIcon style={{ color: "green" }} /></span>
+  } else if (v1 === `EDIT_${p1}`) {
+    return <span>Editar {msg}<ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+  } else if (v1 === `DEL_${p1}`) {
+    return <span>Excluir {msg} <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+  } else if (v1 === `ADD_${1}`) {
+    return <span>Incluir{msg} <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+  }
+
+}
+
 
 const TableComponentTitle = ({ style, ...restProps }) => (
   <TableHeaderRow.Content
@@ -173,7 +186,8 @@ const Acesso = () => {
       return <span>Alterar Seguradora <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
     } else if (valor === "DEL_SGRA") {
       return <span>Excluir Seguradora <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
-    } else if (valor === "ADD_REGIAO") {
+    } 
+    else if (valor === "ADD_REGIAO") {
       return <span>Incluir Região <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "EDIT_REGIAO") {
       return <span>Alterar Região <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -181,7 +195,8 @@ const Acesso = () => {
       return <span>Excluir Região <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_REGIAO") {
       return <span>Listar Região <ListIcon style={{ color: "green" }} /></span>
-    } else if (valor === "ADD_JUSTIFICATIVA") {
+    } 
+    else if (valor === "ADD_JUSTIFICATIVA") {
       return <span>Incluir Justificativa do Item <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     } else if (valor === "EDIT_JUSTIFICATIVA") {
       return <span>Alterar Justificativa do Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -189,7 +204,8 @@ const Acesso = () => {
       return <span>Excluir Justificativa do Item <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "LIST_JUSTIFICATIVA") {
       return <span>Listar Justificativa do Item <ListIcon style={{ color: "green" }} /></span>
-    } else if (valor === "LIST_SACMONT") {
+    } 
+    else if (valor === "LIST_SACMONT") {
       return <span>Listar SAC Montadoras <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_SACMONT") {
       return <span>Editar SAC Montadoras <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -197,7 +213,8 @@ const Acesso = () => {
       return <span>Excluir SAC Montadoras <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_SACMONT") {
       return <span>Incluir SAC Montadoras <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
-    } else if (valor === "LIST_FORNECEDOR") {
+    } 
+    else if (valor === "LIST_FORNECEDOR") {
       return <span>Listar Fornecedor <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_FORNECEDOR") {
       return <span>Editar Fornecedor <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -205,7 +222,8 @@ const Acesso = () => {
       return <span>Excluir Fornecedor <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_FORNECEDOR") {
       return <span>Incluir Fornecedor <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
-    } else if (valor === "LIST_PARAMLE") {
+    } 
+    else if (valor === "LIST_PARAMLE") {
       return <span>Listar Parametros de Leilão <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_PARAMLE") {
       return <span>Editar Parametros de Leilão <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -213,7 +231,8 @@ const Acesso = () => {
       return <span>Excluir Parametros de Leilão <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_PARAMLE") {
       return <span>Incluir Parametros de Leilão <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
-    }else if (valor === "LIST_TIPOPECA") {
+    }
+    else if (valor === "LIST_TIPOPECA") {
       return <span>Listar Tipo de Peças <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_TIPOPECA") {
       return <span>Editar Tipo de Peças <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -221,7 +240,8 @@ const Acesso = () => {
       return <span>Excluir Tipo de Peças <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
     } else if (valor === "ADD_TIPOPECA") {
       return <span>Incluir Tipo de Peças <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
-    }else if (valor === "LIST_STIT") {
+    }
+    else if (valor === "LIST_STIT") {
       return <span>Listar Status de Item <ListIcon style={{ color: "green" }} /></span>
     } else if (valor === "EDIT_STIT") {
       return <span>Editar Status de Item <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
@@ -239,9 +259,51 @@ const Acesso = () => {
     } else if (valor === "ADD_REGIONAL") {
       return <span>Incluir Regional <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
     }
-
- 
-
+    else if (valor === "LIST_REGIONAL") {
+      return <span>Listar Regional <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_REGIONAL") {
+      return <span>Editar Regional <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_REGIONAL") {
+      return <span>Excluir Regional <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_REGIONAL") {
+      return <span>Incluir Regional <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+    else if (valor === "LIST_REGULADORA") {
+      return <span>Listar Reguladora <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_REGULADORA") {
+      return <span>Editar Reguladora <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_REGULADORA") {
+      return <span>Excluir Reguladora <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_REGULADORA") {
+      return <span>Incluir Reguladora <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+    else if (valor === "LIST_SUCURSAL") {
+      return <span>Listar Sucursal <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_SUCURSAL") {
+      return <span>Editar Sucursal <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_SUCURSAL") {
+      return <span>Excluir Sucursal <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_SUCURSAL") {
+      return <span>Incluir Sucursal <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+    else if (valor === "LIST_MUNICIPIO") {
+      return <span>Listar Municipio <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_MUNICIPIO") {
+      return <span>Editar Municipio <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_MUNICIPIO") {
+      return <span>Excluir Municipio <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_MUNICIPIO") {
+      return <span>Incluir Municipio <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
+    else if (valor === "LIST_MARCAVEICULO") {
+      return <span>Listar MarcaVeiculo <ListIcon style={{ color: "green" }} /></span>
+    } else if (valor === "EDIT_MARCAVEICULO") {
+      return <span>Editar MarcaVeiculo <ModeEditOutlineOutlinedIcon style={{ color: "orange" }} /></span>
+    } else if (valor === "DEL_MARCAVEICULO") {
+      return <span>Excluir MarcaVeiculo <DeleteForeverOutlinedIcon style={{ color: "red" }} /></span>
+    } else if (valor === "ADD_MARCAVEICULO") {
+      return <span>Incluir MarcaVeiculo <AddCircleOutlinedIcon style={{ color: "blue" }} /> </span>
+    }
 
 
 
@@ -262,6 +324,11 @@ const Acesso = () => {
   else if(grMen ==="GERAL" ){ gr = "Permitidos"}
   else if(grMen ==="FORNECEDOR" ){ gr = "Fornecedores"}
   else if(grMen ==="STATUSITEM" ){ gr = "Status Item"}
+  else if(grMen ==="REGIONAL" ){ gr = "Regional"}
+  else if(grMen ==="REGULADORA" ){ gr = "Reguladora"}
+  else if(grMen ==="SUCURSAL" ){ gr = "Sucursal"}
+  else if(grMen ==="MUNICIPIO" ){ gr = "Município"}
+  else if(grMen ==="MARCAVEICULO" ){ gr = "Marca Veículo"}
 
 
 

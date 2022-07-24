@@ -35,7 +35,14 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsSharpIcon from "@mui/icons-material/GroupsSharp";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 
+export const validaV ={
 
+   listaMarcaVeiculo : "LIST_MARCAVEICULO",
+   incluirMarcaVeiculo : "ADD_MARCAVEICULO",
+   excluirMarcaVeiculo : "DEL_MARCAVEICULO",
+   editarMarcaVeiculo : "EDIT_MARCAVEICULO"
+
+}
 
 const drawerWidth = 280;
 
@@ -103,6 +110,8 @@ const HomePage = () => {
   const [displayAcessoRegional, setDisplayAcessoRegional] = useState("none");
   const [displayAcessoReguladora, setDisplayAcessoReguladora] = useState("none");
   const [displayAcessoSucursal, setDisplayAcessoSucursal] = useState("none");
+  const [displayAcessoMunicipios, setDisplayAcessoMunicipios] = useState("none");
+  const [displayAcessoMarcaveiculo, setDisplayAcessoMarcaveiculo] = useState("none");
 
   const listaSgra = "LIST_SGRA";
   const incluirSgra = "ADD_SGRA";
@@ -159,6 +168,16 @@ const HomePage = () => {
   const excluirSucursal = "DEL_SUCURSAL";
   const editarSucursal = "EDIT_SUCURSAL";
 
+  const listaMunicipios = "LIST_MUNICIPIO";
+  const incluirMunicipios = "ADD_MUNICIPIO";
+  const excluirMunicipios = "DEL_MUNICIPIO";
+  const editarMunicipios = "EDIT_MUNICIPIO";
+
+  // const listaMarcaVeiculo = "LIST_MARCAVEICULO";
+  // const incluirMarcaVeiculo = "ADD_MARCAVEICULO";
+  // const excluirMarcaVeiculo = "DEL_MARCAVEICULO";
+  // const editarMarcaVeiculo = "EDIT_MARCAVEICULO";
+
   useEffect(() => {
     if (nomeUser()) {
       const acessoMenuUser = async () => {
@@ -186,6 +205,8 @@ const HomePage = () => {
                   setDisplayAcessoRegional("");
                   setDisplayAcessoReguladora("");
                   setDisplayAcessoSucursal("");
+                  setDisplayAcessoMunicipios("");
+                  setDisplayAcessoMarcaveiculo("");
                 }
                 if (listaSgra === ac || incluirSgra === ac || excluirSgra === ac || editarSgra === ac) {
                   setDisplayAcessoSGRA("");
@@ -219,6 +240,13 @@ const HomePage = () => {
                 }
                 if (listaSucursal === ac || incluirSucursal === ac || excluirSucursal === ac || editarSucursal === ac) {
                   setDisplayAcessoSucursal("");
+                }
+                if (listaMunicipios === ac || incluirMunicipios === ac || excluirMunicipios === ac || editarMunicipios === ac) {
+                  setDisplayAcessoMunicipios("");
+                }
+                if (validaV.listaMarcaVeiculo=== ac || validaV.incluirMarcaVeiculo === ac || 
+                  validaV.excluirMarcaVeiculo === ac || validaV.editarMarcaVeiculo === ac) {
+                  setDisplayAcessoMarcaveiculo("");
                 }
               
               });
@@ -402,7 +430,7 @@ const HomePage = () => {
             <TreeItem nodeId="CADG" label="CADASTROS GERAIS">
               <TreeItem nodeId="BAS" label="BÁSICO">
 
-              <ListItem disablePadding>
+              <ListItem disablePadding style={{ display: displayAcessoMunicipios }} >
                   <ListItemButton onClick={() => municipios()}>
                     <ListItemIcon>
                       <HdrAutoIcon style={{ color: "green" }} />
@@ -458,14 +486,14 @@ const HomePage = () => {
 
 
 
-
+                <ListItem disablePadding style={{ display: displayAcessoMarcaveiculo }}>
                 <ListItemButton onClick={() => marcaVeiculo()}>
                   <ListItemIcon>
                     <HdrAutoIcon style={{ color: "green" }} />
                   </ListItemIcon>
                   <ListItemText primary={"Marca Veículo"} />
                 </ListItemButton>
-
+                </ListItem>
 
                 <ListItem disablePadding style={{ display: displayAcessoJust }} >
                   <ListItemButton onClick={() => jstificativaItem()}>

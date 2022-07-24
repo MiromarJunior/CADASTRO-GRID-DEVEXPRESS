@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { AuthContext } from "../Autenticação/validacao";
 import { Paper } from "@mui/material";
 import { deleteGrupoAcesso, getAcessoUserMenu, getGrupoAcesso, saveGrupoAcesso } from "../Service/usuarioService";
-import { Grid, PagingPanel, Table, TableColumnResizing, TableEditColumn, TableEditRow, TableFilterRow, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
+import { Grid, PagingPanel, Table, TableColumnResizing, TableEditColumn, TableEditRow, TableFilterRow, TableFixedColumns, TableHeaderRow } from "@devexpress/dx-react-grid-material-ui";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
@@ -139,6 +139,10 @@ const GrupoDeAcesso = () => {
   const [botaoAcessoFornecedor] = useState(["ACESSOFORNECEDOR"]);  
   const [botaoAcessoStatusItem] = useState(["ACESSOSTATUSITEM"]);  
   const [botaoAcessoRegional] = useState(["ACESSOREGIONAL"]);   
+  const [botaoAcessoReguladora] = useState(["ACESSOREGULADORA"]); 
+  const [botaoAcessoSucursal] = useState(["ACESSOSUCURSAL"]); 
+  const [botaoAcessoMunicipio] = useState(["ACESSOMUNICIPIO"]); 
+  const [botaoAcessoMarcaVeiculo] = useState(["ACESSOMARCAVEICULO"]); 
   
    
   const [pageSizes] = useState([5, 10, 15, 0]);
@@ -340,6 +344,23 @@ const GrupoDeAcesso = () => {
       name: "ACESSOREGIONAL", title: "Regional ",
       getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
     },
+    {
+      name: "ACESSOREGULADORA", title: "Reguladora ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    {
+      name: "ACESSOSUCURSAL", title: "Sucursal ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    {
+      name: "ACESSOMUNICIPIO", title: "Município ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    {
+      name: "ACESSOMARCAVEICULO", title: "Marca Veículo ",
+      getCellValue: row => (row.GRAC_CODIGO ? [row.GRAC_CODIGO, row.GRAC_DESCRICAO] : undefined),
+    },
+    
 
 
 
@@ -362,13 +383,19 @@ const GrupoDeAcesso = () => {
     { columnName: 'ACESSOREGIAO', width: 150 },
     { columnName: 'ACESSOSAC', width: 150 },
     { columnName: 'ACESSOJUSTIFICATIVA', width: 180 },
-    { columnName: 'ACESSOPARAMLE', width: 200 },
-    { columnName: 'ACESSOTIPOPECA', width: 200 },
-    { columnName: 'ACESSOFORNECEDOR', width: 200 },
-    { columnName: 'ACESSOSTATUSITEM', width: 200 },
-    { columnName: 'ACESSOREGIONAL', width: 200 },
+    { columnName: 'ACESSOPARAMLE', width: 180 },
+    { columnName: 'ACESSOTIPOPECA', width: 150 },
+    { columnName: 'ACESSOFORNECEDOR', width: 150 },
+    { columnName: 'ACESSOSTATUSITEM', width: 150 },
+    { columnName: 'ACESSOREGIONAL', width: 150 },
+    { columnName: 'ACESSOREGULADORA', width: 150 },
+    { columnName: 'ACESSOSUCURSAL', width: 150 },
+    { columnName: 'ACESSOMUNICIPIO', width: 150 },
+    { columnName: 'ACESSOMARCAVEICULO', width: 150 },
+    
 
   ])
+  const [leftColumnsFix] = useState(['GRAC_DESCRICAO']);
 
 
   const changeAddedRows = value => setAddedRows(
@@ -477,7 +504,6 @@ const GrupoDeAcesso = () => {
     />
   )
 
-
   const BotaoAcessoGeral = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-secondary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/GERAL`)}>ACESSOS</button>
@@ -509,6 +535,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoJust = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/JUSTIFICATIVA`)}>JUST. ITEM</button>
@@ -524,6 +551,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoSac = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/SACMONT`)}>SAC MONTADORA</button>
@@ -539,6 +567,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoParamLe = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/PARAMLE`)}>PARAM DE LEILÃO</button>
@@ -554,6 +583,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoTipoPeca = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/TIPOPECA`)}>TIPO DE PEÇAS</button>
@@ -569,6 +599,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoFornecedor = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/FORNECEDOR`)}>FORNECEDOR</button>
@@ -584,6 +615,7 @@ const GrupoDeAcesso = () => {
 
     />
   )
+
   const BotaoAcessoStatusItem = ({ value }) => (
     <div>
       <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/STATUSITEM`)}>STATUS ITEM</button>
@@ -616,6 +648,63 @@ const GrupoDeAcesso = () => {
     />
   )
 
+  const BotaoAcessoReguladora = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/REGULADORA`)}>REGULADORA</button>
+
+    </div>
+
+  )
+  const BotaoAcessoReguladoraProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoReguladora}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+
+  const BotaoAcessoSucursal = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/SUCURSAL`)}>SUCURSAL</button>
+    </div>
+  )
+  const BotaoAcessoSucursalProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoSucursal}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+
+  const BotaoAcessoMunicipio = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/MUNICIPIO`)}>MUNICÍPIO</button>
+    </div>
+  )
+  const BotaoAcessoMunicipioProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoMunicipio}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
+
+  const BotaoAcessoMarcaveiculo = ({ value }) => (
+    <div>
+      <button style={{ fontSize: 12 }} className="btn btn-outline-primary" onClick={(e) => navigate(`/acessos/${value[0]}/${value[1]}/MARCAVEICULO`)}>MARCA VEÍCULO</button>
+    </div>
+  )
+  const BotaoAcessoMarcaveiculoProv = (props) => (
+    <DataTypeProvider
+      formatterComponent={BotaoAcessoMarcaveiculo}
+      editorComponent={BotaoEditor}
+      {...props}
+
+    />
+  )
 
 
   return (
@@ -662,6 +751,18 @@ const GrupoDeAcesso = () => {
             <BotaoAcessoRegionalProv
              for={botaoAcessoRegional}
             />
+            <BotaoAcessoReguladoraProv
+            for={botaoAcessoReguladora}
+            />            
+            <BotaoAcessoSucursalProv
+            for={botaoAcessoSucursal}
+            />
+            <BotaoAcessoMunicipioProv
+             for={botaoAcessoMunicipio}
+            />
+            <BotaoAcessoMarcaveiculoProv
+            for={botaoAcessoMarcaVeiculo}            
+            />
 
 
              <FilteringState
@@ -691,6 +792,7 @@ const GrupoDeAcesso = () => {
             <SortingState />           
             <IntegratedSorting />
             <Table />
+           
             <TableEditRow />
             <TableEditColumn
               showEditCommand
@@ -705,6 +807,10 @@ const GrupoDeAcesso = () => {
               contentComponent={TableComponentTitle}
             />
             <TableFilterRow />
+            <TableFixedColumns
+          leftColumns={leftColumnsFix}
+         
+        />
             <PagingPanel
               pageSizes={pageSizes}
             />
